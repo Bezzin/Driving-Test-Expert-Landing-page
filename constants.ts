@@ -1,6 +1,5 @@
 export const NAV_ITEMS = [
   { label: 'Systems', href: '#systems' },
-  { label: 'Results', href: '#results' },
   { label: 'About', href: '#about' },
 ];
 

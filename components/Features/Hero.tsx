@@ -63,10 +63,15 @@ export const Hero: React.FC = () => {
                     <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
                 </span>
                 </button>
-                <button className="group rounded-full px-8 py-5 text-white font-semibold text-lg border border-white/20 hover:border-accent hover:text-accent transition-colors backdrop-blur-md flex items-center gap-2 bg-black/30">
+                <a 
+                  href="https://www.youtube.com/@JoshRamwell" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="group rounded-full px-8 py-5 text-white font-semibold text-lg border border-white/20 hover:border-accent hover:text-accent transition-colors backdrop-blur-md flex items-center gap-2 bg-black/30"
+                >
                 <PlayCircle className="w-6 h-6 transition-transform group-hover:scale-110" />
                 Watch Success Stories
-                </button>
+                </a>
             </div>
           </Reveal>
         </div>

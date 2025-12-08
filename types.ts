@@ -11,6 +11,7 @@ export interface Feature {
   image: string; // URL or placeholder path
   reverse?: boolean;
   cta?: string;
+  ctaLink?: string;
   isGlassOrange?: boolean;
 }
 
