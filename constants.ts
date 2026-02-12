@@ -3,6 +3,9 @@ export const NAV_ITEMS = [
   { label: 'About', href: '#about' },
 ];
 
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.drivingtestexpert.testroutesexpert';
+export const APP_PATH = '/app';
+
 export const BRAND_LOGOS = [
   'Ford', 'Toyota', 'Volkswagen', 'Tesla', 'BMW', 'Mercedes', 'Audi',
   'Ford', 'Toyota', 'Volkswagen', 'Tesla', 'BMW'

@@ -5,12 +5,13 @@ import { Marquee } from './components/UI/Marquee';
 import { FeatureRow } from './components/Features/FeatureRow';
 import { Footer } from './components/Layout/Footer';
 import { DrivingTutor } from './components/AI/DrivingTutor';
-import { ASSETS } from './constants';
+import { AppLandingPage } from './components/Pages/AppLandingPage';
+import { ASSETS, APP_PATH } from './constants';
 import { Feature } from './types';
 import { Reveal } from './components/UI/Reveal';
-import { ArrowRight, ChevronDown, Sparkles, CheckCircle } from 'lucide-react';
+import { ArrowRight, ChevronDown, CheckCircle, Smartphone, Apple } from 'lucide-react';
 
-function App() {
+function HomePage() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -18,7 +19,7 @@ function App() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -48,28 +49,26 @@ function App() {
           email: '',
           currentStatus: "I haven't started learning"
         });
-        // Reset success message after 5 seconds
         setTimeout(() => setSubmitStatus('idle'), 5000);
       } else {
         const error = await response.json();
         throw new Error(error.message || 'Failed to submit form');
       }
     } catch (error) {
-      console.error('Form submission error:', error);
       setSubmitStatus('error');
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   const features: Feature[] = [
     {
       id: 'retest',
       title: 'The *ReTest* App',
       subtitle: 'Beat The Wait',
       description: "Don't get stuck in the backlog. ReTest is our premium driving test cancellations app. We scan the DVSA system 24/7 to snag you an earlier test date, getting you on the road months sooner.",
-      image: ASSETS.reTestBox, 
+      image: ASSETS.reTestBox,
       reverse: false,
       cta: 'JOIN THE WAITLIST',
       ctaLink: '#contact',
@@ -80,10 +79,10 @@ function App() {
       title: 'Know Your *Routes*',
       subtitle: 'Turn-by-Turn Navigation',
       description: "Stop guessing where you'll go. Our 'Driving Test Routes' system features full turn-by-turn navigation for every possible test route in your local area, so there are no surprises on the big day.",
-      image: ASSETS.routesBox, 
+      image: ASSETS.routesBox,
       reverse: true,
-      cta: 'GET A FREE ROUTE',
-      ctaLink: 'https://josh-the-driving-instructor-crawfish.sender.site/',
+      cta: 'GET THE APP',
+      ctaLink: APP_PATH,
       isGlassOrange: false
     },
     {
@@ -91,7 +90,7 @@ function App() {
       title: 'Private *Community*',
       subtitle: 'Join the Squad',
       description: "You are not alone. Join thousands of learner drivers in our exclusive Discord. Share tips, vent about failures, and celebrate passes with a community that gets it.",
-      image: ASSETS.discordBox, 
+      image: ASSETS.discordBox,
       reverse: false,
       cta: 'Join Discord',
       isGlassOrange: false
@@ -101,7 +100,7 @@ function App() {
       title: 'Viral *Tutorials*',
       subtitle: 'Over 4 Million Views',
       description: "Visual learner? Join the massive community on our channel with over 4 million views. Watch 4K POV driving lessons, common fault analysis, and mock tests with real examiners.",
-      image: ASSETS.youtubeBox, 
+      image: ASSETS.youtubeBox,
       reverse: true,
       cta: 'Watch Now',
       ctaLink: 'https://www.youtube.com/c/joshthedrivinginstructor',
@@ -111,15 +110,61 @@ function App() {
 
   return (
     <div className="bg-bg min-h-screen text-white selection:bg-accent/30 selection:text-white overflow-x-hidden">
-      
+
       {/* Background Texture */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
 
       <Navbar />
-      
+
       <Hero />
-      
+
       <Marquee />
+
+      {/* App Promo Section */}
+      <section className="relative z-10 py-16 md:py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <Reveal direction="up" delay={0.2}>
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-accent via-yellow-500 to-accent rounded-[2.1rem] opacity-20 group-hover:opacity-40 blur-md transition duration-500 animate-pulse-glow"></div>
+              <div className="relative bg-[#0d0d0d] ring-1 ring-accent/20 rounded-[2rem] p-8 md:p-12 lg:p-16 text-center shadow-2xl">
+                <div className="inline-block px-4 py-2 rounded-full border border-accent/30 bg-accent/10 text-accent text-xs font-bold uppercase tracking-widest mb-6 shadow-[0_0_15px_rgba(252,163,17,0.2)]">
+                  New App Available
+                </div>
+
+                <h2 className="font-brand text-3xl md:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
+                  Practise{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-yellow-200">
+                    REAL
+                  </span>{' '}
+                  Driving Test Routes
+                </h2>
+                <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10">
+                  Turn-by-turn navigation for every test route at your local test centre. Download the app or join the iPhone waitlist.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                  <a
+                    href={APP_PATH}
+                    className="group/btn inline-flex items-center gap-3 rounded-full bg-green-500 px-8 py-4 font-extrabold text-lg text-black transition-all hover:bg-green-400 hover:scale-105 active:scale-95 shadow-[0_0_25px_rgba(34,197,94,0.4)]"
+                  >
+                    <Smartphone className="w-5 h-5" />
+                    Android — Get It Now
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
+                  </a>
+                  <a
+                    href={APP_PATH}
+                    className="group/btn inline-flex items-center gap-3 rounded-full border-2 border-accent/50 bg-accent/10 px-8 py-4 font-extrabold text-lg text-accent transition-all hover:bg-accent hover:text-black hover:scale-105 active:scale-95 hover:shadow-[0_0_25px_rgba(252,163,17,0.4)]"
+                  >
+                    <Apple className="w-5 h-5" />
+                    iPhone — Join Waitlist
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       <main id="systems" className="relative z-10 py-12 flex flex-col gap-12 md:gap-24 px-6 max-w-7xl mx-auto">
         {features.map((feature) => (
@@ -135,12 +180,12 @@ function App() {
                 About <span className="text-accent">Test Routes Expert</span>
               </h2>
               <div className="h-1 w-20 bg-accent mb-8 rounded-full"></div>
-              
+
               <div className="space-y-6 text-lg text-white/80 leading-relaxed">
                 <p className="text-xl text-white/90">
                   Test Routes Expert helps learner drivers in the UK practice real driving test routes with turn-by-turn navigation. Our app provides:
                 </p>
-                
+
                 <ul className="space-y-4 ml-4">
                   <li className="flex items-start gap-3">
                     <span className="text-accent mt-2">•</span>
@@ -208,15 +253,15 @@ function App() {
                 <span className="inline-block pl-10 md:pl-20 lg:pl-28">Start Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-yellow-200">Engine</span></span>
             </h2>
           </Reveal>
-          
+
           <Reveal direction="up" delay={0.4} width="100%">
             <div className="mt-16 relative group max-w-2xl mx-auto">
                 {/* Outer Glow Ring */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-accent via-yellow-500 to-accent rounded-[2.1rem] opacity-30 group-hover:opacity-70 blur-md transition duration-500 animate-pulse-glow"></div>
-                
+
                 {/* Form Container */}
                 <form onSubmit={handleSubmit} className="relative bg-[#0d0d0d] ring-1 ring-white/10 rounded-[2rem] p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left shadow-2xl backdrop-blur-xl">
-                    
+
                     {/* Header inside form */}
                     <div className="md:col-span-2 mb-4 flex items-center justify-between border-b border-white/5 pb-6">
                          <div>
@@ -246,7 +291,7 @@ function App() {
                     {/* Inputs */}
                     <div className="space-y-2 group/input">
                         <label htmlFor="fullName" className="text-xs font-bold uppercase tracking-wide text-white/40 group-focus-within/input:text-accent transition-colors ml-1">Full Name</label>
-                        <input 
+                        <input
                             id="fullName"
                             name="fullName"
                             type="text"
@@ -254,14 +299,14 @@ function App() {
                             value={formData.fullName}
                             onChange={handleInputChange}
                             disabled={isSubmitting}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 focus:outline-none focus:border-accent/50 focus:bg-white/10 focus:ring-1 focus:ring-accent/50 transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
-                            placeholder="Enter your name" 
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 focus:outline-none focus:border-accent/50 focus:bg-white/10 focus:ring-1 focus:ring-accent/50 transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
+                            placeholder="Enter your name"
                         />
                     </div>
 
                     <div className="space-y-2 group/input">
                         <label htmlFor="email" className="text-xs font-bold uppercase tracking-wide text-white/40 group-focus-within/input:text-accent transition-colors ml-1">Email Address</label>
-                        <input 
+                        <input
                             id="email"
                             name="email"
                             type="email"
@@ -269,15 +314,15 @@ function App() {
                             value={formData.email}
                             onChange={handleInputChange}
                             disabled={isSubmitting}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 focus:outline-none focus:border-accent/50 focus:bg-white/10 focus:ring-1 focus:ring-accent/50 transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
-                            placeholder="name@example.com" 
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 focus:outline-none focus:border-accent/50 focus:bg-white/10 focus:ring-1 focus:ring-accent/50 transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
+                            placeholder="name@example.com"
                         />
                     </div>
 
                     <div className="md:col-span-2 space-y-2 group/input">
                         <label htmlFor="currentStatus" className="text-xs font-bold uppercase tracking-wide text-white/40 group-focus-within/input:text-accent transition-colors ml-1">Current Status</label>
                         <div className="relative">
-                            <select 
+                            <select
                                 id="currentStatus"
                                 name="currentStatus"
                                 value={formData.currentStatus}
@@ -295,8 +340,8 @@ function App() {
                     </div>
 
                     {/* Button */}
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         disabled={isSubmitting}
                         className="md:col-span-2 mt-6 group/btn relative w-full overflow-hidden rounded-xl bg-accent p-4 transition-all hover:bg-white hover:scale-[1.01] active:scale-[0.98] shadow-[0_0_20px_rgba(252,163,17,0.3)] hover:shadow-[0_0_40px_rgba(252,163,17,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
@@ -307,7 +352,7 @@ function App() {
                         {/* Shine effect */}
                         <div className="absolute inset-0 group-hover/btn:animate-shine bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"></div>
                     </button>
-                    
+
                     <p className="md:col-span-2 text-center text-[10px] text-white/20 uppercase tracking-widest mt-2 font-medium">
                         Secure SSL Encryption • No Spam Guarantee
                     </p>
@@ -322,6 +367,16 @@ function App() {
       <DrivingTutor />
     </div>
   );
+}
+
+function App() {
+  const path = window.location.pathname;
+
+  if (path === APP_PATH || path === APP_PATH + '/') {
+    return <AppLandingPage />;
+  }
+
+  return <HomePage />;
 }
 
 export default App;
