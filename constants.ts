@@ -1,14 +1,57 @@
 export const NAV_ITEMS = [
-  { label: 'Systems', href: '#systems' },
+  { label: 'Our Apps', href: '#apps' },
   { label: 'About', href: '#about' },
 ];
 
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.drivingtestexpert.testroutesexpert';
 export const APP_PATH = '/app';
 
-export const BRAND_LOGOS = [
-  'Ford', 'Toyota', 'Volkswagen', 'Tesla', 'BMW', 'Mercedes', 'Audi',
-  'Ford', 'Toyota', 'Volkswagen', 'Tesla', 'BMW'
+export const TESTIMONIALS = [
+  {
+    quote: "I’m so grateful for the work you do for everyone not just your students!",
+    author: 'Stephanie Rushton',
+    source: 'Google review',
+    rating: 5,
+  },
+  {
+    quote: 'We’ve found his communication good and the app really useful.',
+    author: 'Anita Bates',
+    source: 'Google review',
+    rating: 5,
+  },
+  {
+    quote: 'Each lesson was delivered with patience, positivity, and reassurance.',
+    author: 'Maudline L',
+    source: 'Google review',
+    rating: 5,
+  },
+  {
+    quote: 'Learn everything you need to know in order to pass your driving test right here all in one place.',
+    author: 'YouTube audience',
+    source: 'YouTube feedback',
+    rating: 5,
+  },
+  {
+    quote: 'Helping learners across the UK with clear practical guidance.',
+    author: 'Facebook audience',
+    source: 'Facebook feedback',
+    rating: 5,
+  },
+];
+
+export const TRUST_STATS = [
+  { value: '298+', label: 'Test centres listed' },
+  { value: '1,000+', label: 'Practice routes' },
+  { value: '5.0', label: 'Average review rating' },
+  { value: '24/7', label: 'Navigation access' },
+];
+
+export const APP_SCREENSHOTS = [
+  { src: '/app-screenshots/centre-list.png', title: 'Choose your test centre quickly' },
+  { src: '/app-screenshots/route-progress.png', title: 'Track progress route by route' },
+  { src: '/app-screenshots/route-preview.png', title: 'Preview route details before you drive' },
+  { src: '/app-screenshots/navigation-light.png', title: 'Turn-by-turn view with clear guidance' },
+  { src: '/app-screenshots/navigation-dark.png', title: 'Navigation mode with speed awareness' },
 ];
 
 export const ASSETS = {

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Navbar } from '../Layout/Navbar';
 import { Footer } from '../Layout/Footer';
 import { Reveal } from '../UI/Reveal';
-import { ASSETS, PLAY_STORE_URL } from '../../constants';
-import { ArrowRight, CheckCircle, Smartphone, Apple, MapPin, Navigation, Shield } from 'lucide-react';
+import { APP_SCREENSHOTS, PLAY_STORE_URL, TESTIMONIALS, TRUST_STATS } from '../../constants';
+import { ArrowRight, CheckCircle, Smartphone, Apple, MapPin, Navigation, Shield, Star } from 'lucide-react';
 
 export const AppLandingPage: React.FC = () => {
   const [formData, setFormData] = useState({ fullName: '', email: '' });
@@ -104,6 +104,50 @@ export const AppLandingPage: React.FC = () => {
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/60 text-sm">
                 <Shield className="w-4 h-4 text-accent" />
                 Free Route Included
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" delay={0.6}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-16 max-w-5xl mx-auto">
+              {TRUST_STATS.map((stat) => (
+                <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <p className="text-2xl md:text-3xl font-black text-accent">{stat.value}</p>
+                  <p className="text-[10px] md:text-xs text-white/60 mt-1 uppercase tracking-wider">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" delay={0.7}>
+            <div className="mb-16">
+              <h2 className="font-brand text-2xl md:text-4xl font-black text-white mb-6">App Screenshots</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {APP_SCREENSHOTS.map((shot) => (
+                  <figure key={shot.src} className="rounded-3xl border border-white/10 bg-black/40 p-3 text-left">
+                    <img src={shot.src} alt={shot.title} className="rounded-2xl border border-white/10 w-full h-auto" loading="lazy" />
+                    <figcaption className="text-sm text-white/80 mt-3 px-1">{shot.title}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" delay={0.8}>
+            <div className="mb-16">
+              <h2 className="font-brand text-2xl md:text-4xl font-black text-white mb-6">Learner Reviews</h2>
+              <div className="grid md:grid-cols-3 gap-5">
+                {TESTIMONIALS.slice(0, 3).map((item) => (
+                  <div key={item.author} className="rounded-2xl border border-white/10 bg-black/50 p-5 text-left">
+                    <div className="flex items-center gap-1 mb-3">
+                      {Array.from({ length: item.rating }).map((_, index) => (
+                        <Star key={`${item.author}-${index}`} className="w-4 h-4 text-accent fill-accent" />
+                      ))}
+                    </div>
+                    <p className="text-white/90 leading-relaxed">"{item.quote}"</p>
+                    <p className="text-sm text-white/60 mt-3">- {item.author}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </Reveal>

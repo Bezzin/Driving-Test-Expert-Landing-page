@@ -35,13 +35,30 @@
      - **Publish directory:** `dist`
    - Click "Deploy site"
 
-2. **Add Your Domain:**
-   - Go to **Site settings** → **Domain management** → **Add custom domain**
-   - Enter `drivingtestexpert.com`
-   - Netlify will provide DNS records
+2. **Add Your Custom Domain:**
+   - In your Netlify dashboard, go to your site
+   - Navigate to **Domain settings** → **Custom domains**
+   - Click **Add custom domain**
+   - Enter `drivingtestexpert.com` and click **Verify**
+   - (Optional) Also add `www.drivingtestexpert.com` for the www subdomain
+   - Netlify will show you the DNS records needed
 
-3. **Configure DNS:**
-   - Add the DNS records Netlify provides at your domain registrar
+3. **Configure DNS at Your Domain Registrar:**
+   - Go to where you bought the domain (GoDaddy, Namecheap, etc.)
+   - Navigate to DNS management
+   - Add the DNS records Netlify provides:
+     - **A Record** (for root domain):
+       - Name: `@` or blank
+       - Value: Netlify's IP address (e.g., `75.2.60.5`)
+     - **CNAME Record** (for www subdomain):
+       - Name: `www`
+       - Value: Your Netlify site URL (e.g., `brilliant-palmier-470b08.netlify.app`)
+   - Save the DNS records
+
+4. **Wait for DNS Propagation:**
+   - DNS changes can take a few minutes to 48 hours
+   - Netlify will automatically provision SSL/HTTPS certificates once DNS is verified
+   - You can check status in Netlify's Domain settings
 
 ### Option 3: Cloudflare Pages
 

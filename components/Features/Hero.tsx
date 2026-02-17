@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, PlayCircle } from 'lucide-react';
-import { ASSETS } from '../../constants';
+import { APP_PATH, ASSETS } from '../../constants';
 import { Reveal } from '../UI/Reveal';
 
 export const Hero: React.FC = () => {
@@ -50,19 +50,19 @@ export const Hero: React.FC = () => {
 
           <Reveal delay={0.3} width="100%">
             <p className="mt-8 text-lg md:text-2xl text-white/90 max-w-2xl font-light leading-relaxed border-l-4 border-accent pl-6 drop-shadow-md">
-                Here at <strong className="text-white">drivingtestexpert.com</strong>, we have designed never-before-seen <span className="text-accent font-bold">proprietary systems</span> to help you pass your driving test <strong className="text-white text-2xl italic uppercase ml-1 font-brand">FASTER</strong> and <strong className="text-white text-2xl italic uppercase font-brand">EASIER</strong> than ever.
+                At <strong className="text-white">drivingtestexpert.com</strong>, we build simple tools that help you practice smarter and pass your driving test <strong className="text-white text-2xl italic uppercase ml-1 font-brand">FASTER</strong> and <strong className="text-white text-2xl italic uppercase font-brand">EASIER</strong>.
             </p>
           </Reveal>
 
           <Reveal delay={0.5}>
             <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                <button className="group relative rounded-full bg-accent px-8 py-5 text-black font-extrabold text-xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(252,163,17,0.5)] flex items-center gap-2 overflow-hidden">
+                <a href={APP_PATH} className="group relative rounded-full bg-accent px-8 py-5 text-black font-extrabold text-xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(252,163,17,0.5)] flex items-center gap-2 overflow-hidden">
                 <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-shimmer-gradient z-0"></div>
                 <span className="relative z-10 flex items-center gap-2">
-                    Start Learning
+                    Start Now
                     <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
                 </span>
-                </button>
+                </a>
                 <a 
                   href="https://www.youtube.com/@JoshRamwell" 
                   target="_blank" 

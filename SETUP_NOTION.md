@@ -34,6 +34,12 @@ This guide explains how to set up the Notion integration for the waitlist form.
 
 ## Step 4: Set Environment Variables
 
+### ⚠️ Important: Choose ONE Platform
+
+**This project uses Netlify Functions** (the serverless function is in `netlify/functions/`), so you should deploy to **Netlify**.
+
+If you want to use Vercel instead, the function structure would need to be changed to use Vercel's API routes.
+
 ### For Local Development
 
 Create a `.env` file in the root directory with your credentials:
@@ -45,7 +51,7 @@ NOTION_DATABASE_ID=e5df5c44abbd45d2969ca6b3c0b7635c
 
 **Important:** The `.env` file is already in `.gitignore` to protect your credentials.
 
-### For Netlify Deployment
+### For Netlify Deployment (Recommended for this project)
 
 1. Go to your Netlify site dashboard
 2. Navigate to **Site settings** → **Environment variables**
@@ -55,16 +61,9 @@ NOTION_DATABASE_ID=e5df5c44abbd45d2969ca6b3c0b7635c
 4. Click **"Save"**
 5. Redeploy your site
 
-### For Vercel Deployment
+### For Vercel Deployment (Requires function migration)
 
-1. Go to your Vercel project dashboard
-2. Navigate to **Settings** → **Environment Variables**
-3. Add the following variables:
-   - `NOTION_API_KEY` = `secret_your_integration_token_here`
-   - `NOTION_DATABASE_ID` = `e5df5c44abbd45d2969ca6b3c0b7635c`
-4. Select the environments (Production, Preview, Development)
-5. Click **"Save"**
-6. Redeploy your site
+If you want to use Vercel instead of Netlify, the serverless function structure needs to be changed. Contact the developer to migrate the function to Vercel's API routes format.
 
 ## Database Schema
 
