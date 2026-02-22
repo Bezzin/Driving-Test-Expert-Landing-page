@@ -6,7 +6,7 @@ import { FeatureRow } from './components/Features/FeatureRow';
 import { Footer } from './components/Layout/Footer';
 import { DrivingTutor } from './components/AI/DrivingTutor';
 import { AppLandingPage } from './components/Pages/AppLandingPage';
-import { ASSETS, APP_PATH, TESTIMONIALS, TRUST_STATS } from './constants';
+import { ASSETS, APP_PATH, LEGACY_APP_PATH, TESTIMONIALS, TRUST_STATS } from './constants';
 import { Feature } from './types';
 import { Reveal } from './components/UI/Reveal';
 import { ArrowRight, Smartphone, Apple, Star } from 'lucide-react';
@@ -237,7 +237,12 @@ function HomePage() {
 function App() {
   const path = window.location.pathname;
 
-  if (path === APP_PATH || path === APP_PATH + '/') {
+  if (
+    path === APP_PATH ||
+    path === APP_PATH + '/' ||
+    path === LEGACY_APP_PATH ||
+    path === LEGACY_APP_PATH + '/'
+  ) {
     return <AppLandingPage />;
   }
 

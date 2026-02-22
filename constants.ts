@@ -4,7 +4,13 @@ export const NAV_ITEMS = [
 ];
 
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.drivingtestexpert.testroutesexpert';
-export const APP_PATH = '/app';
+const BASE_URL = import.meta.env.BASE_URL || '/';
+const NORMALIZED_BASE_URL = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
+const APP_ROUTE_SLUG = '/test-routes-app';
+
+export const HOME_PATH = BASE_URL;
+export const LEGACY_APP_PATH = `${NORMALIZED_BASE_URL}/app`;
+export const APP_PATH = `${NORMALIZED_BASE_URL}${APP_ROUTE_SLUG}`;
 
 export const TESTIMONIALS = [
   {
@@ -40,10 +46,10 @@ export const TESTIMONIALS = [
 ];
 
 export const TRUST_STATS = [
-  { value: '298+', label: 'Test centres listed' },
-  { value: '1,000+', label: 'Practice routes' },
-  { value: '5.0', label: 'Average review rating' },
-  { value: '24/7', label: 'Navigation access' },
+  { value: '350+', label: 'Test centres listed' },
+  { value: '4,000+', label: 'Practice routes' },
+  { value: '34,000+', label: 'YouTube subscribers' },
+  { value: '4M+', label: 'YouTube views' },
 ];
 
 export const APP_SCREENSHOTS = [

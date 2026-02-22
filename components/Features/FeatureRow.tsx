@@ -8,6 +8,10 @@ interface FeatureRowProps {
 
 export const FeatureRow: React.FC<FeatureRowProps> = ({ feature }) => {
   const isReversed = feature.reverse;
+  const isExternalLink = Boolean(
+    feature.ctaLink &&
+    /^(https?:)?\/\//.test(feature.ctaLink)
+  );
   
   return (
     <div className={`relative ${feature.isGlassOrange ? 'group' : ''}`}>
@@ -45,7 +49,7 @@ export const FeatureRow: React.FC<FeatureRowProps> = ({ feature }) => {
               feature.ctaLink ? (
                 <a
                   href={feature.ctaLink}
-                  {...(feature.ctaLink.startsWith('#') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+                  {...(isExternalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="mt-8 group/btn text-accent font-bold uppercase tracking-wide border-b border-accent/50 pb-1 hover:text-white hover:border-white transition-all flex items-center gap-2"
                 >
                   {feature.cta}

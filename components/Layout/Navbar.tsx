@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { NAV_ITEMS, ASSETS } from '../../constants';
+import { NAV_ITEMS, ASSETS, HOME_PATH, APP_PATH, LEGACY_APP_PATH } from '../../constants';
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const normalizedPath = window.location.pathname.replace(/\/$/, '');
+  const isAppPage = normalizedPath === APP_PATH.replace(/\/$/, '') || normalizedPath === LEGACY_APP_PATH.replace(/\/$/, '');
+  const navItems = isAppPage
+    ? [
+        { label: 'Our Apps', href: '#download' },
+        { label: 'About', href: '#about' },
+      ]
+    : NAV_ITEMS;
+  const primaryCta = isAppPage
+    ? { label: 'Get Test Routes', href: '#download' }
+    : { label: 'Get Test Routes', href: APP_PATH };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,7 +29,7 @@ export const Navbar: React.FC = () => {
     <>
       <header className={`fixed z-50 top-0 left-0 right-0 transition-all duration-300 ${scrolled ? 'bg-black/80 backdrop-blur-md border-b border-white/5 py-3' : 'bg-transparent py-5'}`}>
         <div className="mx-auto max-w-7xl px-6 flex items-center justify-between">
-          <a href="#top" className="relative z-50 block w-56 md:w-72 transition hover:opacity-90">
+          <a href={HOME_PATH} className="relative z-50 block w-56 md:w-72 transition hover:opacity-90">
             <img 
               src={ASSETS.logo} 
               alt="Driving Test Expert" 
@@ -28,16 +39,16 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/70">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <a key={item.label} href={item.href} className="transition hover:text-accent">
                 {item.label}
               </a>
             ))}
             <a 
-              href="#contact" 
+              href={primaryCta.href}
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-bold transition bg-accent text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(252,163,17,0.4)]"
             >
-              Pass Faster
+              {primaryCta.label}
             </a>
           </nav>
 
@@ -60,7 +71,7 @@ export const Navbar: React.FC = () => {
           <X size={32} />
         </button>
         <nav className="flex flex-col gap-8 text-center text-3xl font-bold tracking-tight font-brand">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <a 
               key={item.label} 
               href={item.href} 
@@ -71,11 +82,11 @@ export const Navbar: React.FC = () => {
             </a>
           ))}
           <a 
-            href="#contact" 
+            href={primaryCta.href}
             onClick={() => setIsOpen(false)}
             className="text-accent hover:text-white transition"
           >
-            Get Started
+            {primaryCta.label}
           </a>
         </nav>
       </div>
