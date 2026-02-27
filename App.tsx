@@ -89,7 +89,7 @@ function HomePage() {
                   Driving Test Routes
                 </h2>
                 <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10">
-                  Turn-by-turn navigation for every test route at your local test centre. Download the app or join the iPhone waitlist.
+                  Available on Android and iPhone. Download and start practising today.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
@@ -106,7 +106,7 @@ function HomePage() {
                     className="group/btn inline-flex items-center gap-3 rounded-full border-2 border-accent/50 bg-accent/10 px-8 py-4 font-extrabold text-lg text-accent transition-all hover:bg-accent hover:text-black hover:scale-105 active:scale-95 hover:shadow-[0_0_25px_rgba(252,163,17,0.4)]"
                   >
                     <Apple className="w-5 h-5" />
-                    iPhone — Join Waitlist
+                    iPhone — Download Now
                     <ArrowRight className="w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
                   </a>
                 </div>

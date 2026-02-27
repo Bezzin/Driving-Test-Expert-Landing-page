@@ -2,16 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navbar } from '../Layout/Navbar';
 import { Footer } from '../Layout/Footer';
 import { Reveal } from '../UI/Reveal';
-import { APP_SCREENSHOTS, HOME_PATH, PLAY_STORE_URL, TESTIMONIALS, TRUST_STATS } from '../../constants';
-import { ArrowRight, CheckCircle, Smartphone, Apple, MapPin, Navigation, Shield, Star, PlayCircle } from 'lucide-react';
+import { APP_SCREENSHOTS, HOME_PATH, PLAY_STORE_URL, APP_STORE_URL, TESTIMONIALS, TRUST_STATS } from '../../constants';
+import { ArrowRight, Smartphone, Apple, MapPin, Navigation, Shield, Star, PlayCircle } from 'lucide-react';
 
 const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@JoshRamwell';
 const YOUTUBE_VIDEOS_URL = 'https://www.youtube.com/@JoshRamwell/videos';
 
 export const AppLandingPage: React.FC = () => {
-  const [formData, setFormData] = useState({ fullName: '', email: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isIOSUser, setIsIOSUser] = useState(false);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [activeShotIndex, setActiveShotIndex] = useState(0);
@@ -24,42 +21,6 @@ export const AppLandingPage: React.FC = () => {
     { src: '/app-screenshots/route-progress.png', title: 'Track your mastery of every route at your local centre.' },
     { src: '/app-screenshots/centre-list.png', title: '350+ UK Test Centres. Find yours in 2 seconds.' },
   ];
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
-
-    try {
-      const response = await fetch('/.netlify/functions/submit-waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          currentStatus: 'iPhone App Waitlist - Early Access',
-        }),
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({ fullName: '', email: '' });
-        setTimeout(() => setSubmitStatus('idle'), 5000);
-      } else {
-        throw new Error('Failed to submit');
-      }
-    } catch (error) {
-      setSubmitStatus('error');
-      setTimeout(() => setSubmitStatus('idle'), 5000);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   useEffect(() => {
     setIsIOSUser(/iPhone|iPad|iPod/i.test(window.navigator.userAgent));
@@ -148,10 +109,10 @@ export const AppLandingPage: React.FC = () => {
                   <ArrowRight className="h-5 w-5" />
                 </a>
                 <a
-                  href="#ios-beta"
+                  href="#download"
                   className="inline-flex items-center justify-center rounded-full border border-white/30 bg-transparent px-7 py-4 text-base font-bold text-white transition-colors hover:border-[#FFD700] hover:text-[#FFD700]"
                 >
-                  Join iOS Beta (47/100 Slots Remaining)
+                  Download on iPhone
                 </a>
               </div>
             </Reveal>
@@ -415,8 +376,8 @@ export const AppLandingPage: React.FC = () => {
           </Reveal>
 
           <Reveal direction="right" delay={0.3} width="100%">
-            <div id="ios-beta" className="relative group h-full w-full">
-              <div className="absolute -inset-0.5 animate-pulse-glow rounded-[2.1rem] bg-gradient-to-r from-[#FFD700] via-yellow-500 to-[#FFD700] opacity-20 blur-md transition duration-500 group-hover:opacity-50"></div>
+            <div className="relative group h-full w-full">
+              <div className="absolute -inset-0.5 rounded-[2.1rem] bg-gradient-to-r from-[#FFD700] via-yellow-500 to-[#FFD700] opacity-20 blur-md transition duration-500 group-hover:opacity-50"></div>
               <div className="relative flex h-full flex-col rounded-[2rem] bg-[#0d0d0d] p-8 text-center ring-1 ring-white/10 md:p-10">
                 <div className="mb-6 flex justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-[#FFD700]/20 bg-[#FFD700]/10 text-[#FFD700]">
@@ -424,60 +385,25 @@ export const AppLandingPage: React.FC = () => {
                   </div>
                 </div>
 
-                <h2 className="font-brand text-2xl font-bold text-white md:text-3xl">iPhone Beta</h2>
-                <p className="mb-1 mt-3 leading-relaxed text-white/60">Only 47/100 early access slots remaining.</p>
-                <p className="mb-6 text-sm font-semibold text-[#FFD700]">Join now and claim your priority invite.</p>
+                <h2 className="font-brand text-2xl font-bold text-white md:text-3xl">iPhone Users</h2>
+                <p className="mb-8 mt-3 flex-grow leading-relaxed text-white/60">
+                  Available now on the App Store. Download and start practising today.
+                </p>
 
-                <form onSubmit={handleSubmit} className="flex flex-grow flex-col space-y-4">
-                  {submitStatus === 'success' && (
-                    <div className="flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
-                      <CheckCircle size={16} />
-                      <span className="font-medium">You're on the beta list!</span>
-                    </div>
-                  )}
+                <a
+                  href={APP_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/btn relative block w-full min-h-[60px] overflow-hidden rounded-xl bg-black p-4 shadow-[0_0_20px_rgba(255,215,0,0.3)] ring-1 ring-white/20 transition-all hover:scale-[1.02] hover:ring-[#FFD700]/50 hover:shadow-[0_0_40px_rgba(255,215,0,0.5)] active:scale-[0.98]"
+                >
+                  <div className="relative z-10 flex min-h-[28px] items-center justify-center gap-2 text-base font-black uppercase tracking-wide text-white">
+                    <Apple size={20} />
+                    Download on the App Store
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover/btn:animate-shine"></div>
+                </a>
 
-                  {submitStatus === 'error' && (
-                    <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
-                      Something went wrong. Please try again.
-                    </div>
-                  )}
-
-                  <input
-                    name="fullName"
-                    type="text"
-                    required
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    disabled={isSubmitting}
-                    placeholder="Your name"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 transition-all focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-[#FFD700]/50 focus:border-[#FFD700]/50 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    disabled={isSubmitting}
-                    placeholder="your@email.com"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 transition-all focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-[#FFD700]/50 focus:border-[#FFD700]/50 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="group/btn relative mt-auto w-full min-h-[60px] overflow-hidden rounded-xl bg-[#FFD700] p-4 shadow-[0_0_20px_rgba(255,215,0,0.3)] transition-all hover:scale-[1.02] hover:bg-white hover:shadow-[0_0_40px_rgba(255,215,0,0.5)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
-                  >
-                    <div className="relative z-10 flex min-h-[28px] items-center justify-center gap-2 text-base font-black uppercase tracking-wide text-black">
-                      {isSubmitting ? 'Joining...' : 'Join iOS Beta'}
-                      {!isSubmitting && <ArrowRight className="transition-transform group-hover/btn:translate-x-1" size={18} />}
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover/btn:animate-shine"></div>
-                  </button>
-                </form>
-
-                <p className="mt-4 text-[10px] font-medium uppercase tracking-widest text-white/20">No spam. Priority access only.</p>
+                <p className="mt-4 text-xs font-medium uppercase tracking-wider text-white/30">Available Now</p>
               </div>
             </div>
           </Reveal>
@@ -506,11 +432,12 @@ export const AppLandingPage: React.FC = () => {
       {showStickyCta && (
         <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-[#FFD700]/20 bg-black/85 p-3 backdrop-blur-md md:hidden">
           <a
-            href={isIOSUser ? '#ios-beta' : PLAY_STORE_URL}
-            {...(isIOSUser ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+            href={isIOSUser ? APP_STORE_URL : PLAY_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#FFD700] px-6 py-3 text-sm font-black uppercase tracking-wide text-black shadow-[0_0_20px_rgba(255,215,0,0.35)]"
           >
-            {isIOSUser ? 'Join iOS Beta' : 'Unlock My Local Routes'}
+            {isIOSUser ? 'Download on the App Store' : 'Unlock My Local Routes'}
             <ArrowRight className="h-4 w-4" />
           </a>
         </div>

@@ -4,6 +4,7 @@ export const NAV_ITEMS = [
 ];
 
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.drivingtestexpert.testroutesexpert';
+export const APP_STORE_URL = 'https://apps.apple.com/gb/app/test-routes-expert/id6757989639';
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const NORMALIZED_BASE_URL = BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL;
 const APP_ROUTE_SLUG = '/test-routes-app';
