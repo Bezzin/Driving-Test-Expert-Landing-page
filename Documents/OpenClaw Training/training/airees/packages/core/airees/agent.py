@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from airees.context_budget import ContextBudget
 from airees.router.types import ModelConfig
 
 
@@ -44,3 +45,4 @@ class Agent:
     max_turns: int = 10
     description: str = ""
     memory_files: dict[str, str] = field(default_factory=dict)
+    context_budget: ContextBudget | None = None

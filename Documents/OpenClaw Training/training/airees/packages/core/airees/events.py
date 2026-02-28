@@ -31,6 +31,7 @@ class EventType(Enum):
     RUN_START = "run.start"
     RUN_COMPLETE = "run.complete"
     RUN_ERROR = "run.error"
+    CONTEXT_WARNING = "agent.context_warning"
 
 
 @dataclass(frozen=True)

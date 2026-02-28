@@ -92,3 +92,45 @@ async def test_run_emits_events(runner, agent):
     assert "agent.start" in events_received
     assert "agent.complete" in events_received
     assert "run.complete" in events_received
+
+
+@pytest.mark.asyncio
+async def test_runner_emits_context_warning(runner):
+    """Runner should emit CONTEXT_WARNING when budget threshold exceeded."""
+    from airees.context_budget import ContextBudget
+    from airees.events import EventType
+
+    agent_with_budget = Agent(
+        name="budget-agent",
+        instructions="You are a test assistant.",
+        model=ModelConfig(model_id="claude-sonnet-4-6"),
+        context_budget=ContextBudget(
+            max_tokens=1000,
+            max_usage_percent=50.0,
+        ),
+    )
+
+    warnings_received = []
+
+    def warning_handler(event):
+        warnings_received.append(event)
+
+    runner.event_bus.subscribe(EventType.CONTEXT_WARNING, warning_handler)
+
+    mock_response = MagicMock()
+    mock_response.content = [MagicMock(type="text", text="Done")]
+    mock_response.stop_reason = "end_turn"
+    mock_response.usage = MagicMock(input_tokens=600, output_tokens=100)
+
+    with patch.object(
+        runner.router, "create_message",
+        new_callable=AsyncMock, return_value=mock_response,
+    ):
+        await runner.run(agent=agent_with_budget, task="Test budget")
+
+    assert len(warnings_received) >= 1
+    warning = warnings_received[0]
+    assert warning.event_type == EventType.CONTEXT_WARNING
+    assert warning.agent_name == "budget-agent"
+    assert warning.data["used_tokens"] == 700
+    assert warning.data["effective_max"] == 500

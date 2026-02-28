@@ -153,6 +153,23 @@ class Runner:
             total_input += response.usage.input_tokens
             total_output += response.usage.output_tokens
 
+            if agent.context_budget is not None:
+                updated_budget = agent.context_budget.consume(
+                    response.usage.input_tokens + response.usage.output_tokens
+                )
+                if updated_budget.is_over_limit:
+                    await self.event_bus.emit_async(Event(
+                        event_type=EventType.CONTEXT_WARNING,
+                        agent_name=agent.name,
+                        data={
+                            "usage_percent": updated_budget.usage_percent,
+                            "used_tokens": updated_budget.used_tokens,
+                            "effective_max": updated_budget.effective_max,
+                            "message": f"Agent '{agent.name}' exceeded context budget ({updated_budget.usage_percent:.1f}% used)",
+                        },
+                        run_id=run_id,
+                    ))
+
             assistant_content: list[dict[str, Any]] = []
             output_text = ""
 
