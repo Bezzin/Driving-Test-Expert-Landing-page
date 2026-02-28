@@ -1,0 +1,21 @@
+[project]
+name = "airees-engine"
+version = "0.1.0"
+description = "Airees YAML engine - declarative agent configs"
+requires-python = ">=3.12"
+dependencies = [
+    "airees-core",
+    "pyyaml>=6.0.0",
+    "jsonschema>=4.23.0",
+    "jinja2>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

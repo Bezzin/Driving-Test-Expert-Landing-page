@@ -1,0 +1,23 @@
+[project]
+name = "airees-server"
+version = "0.1.0"
+description = "Airees FastAPI server - REST + WebSocket bridge"
+requires-python = ">=3.12"
+dependencies = [
+    "airees-core",
+    "airees-engine",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "websockets>=14.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "httpx>=0.27.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
