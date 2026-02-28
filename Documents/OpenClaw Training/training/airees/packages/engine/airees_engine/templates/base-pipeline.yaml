@@ -1,0 +1,18 @@
+name: base-pipeline
+description: "Standard research-build-review pipeline template"
+pattern: pipeline
+steps:
+  - agent: researcher
+    task: "Research {{topic}} thoroughly. Save findings to research.md"
+  - agent: builder
+    task: "Build based on research: {{previous_output}}"
+  - agent: reviewer
+    task: "Review the output: {{previous_output}}"
+    quality_gate:
+      min_score: 7
+      max_retries: 3
+      on_failure: flag_human
+variables:
+  topic:
+    description: "The topic to research"
+    required: true
