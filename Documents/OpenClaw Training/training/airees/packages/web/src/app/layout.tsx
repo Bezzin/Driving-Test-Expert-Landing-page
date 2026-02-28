@@ -1,4 +1,7 @@
 import type { Metadata } from "next"
+import { Sidebar } from "@/components/sidebar"
+import { Header } from "@/components/header"
+import { QueryProvider } from "@/lib/query-provider"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -14,7 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-950 text-gray-100 antialiased">
-        {children}
+        <QueryProvider>
+          <Sidebar />
+          <div className="lg:pl-64">
+            <Header />
+            <main className="p-6">{children}</main>
+          </div>
+        </QueryProvider>
       </body>
     </html>
   )
