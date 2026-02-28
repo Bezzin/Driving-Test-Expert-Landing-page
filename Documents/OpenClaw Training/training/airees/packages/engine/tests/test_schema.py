@@ -46,3 +46,52 @@ def test_invalid_workflow_missing_pattern():
     }
     errors = validate_workflow_config(config)
     assert len(errors) > 0
+
+
+def test_valid_workflow_with_quality_gate():
+    config = {
+        "name": "gated-pipeline",
+        "pattern": "pipeline",
+        "steps": [
+            {"agent": "builder", "task": "Build the app"},
+            {
+                "agent": "reviewer",
+                "task": "Score: {{previous_output}}",
+                "quality_gate": {
+                    "min_score": 8,
+                    "max_retries": 3,
+                    "on_failure": "flag_human",
+                },
+            },
+        ],
+    }
+    errors = validate_workflow_config(config)
+    assert errors == []
+
+
+def test_valid_agent_with_feedback():
+    config = {
+        "name": "builder",
+        "model": "claude-sonnet-4-6",
+        "instructions": "Build apps",
+        "feedback": {
+            "evaluate_after": True,
+            "success_criteria": "score >= 8",
+        },
+    }
+    errors = validate_agent_config(config)
+    assert errors == []
+
+
+def test_valid_agent_with_context_budget():
+    config = {
+        "name": "orchestrator",
+        "model": "claude-haiku-4-5",
+        "instructions": "Route tasks efficiently",
+        "context_budget": {
+            "max_tokens": 200000,
+            "max_usage_percent": 5.0,
+        },
+    }
+    errors = validate_agent_config(config)
+    assert errors == []

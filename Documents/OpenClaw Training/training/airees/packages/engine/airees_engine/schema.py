@@ -21,6 +21,24 @@ AGENT_SCHEMA = {
                 "context": {"type": "string"},
             },
         },
+        "feedback": {
+            "type": "object",
+            "properties": {
+                "evaluate_after": {"type": "boolean", "default": True},
+                "success_criteria": {"type": "string"},
+                "on_success": {"type": "string"},
+                "on_failure": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+        "context_budget": {
+            "type": "object",
+            "properties": {
+                "max_tokens": {"type": "integer", "minimum": 1000},
+                "max_usage_percent": {"type": "number", "minimum": 0.1, "maximum": 100.0},
+            },
+            "additionalProperties": False,
+        },
     },
 }
 
@@ -42,6 +60,20 @@ WORKFLOW_SCHEMA = {
                 "properties": {
                     "agent": {"type": "string"},
                     "task": {"type": "string"},
+                    "quality_gate": {
+                        "type": "object",
+                        "required": ["min_score"],
+                        "properties": {
+                            "min_score": {"type": "number", "minimum": 0, "maximum": 10},
+                            "max_retries": {"type": "integer", "minimum": 1, "default": 3},
+                            "on_failure": {
+                                "type": "string",
+                                "enum": ["retry", "flag_human", "skip"],
+                                "default": "retry",
+                            },
+                        },
+                        "additionalProperties": False,
+                    },
                 },
             },
         },
