@@ -4,8 +4,9 @@ import { usePathname } from "next/navigation"
 
 const ROUTE_TITLES: Record<string, string> = {
   "/": "Dashboard",
-  "/agents": "Agent Library",
-  "/builder": "Builder",
+  "/chat": "Chat",
+  "/agents": "Agents",
+  "/builder": "Agent Builder",
   "/runs": "Runs",
   "/settings": "Settings",
 }

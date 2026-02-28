@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import {
   Home,
+  MessageSquare,
   Bot,
   Workflow,
   Play,
@@ -22,6 +23,7 @@ interface NavItem {
 
 const NAV_ITEMS: readonly NavItem[] = [
   { label: "Dashboard", href: "/", icon: <Home size={20} /> },
+  { label: "Chat", href: "/chat", icon: <MessageSquare size={20} /> },
   { label: "Agents", href: "/agents", icon: <Bot size={20} /> },
   { label: "Builder", href: "/builder", icon: <Workflow size={20} /> },
   { label: "Runs", href: "/runs", icon: <Play size={20} /> },
