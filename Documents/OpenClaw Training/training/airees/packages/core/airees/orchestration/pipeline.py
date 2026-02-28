@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from airees.agent import Agent
+from airees.quality_gate import QualityGate
 from airees.runner import Runner, RunResult, TokenUsage
 
 
@@ -40,6 +41,7 @@ class PipelineStep:
 
     agent: Agent
     task_template: str
+    quality_gate: QualityGate | None = None
 
 
 @dataclass(frozen=True)
@@ -102,8 +104,11 @@ class Pipeline:
         total_input = 0
         total_output = 0
         total_turns = 0
+        gate_attempts: dict[int, int] = {}
 
-        for step in self.steps:
+        i = 0
+        while i < len(self.steps):
+            step = self.steps[i]
             task = self._interpolate(step.task_template, variables)
             result = await runner.run(
                 agent=step.agent,
@@ -115,6 +120,19 @@ class Pipeline:
             total_output += result.token_usage.output_tokens
             total_turns += result.turns
             variables["previous_output"] = result.output
+
+            if step.quality_gate is not None:
+                scores = re.findall(r"\d+\.?\d*", result.output)
+                score = float(scores[-1]) if scores else 0.0
+                gate_result = step.quality_gate.evaluate(score, result.output)
+                if not gate_result.passed:
+                    attempt = gate_attempts.get(i, 0) + 1
+                    gate_attempts[i] = attempt
+                    if step.quality_gate.should_retry(attempt):
+                        i = max(0, i - 1)
+                        continue
+
+            i += 1
 
         final_output = step_results[-1].output if step_results else ""
 
