@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from airees_server.routes.agents import create_agents_router
 from airees_server.routes.archetypes import create_archetypes_router
 from airees_server.routes.runs import create_runs_router
+from airees_server.routes.state import router as state_router
 
 
 def create_app(data_dir: Path | None = None) -> FastAPI:
@@ -33,5 +34,6 @@ def create_app(data_dir: Path | None = None) -> FastAPI:
     app.include_router(create_agents_router(), prefix="/api")
     app.include_router(create_archetypes_router(), prefix="/api")
     app.include_router(create_runs_router(), prefix="/api")
+    app.include_router(state_router, prefix="/api")
 
     return app
