@@ -92,6 +92,7 @@ class BrainOrchestrator:
                         description=task_spec.get("description", ""),
                         agent_role=task_spec.get("agent_role", "coder"),
                         dependencies=dep_ids,
+                        priority=task_spec.get("priority", 2),
                     )
                     task_id_map[i] = task_id
                     tasks_created.append({**{"id": task_id}, **task_spec})

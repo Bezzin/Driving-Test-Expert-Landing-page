@@ -61,6 +61,7 @@ class GoalStore:
                     description TEXT NOT NULL DEFAULT '',
                     agent_role TEXT NOT NULL DEFAULT '',
                     status TEXT NOT NULL DEFAULT 'pending',
+                    priority INTEGER NOT NULL DEFAULT 2,
                     dependencies TEXT NOT NULL DEFAULT '[]',
                     result TEXT,
                     error TEXT,
@@ -165,6 +166,7 @@ class GoalStore:
         agent_role: str,
         dependencies: list[str],
         max_retries: int = 3,
+        priority: int = 2,
     ) -> str:
         """Insert a new task. Tasks with dependencies start as BLOCKED."""
         task_id = str(uuid.uuid4())
@@ -174,8 +176,8 @@ class GoalStore:
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
                 """INSERT INTO tasks
-                   (id, goal_id, title, description, agent_role, status, dependencies, max_retries)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                   (id, goal_id, title, description, agent_role, status, priority, dependencies, max_retries)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     task_id,
                     goal_id,
@@ -183,6 +185,7 @@ class GoalStore:
                     description,
                     agent_role,
                     status,
+                    priority,
                     json.dumps(dependencies),
                     max_retries,
                 ),

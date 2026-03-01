@@ -39,6 +39,11 @@ def get_brain_tools() -> list[ToolDefinition]:
                                         "Indices of tasks this depends on (0-based)"
                                     ),
                                 },
+                                "priority": {
+                                    "type": "integer",
+                                    "enum": [0, 1, 2, 3],
+                                    "description": "Task priority: 0=critical, 1=high, 2=normal, 3=low",
+                                },
                                 "model": {
                                     "type": "string",
                                     "description": "Recommended model ID",
