@@ -21,6 +21,22 @@ ESCALATION_MODELS: dict[str, str] = {
     "architect": "anthropic/claude-opus-4-6",
 }
 
+ROLE_TOOLS: dict[str, list[str]] = {
+    "researcher": ["web_search", "web_extract"],
+    "coder": [],
+    "reviewer": ["web_search"],
+    "writer": ["web_search", "web_extract"],
+    "planner": ["web_search"],
+    "tester": [],
+    "security": ["web_search"],
+    "architect": ["web_search"],
+}
+
+
+def get_tools_for_role(agent_role: str) -> list[str]:
+    """Return the list of tool names available to the given agent role."""
+    return list(ROLE_TOOLS.get(agent_role, []))
+
 
 def select_model(agent_role: str, recommended: str | None = None, escalate: bool = False) -> str:
     """Select the best model for a given agent role.
@@ -44,6 +60,7 @@ def build_worker_prompt(
     agent_role: str,
     skill_content: str | None = None,
     previous_output: str | None = None,
+    available_tools: list[str] | None = None,
 ) -> str:
     """Assemble a complete system prompt for a worker sub-agent.
 
@@ -60,6 +77,16 @@ def build_worker_prompt(
 
     if skill_content:
         sections.append(f"\n## Relevant Skill Reference\n\n{skill_content}")
+
+    if available_tools:
+        tool_list = ", ".join(available_tools)
+        sections.append(
+            f"\n## Available Tools\n\n"
+            f"You have access to the following tools: {tool_list}\n"
+            f"Use these tools when you need external information. "
+            f"Call tools via tool_use blocks. You can call multiple tools "
+            f"in sequence to gather information before producing your final output.\n"
+        )
 
     sections.append(
         "\n## Output Requirements\n\n"
