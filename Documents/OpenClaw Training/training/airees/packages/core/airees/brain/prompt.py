@@ -8,6 +8,7 @@ def build_brain_prompt(
     *,
     soul: Soul,
     goal: str,
+    intent: str | None = None,
     coordinator_report: str | None = None,
     active_skill: str | None = None,
     iteration: int = 0,
@@ -21,6 +22,7 @@ def build_brain_prompt(
     Args:
         soul: The parsed SOUL.md identity.
         goal: The user's top-level goal.
+        intent: The classified intent string (e.g. "fix", "research").
         coordinator_report: Status report from the Coordinator (if any).
         active_skill: Relevant skill/pipeline markdown (if any).
         iteration: Current iteration number (0 = first pass).
@@ -46,6 +48,14 @@ def build_brain_prompt(
     )
 
     sections.append(f"\n## Current Goal\n\n{goal}\n")
+
+    if intent:
+        from airees.brain.intent import GoalIntent, intent_to_prompt_hint
+        try:
+            goal_intent = GoalIntent(intent)
+            sections.append(f"\n## Goal Intent\n\n{intent_to_prompt_hint(goal_intent)}\n")
+        except ValueError:
+            pass
 
     if iteration > 0:
         sections.append(
