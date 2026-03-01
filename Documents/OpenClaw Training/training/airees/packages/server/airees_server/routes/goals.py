@@ -28,14 +28,7 @@ async def submit_goal(body: GoalCreate, request: Request):
 @router.get("")
 async def list_goals(request: Request):
     store = _get_store(request)
-    import aiosqlite
-    async with aiosqlite.connect(store.db_path) as db:
-        db.row_factory = aiosqlite.Row
-        cursor = await db.execute(
-            "SELECT * FROM goals ORDER BY created_at DESC LIMIT 50"
-        )
-        rows = await cursor.fetchall()
-        return [dict(r) for r in rows]
+    return await store.list_goals()
 
 
 @router.get("/{goal_id}")

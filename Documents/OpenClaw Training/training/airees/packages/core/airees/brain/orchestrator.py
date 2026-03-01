@@ -56,6 +56,8 @@ class BrainOrchestrator:
         await self.store.update_goal_status(goal_id, GoalStatus.PLANNING)
 
         goal = await self.store.get_goal(goal_id)
+        if goal is None:
+            raise ValueError(f"Goal not found: {goal_id}")
         soul = load_soul(self.soul_path)
         prompt = build_brain_prompt(soul=soul, goal=goal["description"])
 
@@ -148,7 +150,7 @@ class BrainOrchestrator:
         await self.store.update_goal_status(goal_id, GoalStatus.COMPLETED)
         report = await coordinator.build_report(goal_id)
         if self.state_machine.state != BrainState.IDLE:
-            self.state_machine.state = BrainState.IDLE
+            self.state_machine.force_reset(reason="max_iterations")
         return report
 
     async def _execute_worker(self, goal_id: str, task: dict) -> None:
@@ -204,6 +206,8 @@ class BrainOrchestrator:
         """Ask the Brain to evaluate completed work and decide next action."""
         soul = load_soul(self.soul_path)
         goal = await self.store.get_goal(goal_id)
+        if goal is None:
+            raise ValueError(f"Goal not found: {goal_id}")
         prompt = build_brain_prompt(
             soul=soul,
             goal=goal["description"],

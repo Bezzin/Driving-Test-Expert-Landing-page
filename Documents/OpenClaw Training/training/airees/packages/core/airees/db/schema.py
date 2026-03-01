@@ -115,6 +115,19 @@ class GoalStore:
             result = result | {"metadata": json.loads(result["metadata"])}
             return result
 
+    async def list_goals(self, limit: int = 50) -> list[dict]:
+        """Return the most recent goals, newest first."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute(
+                "SELECT * FROM goals ORDER BY created_at DESC LIMIT ?", (limit,)
+            )
+            rows = await cursor.fetchall()
+            return [
+                {**dict(r), "metadata": json.loads(r["metadata"]) if r["metadata"] else {}}
+                for r in rows
+            ]
+
     async def update_goal_status(
         self, goal_id: str, status: GoalStatus
     ) -> None:

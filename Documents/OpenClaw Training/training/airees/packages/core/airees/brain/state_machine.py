@@ -41,5 +41,10 @@ class BrainStateMachine:
         self.history.append((self.state, new_state))
         self.state = new_state
 
+    def force_reset(self, reason: str = "max_iterations") -> None:
+        """Force state back to IDLE, recording in history for auditability."""
+        self.history.append((self.state, BrainState.IDLE))
+        self.state = BrainState.IDLE
+
     def can_transition(self, new_state: BrainState) -> bool:
         return new_state in VALID_TRANSITIONS.get(self.state, set())
