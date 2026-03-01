@@ -1,6 +1,4 @@
 """Tests for the Brain orchestrator — the main execution loop."""
-import json
-
 import pytest
 import pytest_asyncio
 from unittest.mock import AsyncMock, MagicMock
