@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from airees.brain.intent import classify_intent
+from airees.decision_doc import DecisionDocument, DecisionEntry
 from airees.brain.prompt import build_brain_prompt
 from airees.brain.state_machine import BrainState, BrainStateMachine
 from airees.brain.tools import get_brain_tools
@@ -40,12 +41,16 @@ class BrainOrchestrator:
     event_bus: EventBus
     soul_path: Path = Path("data/SOUL.md")
     state_dir: Path = Path("data/states")
+    decisions_dir: Path = Path("data/decisions")
     state_machine: BrainStateMachine = field(default_factory=BrainStateMachine)
     tool_provider: Any = None
     quality_gate: QualityGate = field(
         default_factory=lambda: QualityGate(name="default", min_score=7.0, max_retries=3)
     )
 
+    _decision_docs: dict[str, DecisionDocument] = field(
+        default_factory=dict, init=False, repr=False
+    )
     _STATE_PHASES: list[str] = field(
         default_factory=lambda: ["planning", "executing", "evaluating", "completing"],
         init=False,
@@ -80,9 +85,45 @@ class BrainOrchestrator:
             state = state.advance()
         save_state(state, path)
 
+    def _record_decision(
+        self,
+        goal_id: str,
+        phase: str,
+        agent: str,
+        decision: str,
+        reasoning: str,
+        confidence: float = 0.8,
+    ) -> None:
+        """Append a decision entry to the goal's DecisionDocument."""
+        doc = self._decision_docs.get(goal_id)
+        if doc is None:
+            return
+        entry = DecisionEntry(
+            phase=phase,
+            agent=agent,
+            decision=decision,
+            reasoning=reasoning,
+            confidence=confidence,
+        )
+        self._decision_docs[goal_id] = doc.add_entry(entry)
+
+    def _save_decision_doc(self, goal_id: str) -> None:
+        """Write the goal's DecisionDocument to decisions_dir/{goal_id}.md."""
+        doc = self._decision_docs.get(goal_id)
+        if doc is None:
+            return
+        self.decisions_dir.mkdir(parents=True, exist_ok=True)
+        path = self.decisions_dir / f"{goal_id}.md"
+        path.write_text(doc.to_markdown(), encoding="utf-8")
+
     async def submit_goal(self, description: str) -> str:
         """Create a new goal and emit a RUN_START event."""
         goal_id = await self.store.create_goal(description=description)
+
+        # Initialize decision document for this goal
+        self._decision_docs[goal_id] = DecisionDocument(
+            project_id=goal_id, title=description
+        )
 
         # Persist initial ProjectState with current_phase == "planning"
         initial_state = ProjectState(
@@ -157,6 +198,13 @@ class BrainOrchestrator:
                     action="create_plan",
                     reasoning=plan_data.get("strategy", "Initial plan created"),
                 )
+                self._record_decision(
+                    goal_id=goal_id,
+                    phase="planning",
+                    agent="brain",
+                    decision="create_plan",
+                    reasoning=plan_data.get("strategy", "Initial plan created"),
+                )
 
         self.state_machine.transition(BrainState.DELEGATING)
         await self.store.update_goal_status(goal_id, GoalStatus.EXECUTING)
@@ -195,6 +243,7 @@ class BrainOrchestrator:
 
             if action == "satisfied":
                 self._complete_state(goal_id)
+                self._save_decision_doc(goal_id)
                 self.state_machine.transition(BrainState.COMPLETING)
                 await self.store.update_goal_status(goal_id, GoalStatus.COMPLETED)
                 self.state_machine.transition(BrainState.IDLE)
@@ -207,6 +256,7 @@ class BrainOrchestrator:
             self.state_machine.transition(BrainState.WAITING)
 
         self._complete_state(goal_id)
+        self._save_decision_doc(goal_id)
         await self.store.update_goal_status(goal_id, GoalStatus.COMPLETED)
         report = await coordinator.build_report(goal_id)
         if self.state_machine.state != BrainState.IDLE:
@@ -456,6 +506,13 @@ class BrainOrchestrator:
                     goal_id=goal_id,
                     iteration=iteration,
                     action=action,
+                    reasoning=reasoning,
+                )
+                self._record_decision(
+                    goal_id=goal_id,
+                    phase="evaluating",
+                    agent="brain",
+                    decision=action,
                     reasoning=reasoning,
                 )
                 return action
