@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from airees.brain.intent import classify_intent
 from airees.brain.prompt import build_brain_prompt
 from airees.brain.state_machine import BrainState, BrainStateMachine
 from airees.brain.tools import get_brain_tools
@@ -48,7 +49,7 @@ class BrainOrchestrator:
         ))
         return goal_id
 
-    async def plan(self, goal_id: str) -> list[dict]:
+    async def plan(self, goal_id: str, intent: str | None = None) -> list[dict]:
         """Invoke the Brain to create a task plan for the given goal.
 
         Transitions: IDLE -> PLANNING -> DELEGATING.
@@ -61,7 +62,7 @@ class BrainOrchestrator:
         if goal is None:
             raise ValueError(f"Goal not found: {goal_id}")
         soul = load_soul(self.soul_path)
-        prompt = build_brain_prompt(soul=soul, goal=goal["description"])
+        prompt = build_brain_prompt(soul=soul, goal=goal["description"], intent=intent)
 
         brain_tools = get_brain_tools()
         registry = ToolRegistry()
@@ -111,8 +112,12 @@ class BrainOrchestrator:
         return tasks_created
 
     async def execute_goal(self, goal_id: str) -> str:
-        """Full autonomous loop: plan -> execute -> evaluate -> iterate."""
-        await self.plan(goal_id)
+        """Full autonomous loop: classify intent -> plan -> execute -> evaluate -> iterate."""
+        goal = await self.store.get_goal(goal_id)
+        if goal is None:
+            raise ValueError(f"Goal not found: {goal_id}")
+        intent = await classify_intent(self.router, goal["description"])
+        await self.plan(goal_id, intent=intent.value)
 
         coordinator = Coordinator(store=self.store, runner=self.router)
 

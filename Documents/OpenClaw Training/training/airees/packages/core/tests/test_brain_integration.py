@@ -47,13 +47,17 @@ async def store(tmp_path):
 async def test_full_brain_loop(store, tmp_path):
     """Exercise the complete Brain -> Coordinator -> Worker loop.
 
-    The orchestrator makes exactly 4 calls to the router:
+    The orchestrator makes exactly 5 calls to the router:
+      0. classify_intent   — Haiku classifies the goal intent
       1. plan()            — Brain creates task plan via create_plan tool
       2. _execute_worker   — Worker runs Research task (no deps)
       3. _execute_worker   — Worker runs Build task (depends on Research)
       4. _evaluate          — Brain evaluates via evaluate_result tool
     """
     mock_router = AsyncMock()
+
+    # Call 0: Intent classification (returns "build")
+    intent_response = _make_text_response("build")
 
     # Call 1: Brain plans (create_plan tool call)
     plan_response = _make_tool_response("create_plan", {
@@ -92,6 +96,7 @@ async def test_full_brain_loop(store, tmp_path):
     })
 
     mock_router.create_message = AsyncMock(side_effect=[
+        intent_response,
         plan_response,
         worker1_response,
         worker2_response,
@@ -125,8 +130,8 @@ async def test_full_brain_loop(store, tmp_path):
     # Verify state machine returned to IDLE
     assert orch.state_machine.state == BrainState.IDLE
 
-    # Verify the router was called exactly 4 times
-    assert mock_router.create_message.call_count == 4
+    # Verify the router was called exactly 5 times (intent + plan + 2 workers + eval)
+    assert mock_router.create_message.call_count == 5
 
     # Verify report was returned (non-empty string)
     assert isinstance(result, str)
@@ -138,12 +143,16 @@ async def test_brain_loop_with_adapt_iteration(store, tmp_path):
     """Test the adapt loop: Brain evaluates, asks to adapt, then re-evaluates.
 
     Call flow:
+      0. classify_intent   — Haiku classifies the goal intent
       1. plan()            — Brain creates a single task
       2. _execute_worker   — Worker runs the task
       3. _evaluate (iter 0) — Brain says "adapt"
       4. _evaluate (iter 1) — Brain says "satisfied" (no new ready tasks)
     """
     mock_router = AsyncMock()
+
+    # Call 0: Intent classification
+    intent_response = _make_text_response("build")
 
     plan_response = _make_tool_response("create_plan", {
         "tasks": [
@@ -174,6 +183,7 @@ async def test_brain_loop_with_adapt_iteration(store, tmp_path):
     })
 
     mock_router.create_message = AsyncMock(side_effect=[
+        intent_response,
         plan_response,
         worker_response,
         eval_adapt,
@@ -193,7 +203,7 @@ async def test_brain_loop_with_adapt_iteration(store, tmp_path):
 
     goal = await store.get_goal(goal_id)
     assert goal["status"] == "completed"
-    assert mock_router.create_message.call_count == 4
+    assert mock_router.create_message.call_count == 5
     assert orch.state_machine.state == BrainState.IDLE
 
 
@@ -208,6 +218,9 @@ async def test_events_emitted_during_loop(store, tmp_path):
         captured_events.append(event)
 
     event_bus.subscribe_all(capture)
+
+    # Intent classification response
+    intent_response = _make_text_response("build")
 
     plan_response = _make_tool_response("create_plan", {
         "tasks": [
@@ -230,6 +243,7 @@ async def test_events_emitted_during_loop(store, tmp_path):
     })
 
     mock_router.create_message = AsyncMock(side_effect=[
+        intent_response,
         plan_response,
         worker_response,
         eval_response,
