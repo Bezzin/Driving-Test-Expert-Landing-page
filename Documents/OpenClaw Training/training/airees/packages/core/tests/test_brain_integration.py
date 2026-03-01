@@ -10,7 +10,7 @@ from airees.db.schema import GoalStore
 from airees.events import EventBus
 
 
-def _make_tool_response(tool_name: str, tool_input: dict):
+def _make_tool_response(tool_name: str, tool_input: dict) -> MagicMock:
     """Build a mock LLM response containing a single tool_use block."""
     response = MagicMock()
     response.stop_reason = "tool_use"
@@ -24,7 +24,7 @@ def _make_tool_response(tool_name: str, tool_input: dict):
     return response
 
 
-def _make_text_response(text: str):
+def _make_text_response(text: str) -> MagicMock:
     """Build a mock LLM response containing a single text block."""
     response = MagicMock()
     response.stop_reason = "end_turn"
