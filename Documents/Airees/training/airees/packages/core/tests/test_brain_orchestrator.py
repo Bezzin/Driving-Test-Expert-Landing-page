@@ -252,3 +252,43 @@ async def test_execute_goal_writes_decision_doc(store, mock_router, event_bus, t
     assert decision_file.exists(), "Decision document should be written on goal completion"
     content = decision_file.read_text(encoding="utf-8")
     assert "create_plan" in content
+
+
+@pytest.mark.asyncio
+async def test_execute_goal_records_feedback(store, mock_router, event_bus, tmp_path):
+    """FeedbackLoop should write a feedback.md file on goal completion."""
+    memory_dir = tmp_path / "memory"
+    state_dir = tmp_path / "states"
+
+    # Mock router responses in sequence (same as test_execute_goal_completes_state):
+    # 1) classify_intent     -> text "build"
+    # 2) plan                -> create_plan tool_use
+    # 3) worker execution    -> text output (end_turn)
+    # 4) quality gate score  -> JSON with passing score
+    # 5) evaluation          -> evaluate_result "satisfied"
+    mock_router.create_message = AsyncMock(
+        side_effect=[
+            _make_text_response("build"),                          # classify_intent
+            _make_plan_response(),                                  # plan
+            _make_text_response("Done setup"),                     # worker execution
+            _make_text_response('{"score": 9, "feedback": ""}'),   # quality gate
+            _make_eval_response("satisfied"),                      # evaluation
+        ]
+    )
+
+    orch = BrainOrchestrator(
+        store=store,
+        brain_model="anthropic/claude-opus-4-6",
+        router=mock_router,
+        event_bus=event_bus,
+        soul_path=tmp_path / "SOUL.md",
+        state_dir=state_dir,
+        memory_dir=memory_dir,
+    )
+    goal_id = await orch.submit_goal("Test goal")
+    await orch.execute_goal(goal_id)
+
+    feedback_file = memory_dir / "feedback.md"
+    assert feedback_file.exists()
+    content = feedback_file.read_text(encoding="utf-8")
+    assert "success" in content.lower() or "Learned Patterns" in content

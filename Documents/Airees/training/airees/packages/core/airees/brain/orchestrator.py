@@ -17,6 +17,7 @@ from airees.coordinator.executor import Coordinator
 from airees.coordinator.worker_builder import build_worker_prompt, select_model
 from airees.db.schema import GoalStore, GoalStatus
 from airees.events import Event, EventBus, EventType
+from airees.feedback import FeedbackLoop, FeedbackEntry
 from airees.quality_gate import QualityGate, GateAction
 from airees.router.types import ModelConfig
 from airees.soul import load_soul
@@ -42,6 +43,7 @@ class BrainOrchestrator:
     soul_path: Path = Path("data/SOUL.md")
     state_dir: Path = Path("data/states")
     decisions_dir: Path = Path("data/decisions")
+    memory_dir: Path = Path("data/memory")
     state_machine: BrainStateMachine = field(default_factory=BrainStateMachine)
     tool_provider: Any = None
     quality_gate: QualityGate = field(
@@ -51,6 +53,7 @@ class BrainOrchestrator:
     _decision_docs: dict[str, DecisionDocument] = field(
         default_factory=dict, init=False, repr=False
     )
+    _feedback: FeedbackLoop = field(default_factory=FeedbackLoop, init=False, repr=False)
     _STATE_PHASES: list[str] = field(
         default_factory=lambda: ["planning", "executing", "evaluating", "completing"],
         init=False,
@@ -115,6 +118,36 @@ class BrainOrchestrator:
         self.decisions_dir.mkdir(parents=True, exist_ok=True)
         path = self.decisions_dir / f"{goal_id}.md"
         path.write_text(doc.to_markdown(), encoding="utf-8")
+
+    def _record_feedback(
+        self,
+        goal_id: str,
+        outcome: str,
+        score: float,
+        lesson: str,
+    ) -> None:
+        """Record a FeedbackEntry, persist to memory_dir/feedback.md, and emit event."""
+        entry = FeedbackEntry(
+            run_id=goal_id,
+            agent_name="airees-brain",
+            outcome=outcome,
+            score=score,
+            lesson=lesson,
+        )
+        self._feedback = self._feedback.record(entry)
+
+        self.memory_dir.mkdir(parents=True, exist_ok=True)
+        feedback_path = self.memory_dir / "feedback.md"
+        feedback_path.write_text(
+            self._feedback.to_memory_content("airees-brain"),
+            encoding="utf-8",
+        )
+
+        self.event_bus.emit(Event(
+            event_type=EventType.FEEDBACK_RECORDED,
+            agent_name="airees-brain",
+            data={"goal_id": goal_id, "outcome": outcome, "score": score},
+        ))
 
     async def submit_goal(self, description: str) -> str:
         """Create a new goal and emit a RUN_START event."""
@@ -244,6 +277,7 @@ class BrainOrchestrator:
             if action == "satisfied":
                 self._complete_state(goal_id)
                 self._save_decision_doc(goal_id)
+                self._record_feedback(goal_id, "success", 8.0, "Goal completed successfully")
                 self.state_machine.transition(BrainState.COMPLETING)
                 await self.store.update_goal_status(goal_id, GoalStatus.COMPLETED)
                 self.state_machine.transition(BrainState.IDLE)
@@ -257,6 +291,7 @@ class BrainOrchestrator:
 
         self._complete_state(goal_id)
         self._save_decision_doc(goal_id)
+        self._record_feedback(goal_id, "partial", 5.0, "Goal completed after max iterations")
         await self.store.update_goal_status(goal_id, GoalStatus.COMPLETED)
         report = await coordinator.build_report(goal_id)
         if self.state_machine.state != BrainState.IDLE:
