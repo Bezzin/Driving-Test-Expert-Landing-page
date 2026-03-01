@@ -180,16 +180,18 @@ async def test_execute_goal_completes_state(store, mock_router, event_bus, tmp_p
     state_dir = tmp_path / "states"
 
     # Mock router responses in sequence:
-    # 1) classify_intent  -> text "build"
-    # 2) plan             -> create_plan tool_use
-    # 3) worker execution -> text output (end_turn)
-    # 4) evaluation       -> evaluate_result "satisfied"
+    # 1) classify_intent     -> text "build"
+    # 2) plan                -> create_plan tool_use
+    # 3) worker execution    -> text output (end_turn)
+    # 4) quality gate score  -> JSON with passing score
+    # 5) evaluation          -> evaluate_result "satisfied"
     mock_router.create_message = AsyncMock(
         side_effect=[
-            _make_text_response("build"),       # classify_intent
-            _make_plan_response(),               # plan
-            _make_text_response("Done setup"),   # worker execution
-            _make_eval_response("satisfied"),    # evaluation
+            _make_text_response("build"),                          # classify_intent
+            _make_plan_response(),                                  # plan
+            _make_text_response("Done setup"),                     # worker execution
+            _make_text_response('{"score": 9, "feedback": ""}'),   # quality gate
+            _make_eval_response("satisfied"),                      # evaluation
         ]
     )
 

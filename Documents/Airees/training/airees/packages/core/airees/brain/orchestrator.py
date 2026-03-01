@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json as json_module
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -15,6 +16,7 @@ from airees.coordinator.executor import Coordinator
 from airees.coordinator.worker_builder import build_worker_prompt, select_model
 from airees.db.schema import GoalStore, GoalStatus
 from airees.events import Event, EventBus, EventType
+from airees.quality_gate import QualityGate, GateAction
 from airees.router.types import ModelConfig
 from airees.soul import load_soul
 from airees.state import ProjectState, load_state, save_state
@@ -40,6 +42,9 @@ class BrainOrchestrator:
     state_dir: Path = Path("data/states")
     state_machine: BrainStateMachine = field(default_factory=BrainStateMachine)
     tool_provider: Any = None
+    quality_gate: QualityGate = field(
+        default_factory=lambda: QualityGate(name="default", min_score=7.0, max_retries=3)
+    )
 
     _STATE_PHASES: list[str] = field(
         default_factory=lambda: ["planning", "executing", "evaluating", "completing"],
@@ -222,8 +227,42 @@ class BrainOrchestrator:
         tasks = [self._execute_worker(goal_id, task) for task in ready]
         await asyncio.gather(*tasks, return_exceptions=True)
 
+    async def _score_output(self, task: dict, output: str) -> tuple[float, str]:
+        """Rate worker output using Haiku for cost efficiency."""
+        model = ModelConfig(model_id="claude-haiku-4-5-20251001")
+        response = await self.router.create_message(
+            model=model,
+            system=(
+                "You are a quality scorer. Rate the output 1-10 for completeness, "
+                "accuracy, and quality relative to the task. "
+                'Respond with ONLY valid JSON: {"score": N, "feedback": "..."}'
+            ),
+            messages=[{
+                "role": "user",
+                "content": (
+                    f"Task: {task['title']}\n"
+                    f"Description: {task['description']}\n\n"
+                    f"Output:\n{output}"
+                ),
+            }],
+        )
+        text = ""
+        for block in response.content:
+            if getattr(block, "type", None) == "text":
+                text += block.text
+        try:
+            parsed = json_module.loads(text)
+            return float(parsed.get("score", 5)), parsed.get("feedback", "")
+        except (json_module.JSONDecodeError, ValueError):
+            return 5.0, "Could not parse score"
+
     async def _execute_worker(self, goal_id: str, task: dict) -> None:
-        """Run a single worker sub-agent with an agentic tool_use loop."""
+        """Run a single worker sub-agent with an agentic tool_use loop.
+
+        After each attempt the output is scored by a lightweight Haiku call.
+        If the score is below the quality gate threshold the worker retries
+        with the feedback appended.  After max retries, escalate to human.
+        """
         from airees.coordinator.worker_builder import get_tools_for_role
 
         role_tool_names = get_tools_for_role(task["agent_role"])
@@ -256,48 +295,114 @@ class BrainOrchestrator:
         ))
 
         try:
-            messages = [{"role": "user", "content": task["description"]}]
             total_tokens = 0
             output = ""
-            max_tool_rounds = 10
+            gate = self.quality_gate
 
-            for _ in range(max_tool_rounds):
-                response = await self.router.create_message(
-                    model=model,
-                    system=worker_prompt,
-                    messages=messages,
-                    tools=tools_formatted,
-                )
+            for attempt in range(gate.max_retries):
+                # Reset output for each quality-gate attempt
+                output = ""
+                messages = [{"role": "user", "content": task["description"]}]
 
-                total_tokens += (
-                    response.usage.input_tokens + response.usage.output_tokens
-                )
+                # If this is a retry, append the scoring feedback
+                if attempt > 0:
+                    messages[0] = {
+                        "role": "user",
+                        "content": (
+                            f"{task['description']}\n\n"
+                            f"PREVIOUS ATTEMPT FEEDBACK (attempt {attempt}): "
+                            f"{gate_feedback}\n"
+                            "Please improve your output based on this feedback."
+                        ),
+                    }
 
-                if response.stop_reason == "end_turn" or response.stop_reason != "tool_use":
-                    # Extract final text
+                # --- Agentic tool_use loop (unchanged logic) ---
+                max_tool_rounds = 10
+                for _ in range(max_tool_rounds):
+                    response = await self.router.create_message(
+                        model=model,
+                        system=worker_prompt,
+                        messages=messages,
+                        tools=tools_formatted,
+                    )
+
+                    total_tokens += (
+                        response.usage.input_tokens + response.usage.output_tokens
+                    )
+
+                    if response.stop_reason == "end_turn" or response.stop_reason != "tool_use":
+                        for block in response.content:
+                            if getattr(block, "type", None) == "text":
+                                output += block.text
+                        break
+
+                    tool_results = []
                     for block in response.content:
-                        if getattr(block, "type", None) == "text":
-                            output += block.text
+                        if getattr(block, "type", None) == "tool_use" and self.tool_provider:
+                            result = await self.tool_provider.execute(
+                                block.name, block.input
+                            )
+                            tool_results.append({
+                                "type": "tool_result",
+                                "tool_use_id": block.id,
+                                "content": result,
+                            })
+
+                    messages.append({"role": "assistant", "content": response.content})
+                    messages.append({"role": "user", "content": tool_results})
+
+                # --- Quality gate scoring ---
+                score, gate_feedback = await self._score_output(task, output)
+                gate_result = gate.evaluate(score, gate_feedback)
+
+                if gate_result.passed:
+                    await self.event_bus.emit_async(Event(
+                        event_type=EventType.QUALITY_GATE_PASS,
+                        agent_name=f"worker:{task['title']}",
+                        data={
+                            "task_id": task["id"],
+                            "score": score,
+                            "attempt": attempt + 1,
+                        },
+                    ))
                     break
 
-                # Process tool_use blocks
-                tool_results = []
-                for block in response.content:
-                    if getattr(block, "type", None) == "tool_use" and self.tool_provider:
-                        result = await self.tool_provider.execute(
-                            block.name, block.input
-                        )
-                        tool_results.append({
-                            "type": "tool_result",
-                            "tool_use_id": block.id,
-                            "content": result,
-                        })
+                # Gate failed
+                await self.event_bus.emit_async(Event(
+                    event_type=EventType.QUALITY_GATE_FAIL,
+                    agent_name=f"worker:{task['title']}",
+                    data={
+                        "task_id": task["id"],
+                        "score": score,
+                        "feedback": gate_feedback,
+                        "attempt": attempt + 1,
+                    },
+                ))
 
-                messages.append({"role": "assistant", "content": response.content})
-                messages.append({"role": "user", "content": tool_results})
+                if gate.should_escalate(attempt + 1):
+                    await self.store.flag_task_human(
+                        task["id"],
+                        reason=(
+                            f"Quality gate failed after {attempt + 1} attempts. "
+                            f"Last score: {score}. Feedback: {gate_feedback}"
+                        ),
+                    )
+                    await self.event_bus.emit_async(Event(
+                        event_type=EventType.NEEDS_ATTENTION,
+                        agent_name=f"worker:{task['title']}",
+                        data={
+                            "task_id": task["id"],
+                            "score": score,
+                            "attempts": attempt + 1,
+                        },
+                    ))
+                    return
 
+                if not gate.should_retry(attempt + 1):
+                    break
+
+            # After the loop: complete the task with the final output
             cost = total_tokens * 0.000001
-
             await self.store.complete_task(
                 task["id"],
                 result=output,
