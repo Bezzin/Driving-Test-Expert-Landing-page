@@ -35,6 +35,7 @@ class BrainOrchestrator:
     event_bus: EventBus
     soul_path: Path = Path("data/SOUL.md")
     state_machine: BrainStateMachine = field(default_factory=BrainStateMachine)
+    tool_provider: Any = None
 
     async def submit_goal(self, description: str) -> str:
         """Create a new goal and emit a RUN_START event."""
@@ -155,14 +156,31 @@ class BrainOrchestrator:
         return report
 
     async def _execute_worker(self, goal_id: str, task: dict) -> None:
-        """Run a single worker sub-agent for the given task."""
+        """Run a single worker sub-agent with an agentic tool_use loop."""
+        from airees.coordinator.worker_builder import get_tools_for_role
+
+        role_tool_names = get_tools_for_role(task["agent_role"])
         worker_prompt = build_worker_prompt(
             task_title=task["title"],
             task_description=task["description"],
             agent_role=task["agent_role"],
+            available_tools=role_tool_names if role_tool_names else None,
         )
         model_id = select_model(agent_role=task["agent_role"])
         model = ModelConfig(model_id=model_id)
+
+        # Build tool definitions for the LLM
+        tools_formatted = None
+        if self.tool_provider and role_tool_names:
+            tool_defs = self.tool_provider.get_tools()
+            available = [t for t in tool_defs if t.name in role_tool_names]
+            if available:
+                registry = ToolRegistry()
+                for t in available:
+                    registry.register(t)
+                tools_formatted = registry.to_anthropic_format(
+                    [t.name for t in available]
+                )
 
         await self.event_bus.emit_async(Event(
             event_type=EventType.AGENT_START,
@@ -171,31 +189,59 @@ class BrainOrchestrator:
         ))
 
         try:
-            response = await self.router.create_message(
-                model=model,
-                system=worker_prompt,
-                messages=[{"role": "user", "content": task["description"]}],
-            )
-
+            messages = [{"role": "user", "content": task["description"]}]
+            total_tokens = 0
             output = ""
-            for block in response.content:
-                if getattr(block, "type", None) == "text":
-                    output += block.text
+            max_tool_rounds = 10
 
-            tokens = response.usage.input_tokens + response.usage.output_tokens
-            cost = tokens * 0.000001
+            for _ in range(max_tool_rounds):
+                response = await self.router.create_message(
+                    model=model,
+                    system=worker_prompt,
+                    messages=messages,
+                    tools=tools_formatted,
+                )
+
+                total_tokens += (
+                    response.usage.input_tokens + response.usage.output_tokens
+                )
+
+                if response.stop_reason == "end_turn" or response.stop_reason != "tool_use":
+                    # Extract final text
+                    for block in response.content:
+                        if getattr(block, "type", None) == "text":
+                            output += block.text
+                    break
+
+                # Process tool_use blocks
+                tool_results = []
+                for block in response.content:
+                    if getattr(block, "type", None) == "tool_use" and self.tool_provider:
+                        result = await self.tool_provider.execute(
+                            block.name, block.input
+                        )
+                        tool_results.append({
+                            "type": "tool_result",
+                            "tool_use_id": block.id,
+                            "content": result,
+                        })
+
+                messages.append({"role": "assistant", "content": response.content})
+                messages.append({"role": "user", "content": tool_results})
+
+            cost = total_tokens * 0.000001
 
             await self.store.complete_task(
                 task["id"],
                 result=output,
-                tokens_used=tokens,
+                tokens_used=total_tokens,
                 cost=cost,
             )
 
             await self.event_bus.emit_async(Event(
                 event_type=EventType.AGENT_COMPLETE,
                 agent_name=f"worker:{task['title']}",
-                data={"task_id": task["id"], "tokens": tokens},
+                data={"task_id": task["id"], "tokens": total_tokens},
             ))
 
         except Exception as e:
