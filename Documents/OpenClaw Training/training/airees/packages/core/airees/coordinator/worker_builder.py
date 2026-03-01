@@ -1,0 +1,72 @@
+"""Build worker sub-agents with appropriate models and prompts."""
+from __future__ import annotations
+
+MODEL_DEFAULTS: dict[str, str] = {
+    "researcher": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+    "coder": "anthropic/claude-haiku-4-5",
+    "reviewer": "anthropic/claude-haiku-4-5",
+    "writer": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+    "tester": "anthropic/claude-haiku-4-5",
+    "security": "anthropic/claude-sonnet-4-6",
+    "architect": "anthropic/claude-sonnet-4-6",
+}
+
+ESCALATION_MODELS: dict[str, str] = {
+    "researcher": "anthropic/claude-haiku-4-5",
+    "coder": "anthropic/claude-sonnet-4-6",
+    "reviewer": "anthropic/claude-sonnet-4-6",
+    "writer": "anthropic/claude-haiku-4-5",
+    "tester": "anthropic/claude-sonnet-4-6",
+    "security": "anthropic/claude-opus-4-6",
+    "architect": "anthropic/claude-opus-4-6",
+}
+
+
+def select_model(agent_role: str, recommended: str | None = None, escalate: bool = False) -> str:
+    """Select the best model for a given agent role.
+
+    Priority:
+    1. If escalating, use the escalation model for the role.
+    2. If a recommended model is provided (and not escalating), use it.
+    3. Otherwise, fall back to the default model for the role.
+    """
+    if recommended and not escalate:
+        return recommended
+    if escalate:
+        return ESCALATION_MODELS.get(agent_role, "anthropic/claude-sonnet-4-6")
+    return MODEL_DEFAULTS.get(agent_role, "anthropic/claude-haiku-4-5")
+
+
+def build_worker_prompt(
+    *,
+    task_title: str,
+    task_description: str,
+    agent_role: str,
+    skill_content: str | None = None,
+    previous_output: str | None = None,
+) -> str:
+    """Assemble a complete system prompt for a worker sub-agent.
+
+    Combines the task details, agent role, optional skill reference,
+    and any context from previously completed tasks into a single prompt.
+    """
+    sections = [
+        f"You are a specialist {agent_role} agent. Complete the following task thoroughly.",
+        f"\n## Task: {task_title}\n\n{task_description}",
+    ]
+
+    if previous_output:
+        sections.append(f"\n## Context From Previous Task\n\n{previous_output}")
+
+    if skill_content:
+        sections.append(f"\n## Relevant Skill Reference\n\n{skill_content}")
+
+    sections.append(
+        "\n## Output Requirements\n\n"
+        "Return your work product clearly. Include:\n"
+        "- The actual output (code, text, analysis, etc.)\n"
+        "- A confidence score (0-10) for your work quality\n"
+        "- Any discoveries or unexpected findings\n"
+    )
+
+    return "\n".join(sections)
