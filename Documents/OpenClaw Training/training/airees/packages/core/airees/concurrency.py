@@ -46,6 +46,7 @@ class ConcurrencyManager:
         if provider_key in self._semaphores:
             self._semaphores[provider_key].release()
 
-        model_key = f"model:{model}"
-        if model_key in self._semaphores:
-            self._semaphores[model_key].release()
+        if model in self.model_limits:
+            model_key = f"model:{model}"
+            if model_key in self._semaphores:
+                self._semaphores[model_key].release()

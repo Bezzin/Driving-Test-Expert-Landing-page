@@ -1,6 +1,7 @@
 """Tavily tool provider — web search and content extraction for workers."""
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from dataclasses import dataclass, field
@@ -83,10 +84,12 @@ class TavilyToolProvider:
     async def execute(self, tool_name: str, tool_input: dict) -> str:
         """Execute a tool call and return JSON string result."""
         if tool_name == "web_search":
-            result = self._client.search(**tool_input)
+            result = await asyncio.to_thread(self._client.search, **tool_input)
             return json.dumps(result.get("results", []), indent=2)
         elif tool_name == "web_extract":
-            result = self._client.extract(urls=tool_input["urls"])
+            result = await asyncio.to_thread(
+                self._client.extract, urls=tool_input["urls"]
+            )
             return json.dumps(result.get("results", []), indent=2)
         else:
             raise ValueError(f"Unknown tool: {tool_name}")
