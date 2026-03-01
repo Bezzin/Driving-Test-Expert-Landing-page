@@ -149,6 +149,44 @@ class BrainOrchestrator:
             data={"goal_id": goal_id, "outcome": outcome, "score": score},
         ))
 
+    async def _validate_task_models(self, goal_id: str, tasks: list[dict]) -> None:
+        """Check for same-model builder/reviewer pairs and emit warnings.
+
+        This is advisory only -- it never blocks the plan.
+        """
+        builder_models: list[tuple[str, str]] = []
+        reviewer_models: list[tuple[str, str]] = []
+
+        for t in tasks:
+            role = t.get("agent_role", "")
+            model_id = select_model(agent_role=role)
+            if any(kw in role.lower() for kw in ("coder", "builder", "implement")):
+                builder_models.append((t.get("title", ""), model_id))
+            elif any(kw in role.lower() for kw in ("review", "reviewer", "audit", "verify")):
+                reviewer_models.append((t.get("title", ""), model_id))
+
+        for b_title, b_model in builder_models:
+            for r_title, r_model in reviewer_models:
+                if b_model == r_model:
+                    await self.event_bus.emit_async(Event(
+                        event_type=EventType.VALIDATION_WARNING,
+                        agent_name="brain",
+                        data={
+                            "code": "SAME_MODEL_BUILD_REVIEW",
+                            "message": (
+                                f"Builder '{b_title}' and reviewer '{r_title}' "
+                                f"use model '{b_model}'"
+                            ),
+                            "goal_id": goal_id,
+                        },
+                    ))
+                    self._record_decision(
+                        goal_id, "planning", "validator",
+                        "validation_warning",
+                        f"Same model '{b_model}' used for build and review",
+                        confidence=0.9,
+                    )
+
     async def submit_goal(self, description: str) -> str:
         """Create a new goal and emit a RUN_START event."""
         goal_id = await self.store.create_goal(description=description)
@@ -238,6 +276,8 @@ class BrainOrchestrator:
                     decision="create_plan",
                     reasoning=plan_data.get("strategy", "Initial plan created"),
                 )
+
+        await self._validate_task_models(goal_id, tasks_created)
 
         self.state_machine.transition(BrainState.DELEGATING)
         await self.store.update_goal_status(goal_id, GoalStatus.EXECUTING)

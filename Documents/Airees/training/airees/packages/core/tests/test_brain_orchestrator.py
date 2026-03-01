@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock
 from airees.brain.orchestrator import BrainOrchestrator
 from airees.brain.state_machine import BrainState
 from airees.db.schema import GoalStore
-from airees.events import EventBus
+from airees.events import EventBus, EventType
 from airees.state import load_state
 
 
@@ -292,3 +292,125 @@ async def test_execute_goal_records_feedback(store, mock_router, event_bus, tmp_
     assert feedback_file.exists()
     content = feedback_file.read_text(encoding="utf-8")
     assert "success" in content.lower() or "Learned Patterns" in content
+
+
+def _make_plan_response_with_roles() -> MagicMock:
+    """Helper: build a mock plan response with coder + reviewer tasks (same model)."""
+    resp = MagicMock()
+    resp.stop_reason = "tool_use"
+    resp.usage = MagicMock(input_tokens=100, output_tokens=200)
+    tool_block = MagicMock()
+    tool_block.type = "tool_use"
+    tool_block.id = "tool_plan_roles"
+    tool_block.name = "create_plan"
+    tool_block.input = {
+        "tasks": [
+            {
+                "title": "Implement feature",
+                "description": "Write the code",
+                "agent_role": "coder",
+                "dependencies": [],
+            },
+            {
+                "title": "Review implementation",
+                "description": "Audit the code",
+                "agent_role": "reviewer",
+                "dependencies": [0],
+            },
+        ],
+        "strategy": "Build then review",
+    }
+    resp.content = [tool_block]
+    return resp
+
+
+@pytest.mark.asyncio
+async def test_plan_emits_validation_warning_for_same_model(
+    store, mock_router, event_bus, tmp_path
+):
+    """When builder and reviewer use the same model, VALIDATION_WARNING should emit."""
+    warnings_captured: list = []
+
+    async def capture(event):
+        warnings_captured.append(event)
+
+    event_bus.subscribe(EventType.VALIDATION_WARNING, capture)
+
+    mock_router.create_message = AsyncMock(
+        return_value=_make_plan_response_with_roles()
+    )
+
+    orch = BrainOrchestrator(
+        store=store,
+        brain_model="anthropic/claude-opus-4-6",
+        router=mock_router,
+        event_bus=event_bus,
+        soul_path=tmp_path / "SOUL.md",
+        state_dir=tmp_path / "states",
+    )
+    goal_id = await orch.submit_goal("Test goal")
+    await orch.plan(goal_id)
+
+    # coder and reviewer both default to anthropic/claude-haiku-4-5
+    assert len(warnings_captured) == 1
+    warning = warnings_captured[0]
+    assert warning.data["code"] == "SAME_MODEL_BUILD_REVIEW"
+    assert "coder" in warning.data["message"].lower() or "Implement" in warning.data["message"]
+    assert "reviewer" in warning.data["message"].lower() or "Review" in warning.data["message"]
+    assert warning.data["goal_id"] == goal_id
+
+
+@pytest.mark.asyncio
+async def test_plan_no_warning_when_different_models(
+    store, mock_router, event_bus, tmp_path
+):
+    """No VALIDATION_WARNING when builder/reviewer use different models."""
+    warnings_captured: list = []
+
+    async def capture(event):
+        warnings_captured.append(event)
+
+    event_bus.subscribe(EventType.VALIDATION_WARNING, capture)
+
+    # Plan with roles that use different models: coder (haiku) + security (sonnet)
+    resp = MagicMock()
+    resp.stop_reason = "tool_use"
+    resp.usage = MagicMock(input_tokens=100, output_tokens=200)
+    tool_block = MagicMock()
+    tool_block.type = "tool_use"
+    tool_block.id = "tool_plan_diff"
+    tool_block.name = "create_plan"
+    tool_block.input = {
+        "tasks": [
+            {
+                "title": "Implement feature",
+                "description": "Write the code",
+                "agent_role": "coder",
+                "dependencies": [],
+            },
+            {
+                "title": "Security audit",
+                "description": "Check for vulnerabilities",
+                "agent_role": "security",
+                "dependencies": [0],
+            },
+        ],
+        "strategy": "Build then audit",
+    }
+    resp.content = [tool_block]
+
+    mock_router.create_message = AsyncMock(return_value=resp)
+
+    orch = BrainOrchestrator(
+        store=store,
+        brain_model="anthropic/claude-opus-4-6",
+        router=mock_router,
+        event_bus=event_bus,
+        soul_path=tmp_path / "SOUL.md",
+        state_dir=tmp_path / "states",
+    )
+    goal_id = await orch.submit_goal("Test goal")
+    await orch.plan(goal_id)
+
+    # security uses sonnet, coder uses haiku — no warning
+    assert len(warnings_captured) == 0
