@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import uuid
 from typing import Any
 
@@ -7,7 +8,7 @@ from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 
 from airees.agent import Agent
-from airees.router.types import ModelConfig
+from airees.router.types import ModelConfig, ProviderType
 from airees.runner import Runner, TokenUsage
 from airees.router.model_router import ModelRouter
 from airees.tools.registry import ToolRegistry
@@ -17,7 +18,7 @@ from airees.events import EventBus
 class RunCreate(BaseModel):
     agent_name: str
     task: str
-    model: str = "claude-sonnet-4-6"
+    model: str = "openrouter/arcee-ai/trinity-large-preview:free"
     max_turns: int = 10
 
 
@@ -46,20 +47,23 @@ def create_runs_router() -> APIRouter:
         else:
             agent = Agent(
                 name=run_config.agent_name,
-                instructions=f"You are {run_config.agent_name}.",
+                instructions=f"You are {run_config.agent_name}. Be helpful and concise.",
                 model=ModelConfig(model_id=run_config.model),
                 max_turns=run_config.max_turns,
             )
 
-        import os
         anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
-        if not anthropic_key:
+        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
+
+        # At least one provider must be configured
+        if agent.model.provider == ProviderType.OPENROUTER and not openrouter_key:
+            raise HTTPException(400, "OPENROUTER_API_KEY not set")
+        if agent.model.provider == ProviderType.ANTHROPIC and not anthropic_key:
             raise HTTPException(400, "ANTHROPIC_API_KEY not set")
 
-        openrouter_key = os.environ.get("OPENROUTER_API_KEY")
         router_instance = ModelRouter(
-            anthropic_api_key=anthropic_key,
-            openrouter_api_key=openrouter_key,
+            anthropic_api_key=anthropic_key or "unused",
+            openrouter_api_key=openrouter_key or None,
         )
         event_bus = EventBus()
         tool_registry = ToolRegistry()

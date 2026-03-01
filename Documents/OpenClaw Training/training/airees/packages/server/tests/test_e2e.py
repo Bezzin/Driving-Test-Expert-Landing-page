@@ -11,17 +11,20 @@ def client(tmp_path):
     return TestClient(app)
 
 
-def test_create_run_without_api_key(client):
+def test_create_run_without_api_key(client, monkeypatch):
+    # Default model is openrouter/... so missing OPENROUTER_API_KEY triggers 400
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     response = client.post("/api/runs", json={
         "agent_name": "researcher",
         "task": "What is AI?",
     })
     assert response.status_code == 400
-    assert "ANTHROPIC_API_KEY" in response.json()["detail"]
+    assert "OPENROUTER_API_KEY" in response.json()["detail"]
 
 
 def test_create_run_with_mocked_runner(client, monkeypatch):
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-or-key")
 
     mock_result = RunResult(
         output="AI is artificial intelligence.",

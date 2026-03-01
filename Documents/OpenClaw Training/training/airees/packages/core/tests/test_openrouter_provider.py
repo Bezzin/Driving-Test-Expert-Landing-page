@@ -2,7 +2,8 @@
 
 Verifies that OpenRouterProvider correctly initialises, constructs
 payloads for the OpenRouter chat-completions endpoint, and delegates
-HTTP calls to httpx.AsyncClient.
+HTTP calls to httpx.AsyncClient.  Asserts on the normalised response
+shape (_NormalisedResponse) rather than raw OpenAI JSON.
 """
 
 from __future__ import annotations
@@ -32,9 +33,9 @@ def test_provider_has_http_client(provider: OpenRouterProvider):
 
 
 @pytest.mark.asyncio
-async def test_create_message_calls_openrouter(provider: OpenRouterProvider):
+async def test_create_message_returns_normalised_response(provider: OpenRouterProvider):
     mock_json = {
-        "choices": [{"message": {"content": "Hello from DeepSeek"}}],
+        "choices": [{"message": {"content": "Hello from DeepSeek"}, "finish_reason": "stop"}],
         "usage": {"prompt_tokens": 10, "completion_tokens": 5},
         "model": "deepseek/deepseek-r1",
     }
@@ -56,7 +57,11 @@ async def test_create_message_calls_openrouter(provider: OpenRouterProvider):
             system="You are helpful",
             messages=[{"role": "user", "content": "Hi"}],
         )
-        assert result["choices"][0]["message"]["content"] == "Hello from DeepSeek"
+        assert result.content[0].text == "Hello from DeepSeek"
+        assert result.content[0].type == "text"
+        assert result.stop_reason == "end_turn"
+        assert result.usage.input_tokens == 10
+        assert result.usage.output_tokens == 5
 
 
 @pytest.mark.asyncio
@@ -64,9 +69,8 @@ async def test_create_message_includes_system_prompt(provider: OpenRouterProvide
     """The system prompt should be prepended as the first message."""
     mock_response = MagicMock()
     mock_response.json.return_value = {
-        "choices": [{"message": {"content": "ok"}}],
+        "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
         "usage": {"prompt_tokens": 5, "completion_tokens": 1},
-        "model": "deepseek/deepseek-r1",
     }
     mock_response.raise_for_status = MagicMock()
 
@@ -94,24 +98,21 @@ async def test_create_message_includes_system_prompt(provider: OpenRouterProvide
 
 
 @pytest.mark.asyncio
-async def test_create_message_forwards_tools(provider: OpenRouterProvider):
-    """When tools are provided they should appear in the request payload."""
+async def test_create_message_converts_tools_to_openai_format(provider: OpenRouterProvider):
+    """Anthropic-format tools should be converted to OpenAI function-calling format."""
     mock_response = MagicMock()
     mock_response.json.return_value = {
-        "choices": [{"message": {"content": "tool call"}}],
+        "choices": [{"message": {"content": "tool call"}, "finish_reason": "stop"}],
         "usage": {"prompt_tokens": 8, "completion_tokens": 3},
-        "model": "deepseek/deepseek-r1",
     }
     mock_response.raise_for_status = MagicMock()
 
-    tools = [
+    # Anthropic tool format (input from Runner)
+    anthropic_tools = [
         {
-            "type": "function",
-            "function": {
-                "name": "get_weather",
-                "description": "Get weather for a city",
-                "parameters": {"type": "object", "properties": {}},
-            },
+            "name": "get_weather",
+            "description": "Get weather for a city",
+            "input_schema": {"type": "object", "properties": {}},
         }
     ]
 
@@ -128,11 +129,21 @@ async def test_create_message_forwards_tools(provider: OpenRouterProvider):
             ),
             system="You are helpful",
             messages=[{"role": "user", "content": "Weather?"}],
-            tools=tools,
+            tools=anthropic_tools,
         )
         call_kwargs = mock_post.call_args
         payload = call_kwargs.kwargs.get("json") or call_kwargs[1].get("json")
-        assert payload["tools"] == tools
+        # Should be converted to OpenAI format
+        assert payload["tools"] == [
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_weather",
+                    "description": "Get weather for a city",
+                    "parameters": {"type": "object", "properties": {}},
+                },
+            }
+        ]
 
 
 @pytest.mark.asyncio
@@ -140,9 +151,8 @@ async def test_create_message_omits_tools_when_none(provider: OpenRouterProvider
     """When tools is None, the payload should not contain a 'tools' key."""
     mock_response = MagicMock()
     mock_response.json.return_value = {
-        "choices": [{"message": {"content": "ok"}}],
+        "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
         "usage": {"prompt_tokens": 5, "completion_tokens": 1},
-        "model": "deepseek/deepseek-r1",
     }
     mock_response.raise_for_status = MagicMock()
 
@@ -166,13 +176,42 @@ async def test_create_message_omits_tools_when_none(provider: OpenRouterProvider
 
 
 @pytest.mark.asyncio
+async def test_create_message_includes_provider_preferences(provider: OpenRouterProvider):
+    """Payload should include OpenRouter provider preferences."""
+    mock_response = MagicMock()
+    mock_response.json.return_value = {
+        "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
+        "usage": {"prompt_tokens": 5, "completion_tokens": 1},
+    }
+    mock_response.raise_for_status = MagicMock()
+
+    with patch.object(
+        provider._client,
+        "post",
+        new_callable=AsyncMock,
+        return_value=mock_response,
+    ) as mock_post:
+        await provider.create_message(
+            model=ModelConfig(
+                model_id="deepseek/deepseek-r1",
+                provider=ProviderType.OPENROUTER,
+            ),
+            system="You are helpful",
+            messages=[{"role": "user", "content": "Hi"}],
+        )
+        call_kwargs = mock_post.call_args
+        payload = call_kwargs.kwargs.get("json") or call_kwargs[1].get("json")
+        assert payload["provider"]["sort"] == "price"
+        assert payload["provider"]["allow_fallbacks"] is True
+
+
+@pytest.mark.asyncio
 async def test_create_message_respects_max_tokens(provider: OpenRouterProvider):
     """An explicit max_tokens argument should override the ModelConfig default."""
     mock_response = MagicMock()
     mock_response.json.return_value = {
-        "choices": [{"message": {"content": "ok"}}],
+        "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
         "usage": {"prompt_tokens": 5, "completion_tokens": 1},
-        "model": "deepseek/deepseek-r1",
     }
     mock_response.raise_for_status = MagicMock()
 
@@ -194,6 +233,53 @@ async def test_create_message_respects_max_tokens(provider: OpenRouterProvider):
         call_kwargs = mock_post.call_args
         payload = call_kwargs.kwargs.get("json") or call_kwargs[1].get("json")
         assert payload["max_tokens"] == 2048
+
+
+@pytest.mark.asyncio
+async def test_normalises_tool_use_response(provider: OpenRouterProvider):
+    """Tool call responses should be normalised to Anthropic-style tool_use blocks."""
+    mock_json = {
+        "choices": [{
+            "message": {
+                "content": None,
+                "tool_calls": [{
+                    "id": "call_123",
+                    "type": "function",
+                    "function": {
+                        "name": "get_weather",
+                        "arguments": '{"city": "London"}',
+                    },
+                }],
+            },
+            "finish_reason": "tool_calls",
+        }],
+        "usage": {"prompt_tokens": 10, "completion_tokens": 8},
+    }
+    mock_response = MagicMock()
+    mock_response.json.return_value = mock_json
+    mock_response.raise_for_status = MagicMock()
+
+    with patch.object(
+        provider._client,
+        "post",
+        new_callable=AsyncMock,
+        return_value=mock_response,
+    ):
+        result = await provider.create_message(
+            model=ModelConfig(
+                model_id="deepseek/deepseek-r1",
+                provider=ProviderType.OPENROUTER,
+            ),
+            system="You are helpful",
+            messages=[{"role": "user", "content": "Weather?"}],
+        )
+        assert result.stop_reason == "tool_use"
+        assert len(result.content) == 1
+        block = result.content[0]
+        assert block.type == "tool_use"
+        assert block.id == "call_123"
+        assert block.name == "get_weather"
+        assert block.input == {"city": "London"}
 
 
 @pytest.mark.asyncio
