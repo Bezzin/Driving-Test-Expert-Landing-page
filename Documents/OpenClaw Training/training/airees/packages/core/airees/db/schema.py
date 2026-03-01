@@ -80,6 +80,8 @@ class GoalStore:
                     reasoning TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
+                CREATE INDEX IF NOT EXISTS idx_tasks_goal_status ON tasks(goal_id, status);
+                CREATE INDEX IF NOT EXISTS idx_decisions_goal ON decisions(goal_id);
             """)
 
     # ------------------------------------------------------------------
@@ -107,7 +109,11 @@ class GoalStore:
                 "SELECT * FROM goals WHERE id = ?", (goal_id,)
             )
             row = await cursor.fetchone()
-            return dict(row) if row else None
+            if row is None:
+                return None
+            result = dict(row)
+            result = result | {"metadata": json.loads(result["metadata"])}
+            return result
 
     async def update_goal_status(
         self, goal_id: str, status: GoalStatus
@@ -127,11 +133,11 @@ class GoalStore:
                 "UPDATE goals SET iteration = iteration + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
                 (goal_id,),
             )
-            await db.commit()
             cursor = await db.execute(
                 "SELECT iteration FROM goals WHERE id = ?", (goal_id,)
             )
             row = await cursor.fetchone()
+            await db.commit()
             return row[0] if row else 0
 
     # ------------------------------------------------------------------
@@ -181,9 +187,7 @@ class GoalStore:
             row = await cursor.fetchone()
             if row is None:
                 return None
-            result = dict(row)
-            result["dependencies"] = json.loads(result["dependencies"])
-            return result
+            return dict(row) | {"dependencies": json.loads(row["dependencies"])}
 
     async def get_ready_tasks(self, goal_id: str) -> list[dict]:
         """Return tasks that are PENDING (no unmet dependencies)."""
@@ -234,26 +238,20 @@ class GoalStore:
             row = await cursor.fetchone()
             if row:
                 goal_id = row[0]
-                blocked = await db.execute(
+                completed_cursor = await db.execute(
+                    "SELECT id FROM tasks WHERE goal_id = ? AND status = ?",
+                    (goal_id, TaskStatus.COMPLETED.value),
+                )
+                completed_ids = {r[0] for r in await completed_cursor.fetchall()}
+                completed_ids.add(task_id)
+
+                blocked_cursor = await db.execute(
                     "SELECT id, dependencies FROM tasks WHERE goal_id = ? AND status = ?",
                     (goal_id, TaskStatus.BLOCKED.value),
                 )
-                blocked_rows = await blocked.fetchall()
-                for brow in blocked_rows:
+                for brow in await blocked_cursor.fetchall():
                     deps = json.loads(brow[1])
-                    all_done = True
-                    for dep_id in deps:
-                        dep_cursor = await db.execute(
-                            "SELECT status FROM tasks WHERE id = ?", (dep_id,)
-                        )
-                        dep_row = await dep_cursor.fetchone()
-                        if (
-                            dep_row is None
-                            or dep_row[0] != TaskStatus.COMPLETED.value
-                        ):
-                            all_done = False
-                            break
-                    if all_done:
+                    if all(dep_id in completed_ids for dep_id in deps):
                         await db.execute(
                             "UPDATE tasks SET status = ? WHERE id = ?",
                             (TaskStatus.PENDING.value, brow[0]),
@@ -263,14 +261,29 @@ class GoalStore:
     async def fail_task(
         self, task_id: str, error: str, retry: bool = False
     ) -> None:
-        """Mark a task as failed. If *retry* is True, reset to PENDING and bump retry_count."""
+        """Mark a task as failed. If *retry* is True, reset to PENDING and bump retry_count.
+
+        If retry_count has already reached max_retries, the task is marked as
+        FAILED regardless of the *retry* flag.
+        """
         async with aiosqlite.connect(self.db_path) as db:
             if retry:
-                await db.execute(
-                    """UPDATE tasks SET status = ?, error = ?, retry_count = retry_count + 1,
-                       updated_at = CURRENT_TIMESTAMP WHERE id = ?""",
-                    (TaskStatus.PENDING.value, error, task_id),
+                cursor = await db.execute(
+                    "SELECT retry_count, max_retries FROM tasks WHERE id = ?", (task_id,),
                 )
+                row = await cursor.fetchone()
+                if row and row[0] < row[1]:
+                    await db.execute(
+                        """UPDATE tasks SET status = ?, error = ?, retry_count = retry_count + 1,
+                           updated_at = CURRENT_TIMESTAMP WHERE id = ?""",
+                        (TaskStatus.PENDING.value, error, task_id),
+                    )
+                else:
+                    await db.execute(
+                        """UPDATE tasks SET status = ?, error = ?,
+                           updated_at = CURRENT_TIMESTAMP WHERE id = ?""",
+                        (TaskStatus.FAILED.value, error, task_id),
+                    )
             else:
                 await db.execute(
                     """UPDATE tasks SET status = ?, error = ?,

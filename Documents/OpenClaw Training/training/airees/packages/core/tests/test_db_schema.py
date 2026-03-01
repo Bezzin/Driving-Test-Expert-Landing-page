@@ -1,7 +1,6 @@
 """Tests for database schema initialization and CRUD operations."""
 import pytest
 import pytest_asyncio
-from pathlib import Path
 from airees.db.schema import GoalStore, GoalStatus, TaskStatus
 
 
@@ -77,6 +76,36 @@ async def test_fail_task(store):
     task = await store.get_task(t1)
     assert task["status"] == TaskStatus.PENDING.value
     assert task["retry_count"] == 1
+
+
+@pytest.mark.asyncio
+async def test_fail_task_exceeds_max_retries(store):
+    goal_id = await store.create_goal(description="Build app")
+    t1 = await store.create_task(
+        goal_id=goal_id, title="Scaffold", description="",
+        agent_role="coder", dependencies=[], max_retries=1,
+    )
+    # First retry: retry_count 0 < max_retries 1 -> PENDING, retry_count bumped to 1
+    await store.fail_task(t1, error="Timeout", retry=True)
+    task = await store.get_task(t1)
+    assert task["status"] == TaskStatus.PENDING.value
+    assert task["retry_count"] == 1
+    # Second retry: retry_count 1 >= max_retries 1 -> FAILED
+    await store.fail_task(t1, error="Timeout", retry=True)
+    task = await store.get_task(t1)
+    assert task["status"] == TaskStatus.FAILED.value
+    assert task["retry_count"] == 1
+
+
+@pytest.mark.asyncio
+async def test_get_goal_deserializes_metadata(store):
+    goal_id = await store.create_goal(
+        description="Build app", metadata={"source": "chat", "priority": 1},
+    )
+    goal = await store.get_goal(goal_id)
+    assert isinstance(goal["metadata"], dict)
+    assert goal["metadata"]["source"] == "chat"
+    assert goal["metadata"]["priority"] == 1
 
 
 @pytest.mark.asyncio
