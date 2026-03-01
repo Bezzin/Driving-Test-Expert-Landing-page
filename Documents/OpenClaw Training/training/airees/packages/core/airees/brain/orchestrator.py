@@ -1,6 +1,7 @@
 """Brain Orchestrator — the main loop tying Brain + Coordinator + Workers."""
 from __future__ import annotations
 
+import asyncio
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -124,10 +125,7 @@ class BrainOrchestrator:
                 ready = await coordinator.get_next_tasks(goal_id)
                 if not ready:
                     break
-
-                for task in ready:
-                    await self._execute_worker(goal_id, task)
-
+                await self._execute_wave(goal_id)
                 if await coordinator.is_goal_complete(goal_id):
                     break
                 if await coordinator.has_failures(goal_id):
@@ -154,6 +152,20 @@ class BrainOrchestrator:
         if self.state_machine.state != BrainState.IDLE:
             self.state_machine.force_reset(reason="max_iterations")
         return report
+
+    async def _execute_wave(self, goal_id: str) -> None:
+        """Execute all ready tasks in parallel."""
+        coordinator = Coordinator(store=self.store, runner=self.router)
+        ready = await coordinator.get_next_tasks(goal_id)
+        if not ready:
+            return
+
+        # Sort by priority (lower = higher priority)
+        ready.sort(key=lambda t: t.get("priority", 2))
+
+        # Execute all ready tasks concurrently
+        tasks = [self._execute_worker(goal_id, task) for task in ready]
+        await asyncio.gather(*tasks, return_exceptions=True)
 
     async def _execute_worker(self, goal_id: str, task: dict) -> None:
         """Run a single worker sub-agent with an agentic tool_use loop."""
