@@ -454,6 +454,96 @@ def kb_delete(source: str, data_dir: str) -> None:
     click.echo(f"Deleted {count} chunks from {source}")
 
 
+# ── Schedule group ─────────────────────────────────────────────────
+
+
+@app.group()
+def schedule() -> None:
+    """Manage scheduled (cron) triggers."""
+    pass
+
+
+@schedule.command("add")
+@click.argument("expression")
+@click.argument("goal_text")
+@click.option("--channel", default="cli", help="Channel to deliver result to")
+@click.option("--recipient", default="user", help="Recipient ID for push notification")
+@click.option("--data-dir", type=click.Path(), default="data")
+def schedule_add(
+    expression: str, goal_text: str, channel: str, recipient: str, data_dir: str
+) -> None:
+    """Add a cron-triggered goal. EXPRESSION is a 5-field cron (e.g. '0 9 * * *')."""
+    import json
+    import uuid
+
+    triggers_path = Path(data_dir) / "triggers.json"
+    triggers_path.parent.mkdir(parents=True, exist_ok=True)
+
+    triggers: list[dict] = []
+    if triggers_path.exists():
+        triggers = json.loads(triggers_path.read_text(encoding="utf-8"))
+
+    trigger_id = str(uuid.uuid4())[:8]
+    triggers = [
+        *triggers,
+        {
+            "id": trigger_id,
+            "expression": expression,
+            "goal_text": goal_text,
+            "channel": channel,
+            "recipient_id": recipient,
+            "enabled": True,
+        },
+    ]
+
+    triggers_path.write_text(json.dumps(triggers, indent=2), encoding="utf-8")
+    click.echo(f"Added trigger {trigger_id}: '{expression}' -> '{goal_text}'")
+
+
+@schedule.command("list")
+@click.option("--data-dir", type=click.Path(), default="data")
+def schedule_list(data_dir: str) -> None:
+    """List all scheduled triggers."""
+    import json
+
+    triggers_path = Path(data_dir) / "triggers.json"
+    if not triggers_path.exists():
+        click.echo("No triggers configured.")
+        return
+
+    triggers = json.loads(triggers_path.read_text(encoding="utf-8"))
+    if not triggers:
+        click.echo("No triggers configured.")
+        return
+
+    for t in triggers:
+        status = "enabled" if t.get("enabled", True) else "disabled"
+        click.echo(f"[{t['id']}] {t['expression']} -> {t['goal_text']} ({status})")
+
+
+@schedule.command("remove")
+@click.argument("trigger_id")
+@click.option("--data-dir", type=click.Path(), default="data")
+def schedule_remove(trigger_id: str, data_dir: str) -> None:
+    """Remove a scheduled trigger by ID."""
+    import json
+
+    triggers_path = Path(data_dir) / "triggers.json"
+    if not triggers_path.exists():
+        click.echo(f"Trigger {trigger_id} not found.")
+        return
+
+    triggers = json.loads(triggers_path.read_text(encoding="utf-8"))
+    new_triggers = [t for t in triggers if t["id"] != trigger_id]
+
+    if len(new_triggers) == len(triggers):
+        click.echo(f"Trigger {trigger_id} not found.")
+        return
+
+    triggers_path.write_text(json.dumps(new_triggers, indent=2), encoding="utf-8")
+    click.echo(f"Removed trigger {trigger_id}")
+
+
 # ── Daemon group (extends existing) ────────────────────────────────
 
 
