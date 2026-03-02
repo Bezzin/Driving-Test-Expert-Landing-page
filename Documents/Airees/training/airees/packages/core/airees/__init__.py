@@ -19,6 +19,7 @@ from airees.decision_doc import DecisionDocument, DecisionEntry
 from airees.events import Event, EventBus, EventType
 from airees.feedback import FeedbackConfig, FeedbackEntry, FeedbackLoop
 from airees.goal_daemon import GoalDaemon
+from airees.heartbeat import HeartbeatDaemon
 from airees.quality_gate import GateAction, GateResult, QualityGate
 from airees.router.fallback import FallbackRouter
 from airees.runner import Runner, RunResult, TokenUsage
@@ -56,6 +57,7 @@ __all__ = [
     "GoalIntent",
     "GoalStatus",
     "GoalStore",
+    "HeartbeatDaemon",
     "PhaseStatus",
     "ProjectState",
     "QualityGate",

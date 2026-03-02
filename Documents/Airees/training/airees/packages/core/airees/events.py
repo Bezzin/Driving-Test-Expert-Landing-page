@@ -46,6 +46,8 @@ class EventType(Enum):
     CONTEXT_COMPRESSED = "context.compressed"
     SOUL_UPDATED = "soul.updated"
     REFLECTION_TRIGGERED = "reflection.triggered"
+    HEARTBEAT_ANOMALY = "heartbeat.anomaly"
+    HEARTBEAT_ESCALATE = "heartbeat.escalate"
 
 
 @dataclass(frozen=True)
