@@ -6,6 +6,7 @@ pipeline: adapter -> gateway -> brain -> adapter.
 from __future__ import annotations
 
 import time
+import types as _types
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -53,6 +54,10 @@ class InboundMessage:
     timestamp: float = field(default_factory=time.time)
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        # Wrap mutable dict in a read-only proxy
+        object.__setattr__(self, "metadata", _types.MappingProxyType(self.metadata))
+
 
 @dataclass(frozen=True)
 class OutboundMessage:
@@ -73,3 +78,7 @@ class OutboundMessage:
     attachments: tuple[Attachment, ...] = ()
     reply_to: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        # Wrap mutable dict in a read-only proxy
+        object.__setattr__(self, "metadata", _types.MappingProxyType(self.metadata))

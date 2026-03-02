@@ -95,6 +95,19 @@ def test_inbound_message_with_metadata():
     assert msg.metadata["priority"] == "high"
 
 
+def test_inbound_message_metadata_immutable():
+    """Metadata dict should be read-only after construction."""
+    msg = InboundMessage(
+        channel="cli",
+        sender_id="u1",
+        text="hi",
+        metadata={"key": "value"},
+    )
+    assert msg.metadata["key"] == "value"
+    with pytest.raises(TypeError):
+        msg.metadata["key"] = "changed"
+
+
 # -- OutboundMessage ----------------------------------------------------------
 
 
@@ -141,3 +154,16 @@ def test_outbound_message_with_metadata():
         metadata={"source": "brain"},
     )
     assert msg.metadata["source"] == "brain"
+
+
+def test_outbound_message_metadata_immutable():
+    """Metadata dict should be read-only after construction."""
+    msg = OutboundMessage(
+        channel="cli",
+        recipient_id="u1",
+        text="hi",
+        metadata={"key": "value"},
+    )
+    assert msg.metadata["key"] == "value"
+    with pytest.raises(TypeError):
+        msg.metadata["key"] = "changed"

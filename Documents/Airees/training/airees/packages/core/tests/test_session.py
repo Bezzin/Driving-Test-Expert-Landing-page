@@ -102,3 +102,52 @@ def test_store_active_sessions_count():
     # Same key should not increase count
     store.get_or_create("cli", "user-1")
     assert store.active_sessions == 2
+
+
+# -- TTL & eviction -----------------------------------------------------------
+
+
+def test_store_evicts_stale_sessions():
+    """Sessions older than TTL are evicted on next access."""
+    store = SessionStore(session_ttl=1.0)
+    s = store.get_or_create("cli", "user-1")
+    s.updated_at = time.time() - 2.0  # Artificially age the session
+
+    # Access should trigger eviction
+    s2 = store.get_or_create("cli", "user-1")
+    assert s2 is not s  # New session created
+    assert store.active_sessions == 1
+
+
+def test_store_respects_max_sessions():
+    """Sessions beyond max_sessions are evicted (oldest first)."""
+    store = SessionStore(max_sessions=2)
+    s1 = store.get_or_create("cli", "user-1")
+    s1.updated_at = time.time() - 100  # oldest
+
+    s2 = store.get_or_create("cli", "user-2")
+    s2.updated_at = time.time() - 50
+
+    # Third session should evict the oldest (user-1)
+    s3 = store.get_or_create("cli", "user-3")
+    assert store.active_sessions == 2
+    assert store.get_or_create("cli", "user-3") is s3
+    # user-1 should be evicted and recreated
+    s1_new = store.get_or_create("cli", "user-1")
+    assert s1_new is not s1
+
+
+def test_store_remove_existing():
+    store = SessionStore()
+    store.get_or_create("cli", "user-1")
+    assert store.active_sessions == 1
+
+    removed = store.remove("cli", "user-1")
+    assert removed is True
+    assert store.active_sessions == 0
+
+
+def test_store_remove_nonexistent():
+    store = SessionStore()
+    removed = store.remove("cli", "nobody")
+    assert removed is False

@@ -61,17 +61,72 @@ class Session:
 
 @dataclass
 class SessionStore:
-    """In-memory session registry keyed by ``channel:sender_id``."""
+    """In-memory session registry keyed by ``channel:sender_id``.
 
+    Parameters:
+        max_sessions: Hard cap on stored sessions.  When exceeded after
+            TTL eviction the oldest sessions (by ``updated_at``) are
+            removed until the count is back under the limit.
+        session_ttl: Time-to-live in seconds.  Sessions whose
+            ``updated_at`` is older than this are evicted on the next
+            :meth:`get_or_create` call.
+    """
+
+    max_sessions: int = 1000
+    session_ttl: float = 3600.0
     _sessions: dict[str, Session] = field(default_factory=dict)
 
+    # -- eviction -------------------------------------------------------------
+
+    def _evict_stale(self) -> None:
+        """Remove sessions that exceed *session_ttl* or *max_sessions*."""
+        now = time.time()
+        cutoff = now - self.session_ttl
+
+        # 1. Remove sessions older than TTL
+        stale_keys = [
+            key
+            for key, session in self._sessions.items()
+            if session.updated_at < cutoff
+        ]
+        for key in stale_keys:
+            del self._sessions[key]
+            log.info("Evicted stale session: %s", key)
+
+        # 2. If still over max_sessions, evict oldest by updated_at
+        if len(self._sessions) >= self.max_sessions:
+            sorted_keys = sorted(
+                self._sessions,
+                key=lambda k: self._sessions[k].updated_at,
+            )
+            evict_count = len(self._sessions) - self.max_sessions + 1
+            for key in sorted_keys[:evict_count]:
+                del self._sessions[key]
+                log.info("Evicted session (over capacity): %s", key)
+
+    # -- public API -----------------------------------------------------------
+
     def get_or_create(self, channel: str, sender_id: str) -> Session:
-        """Return the existing session or create a new one."""
+        """Return the existing session or create a new one.
+
+        Triggers :meth:`_evict_stale` before lookup so that stale or
+        over-capacity sessions are cleaned up lazily.
+        """
+        self._evict_stale()
         key = f"{channel}:{sender_id}"
         if key not in self._sessions:
             self._sessions[key] = Session(channel=channel, sender_id=sender_id)
             log.info("New session created: %s", key)
         return self._sessions[key]
+
+    def remove(self, channel: str, sender_id: str) -> bool:
+        """Explicitly remove a session.  Returns ``True`` if it existed."""
+        key = f"{channel}:{sender_id}"
+        if key in self._sessions:
+            del self._sessions[key]
+            log.info("Session removed: %s", key)
+            return True
+        return False
 
     @property
     def active_sessions(self) -> int:
