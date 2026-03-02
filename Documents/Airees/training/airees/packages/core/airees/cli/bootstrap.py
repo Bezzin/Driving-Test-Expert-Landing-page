@@ -8,6 +8,9 @@ from typing import Any
 from airees.brain.orchestrator import BrainOrchestrator
 from airees.db.schema import GoalStore
 from airees.events import EventBus
+from airees.gateway.adapters.cli_adapter import CLIAdapter
+from airees.gateway.conversation import ConversationManager
+from airees.gateway.server import Gateway
 from airees.heartbeat import HeartbeatDaemon
 from airees.router.model_router import ModelRouter
 from airees.scheduler import Scheduler, SchedulerConfig
@@ -82,3 +85,31 @@ async def bootstrap_from_config(
     )
 
     return orch, heartbeat
+
+
+async def bootstrap_gateway(config_path: Path) -> Gateway:
+    """Create a fully-wired Gateway from airees.yaml config.
+
+    1. Bootstrap the core runtime (orchestrator, heartbeat).
+    2. Load config to resolve data_dir.
+    3. Create a ConversationManager wired to the orchestrator's router.
+    4. Create a Gateway and register the CLI adapter.
+
+    Returns:
+        A :class:`Gateway` ready to ``start()``.
+    """
+    orch, _heartbeat = await bootstrap_from_config(config_path)
+    config = load_airees_config(config_path)
+    data_dir = Path(config["data_dir"])
+
+    manager = ConversationManager(
+        router=orch.router,
+        event_bus=orch.event_bus,
+        soul_path=data_dir / "SOUL.md",
+        user_path=data_dir / "USER.md",
+        orchestrator=orch,
+    )
+
+    gateway = Gateway(conversation_manager=manager)
+    gateway.adapters.register(CLIAdapter())
+    return gateway

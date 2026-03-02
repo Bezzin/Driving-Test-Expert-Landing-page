@@ -4,6 +4,13 @@ __version__ = "0.1.0"
 
 from airees.agent import Agent
 from airees.brain.orchestrator import BrainOrchestrator
+from airees.gateway.types import Attachment, InboundMessage, OutboundMessage
+from airees.gateway.adapter import AdapterRegistry
+from airees.gateway.complexity import Complexity, classify_complexity
+from airees.gateway.conversation import ConversationManager
+from airees.gateway.personal_context import PersonalContext, load_personal_context
+from airees.gateway.server import Gateway
+from airees.gateway.session import Session, SessionStore
 from airees.brain.intent import GoalIntent, classify_intent, intent_to_prompt_hint
 from airees.brain.prompt import build_brain_prompt
 from airees.brain.state_machine import BrainState, BrainStateMachine
@@ -33,13 +40,17 @@ from airees.validation import ValidationWarning, validate_pipeline
 from airees.worker_pool import WorkerPool
 
 __all__ = [
+    "AdapterRegistry",
     "Agent",
+    "Attachment",
     "BrainOrchestrator",
     "BrainState",
     "BrainStateMachine",
+    "Complexity",
     "ConcurrencyManager",
     "ContextBudget",
     "ContextCompressor",
+    "ConversationManager",
     "Coordinator",
     "CorpusDocument",
     "CorpusResult",
@@ -55,13 +66,17 @@ __all__ = [
     "FeedbackLoop",
     "GateAction",
     "GateResult",
+    "Gateway",
     "GoalDaemon",
     "GoalIntent",
     "GoalStatus",
     "GoalStore",
     "HeartbeatDaemon",
+    "InboundMessage",
     "MCPServerConfig",
     "MCPToolProvider",
+    "OutboundMessage",
+    "PersonalContext",
     "PhaseStatus",
     "ProjectState",
     "QualityGate",
@@ -69,6 +84,8 @@ __all__ = [
     "RunResult",
     "Scheduler",
     "SchedulerConfig",
+    "Session",
+    "SessionStore",
     "SkillDocument",
     "SkillResult",
     "SkillStore",
@@ -80,10 +97,12 @@ __all__ = [
     "WorkerPool",
     "build_brain_prompt",
     "build_worker_prompt",
+    "classify_complexity",
     "classify_intent",
     "get_brain_tools",
     "get_tools_for_role",
     "intent_to_prompt_hint",
+    "load_personal_context",
     "load_soul",
     "load_state",
     "save_state",

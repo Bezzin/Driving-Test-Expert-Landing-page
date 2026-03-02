@@ -19,6 +19,45 @@ def app() -> None:
     pass
 
 
+# ── Chat ───────────────────────────────────────────────────────────
+
+
+@app.command()
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(),
+    default="airees.yaml",
+    help="Path to config file",
+)
+def chat(config_path: str) -> None:
+    """Start an interactive chat session."""
+    import asyncio
+
+    from airees.cli.bootstrap import bootstrap_gateway
+
+    async def _chat() -> None:
+        click.echo("Bootstrapping Airees...")
+        gateway = await bootstrap_gateway(Path(config_path))
+        click.echo("Airees is ready. Type your message (exit/quit to stop).\n")
+
+        cli_adapter = gateway.adapters.get("cli")
+        if cli_adapter is None:
+            click.echo("Error: CLI adapter not found.")
+            return
+
+        await gateway.start()
+        try:
+            await cli_adapter.run_interactive()
+        finally:
+            await gateway.stop()
+
+    try:
+        asyncio.run(_chat())
+    except KeyboardInterrupt:
+        click.echo("\nChat ended.")
+
+
 # ── Init ────────────────────────────────────────────────────────────
 
 
