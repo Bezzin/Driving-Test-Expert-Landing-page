@@ -12,12 +12,19 @@ from pathlib import Path
 from typing import Any
 
 from airees.gateway.complexity import Complexity, classify_complexity
+from airees.gateway.cost_tracker import CostTracker
 from airees.gateway.personal_context import PersonalContext, load_personal_context
 from airees.gateway.session import SessionStore
 from airees.gateway.types import InboundMessage, OutboundMessage
 from airees.soul import Soul, load_soul
 
 log = logging.getLogger(__name__)
+
+_MODEL_MAP: dict[str, str] = {
+    "haiku": "anthropic/claude-haiku-4-5",
+    "sonnet": "anthropic/claude-sonnet-4-5",
+    "opus": "anthropic/claude-opus-4-5",
+}
 
 
 @dataclass
@@ -41,6 +48,7 @@ class ConversationManager:
     orchestrator: Any = None
     sessions: SessionStore = field(default_factory=SessionStore)
     max_context_turns: int = 10
+    cost_tracker: CostTracker | None = None
 
     # Lazy-loaded caches (not part of __init__)
     _soul: Soul | None = field(default=None, init=False, repr=False)
@@ -90,7 +98,8 @@ class ConversationManager:
             )
         else:
             reply_text = await self._run_quick(
-                message.text, context_messages, personal
+                message.text, context_messages, personal,
+                complexity=complexity, channel=message.channel,
             )
 
         session.add_turn(user_text=message.text, assistant_text=reply_text)
@@ -106,20 +115,36 @@ class ConversationManager:
         text: str,
         context_messages: list[dict[str, str]],
         personal: PersonalContext,
+        *,
+        complexity: Complexity = Complexity.QUICK,
+        channel: str = "unknown",
     ) -> str:
         """Handle a quick/moderate message via the model router."""
         soul = self._get_soul()
         system_prompt = soul.to_prompt() + "\n\n" + personal.to_prompt()
         messages = [*context_messages, {"role": "user", "content": text}]
+        model = _MODEL_MAP.get(complexity.model_hint, _MODEL_MAP["haiku"])
 
         try:
             response = await self.router.create_message(
-                model="anthropic/claude-haiku-4-5",
+                model=model,
                 system=system_prompt,
                 messages=messages,
                 max_tokens=1024,
             )
-            return response.content[0].text
+            reply_text = response.content[0].text
+
+            if self.cost_tracker is not None:
+                input_tokens = len(system_prompt + text) // 4
+                output_tokens = len(reply_text) // 4
+                self.cost_tracker.record(
+                    model=model,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    channel=channel,
+                )
+
+            return reply_text
         except Exception as exc:
             log.error("_run_quick failed: %s", exc, exc_info=True)
             return "I'm sorry, something went wrong. Please try again."

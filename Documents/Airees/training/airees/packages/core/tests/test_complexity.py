@@ -60,6 +60,13 @@ async def test_multi_step_plan_returns_complex():
 
 
 @pytest.mark.asyncio
+async def test_short_complex_message_returns_complex():
+    """Short messages matching complex patterns should be COMPLEX, not QUICK."""
+    result = await classify_complexity("plan and deploy")
+    assert result is Complexity.COMPLEX
+
+
+@pytest.mark.asyncio
 async def test_long_text_returns_complex():
     long_text = "Please analyze the following situation. " * 10
     assert len(long_text) > 200

@@ -155,3 +155,56 @@ async def test_includes_history_in_context():
     assert messages[0]["content"] == "first message"
     assert messages[1]["content"] == "second reply"
     assert messages[-1]["content"] == "second message"
+
+
+# -- Model routing by complexity ------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_moderate_message_uses_sonnet():
+    """MODERATE complexity should use sonnet, not haiku."""
+    router = FakeRouter(reply="analysis done")
+    mgr = _make_manager(router=router)
+
+    # "summarize the quarterly report findings" is MODERATE (>30 chars, no complex/quick patterns)
+    msg = InboundMessage(channel="cli", sender_id="user-1", text="summarize the quarterly report findings")
+    response = await mgr.handle(msg)
+
+    assert response.text == "analysis done"
+    assert len(router._calls) == 1
+    # Should use sonnet for MODERATE
+    assert "sonnet" in router._calls[0]["model"]
+
+
+@pytest.mark.asyncio
+async def test_quick_message_uses_haiku():
+    """QUICK complexity should use haiku."""
+    router = FakeRouter(reply="hi there")
+    mgr = _make_manager(router=router)
+
+    msg = InboundMessage(channel="cli", sender_id="user-1", text="hi")
+    response = await mgr.handle(msg)
+
+    assert response.text == "hi there"
+    assert "haiku" in router._calls[0]["model"]
+
+
+# -- CostTracker wiring -------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_cost_tracker_records_on_quick_message():
+    """CostTracker records cost after quick message handling."""
+    from airees.gateway.cost_tracker import CostTracker
+
+    router = FakeRouter(reply="hello")
+    tracker = CostTracker()
+    mgr = _make_manager(router=router)
+    mgr.cost_tracker = tracker
+
+    msg = InboundMessage(channel="cli", sender_id="user-1", text="hi")
+    await mgr.handle(msg)
+
+    assert tracker.total_turns == 1
+    assert tracker.total_cost > 0
+    assert "cli" in tracker.by_channel()

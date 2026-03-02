@@ -67,27 +67,29 @@ async def classify_complexity(text: str) -> Complexity:
     """
     stripped = text.strip()
 
-    # Short messages are almost always quick
-    if len(stripped) < _SHORT_THRESHOLD:
-        log.debug("classify_complexity: SHORT -> QUICK (%d chars)", len(stripped))
-        return Complexity.QUICK
-
-    # Check quick patterns (greetings, simple questions)
+    # 1. Check quick patterns (greetings, simple questions) — unambiguous
     for pattern in _QUICK_PATTERNS:
         if pattern.search(stripped):
             log.debug("classify_complexity: QUICK pattern matched")
             return Complexity.QUICK
 
-    # Check complex patterns before length check
+    # 2. Check complex patterns — before length thresholds so short complex
+    #    messages like "plan and deploy" are not misclassified as QUICK
     for pattern in _COMPLEX_PATTERNS:
         if pattern.search(stripped):
             log.debug("classify_complexity: COMPLEX pattern matched")
             return Complexity.COMPLEX
 
-    # Long messages default to complex
+    # 3. Short messages default to quick
+    if len(stripped) < _SHORT_THRESHOLD:
+        log.debug("classify_complexity: SHORT -> QUICK (%d chars)", len(stripped))
+        return Complexity.QUICK
+
+    # 4. Long messages default to complex
     if len(stripped) > _LONG_THRESHOLD:
         log.debug("classify_complexity: LONG -> COMPLEX (%d chars)", len(stripped))
         return Complexity.COMPLEX
 
+    # 5. Everything else is moderate
     log.debug("classify_complexity: default -> MODERATE")
     return Complexity.MODERATE
