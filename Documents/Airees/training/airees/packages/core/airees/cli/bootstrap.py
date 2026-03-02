@@ -14,6 +14,7 @@ from airees.gateway.cost_tracker import CostTracker
 from airees.gateway.model_preference import ModelPreference
 from airees.gateway.server import Gateway
 from airees.heartbeat import HeartbeatDaemon
+from airees.knowledge.store import KnowledgeStore
 from airees.router.model_router import ModelRouter
 from airees.scheduler import Scheduler, SchedulerConfig
 from airees.skill_store import SkillStore
@@ -108,6 +109,7 @@ async def bootstrap_gateway(config_path: Path) -> Gateway:
     skill_store = SkillStore(skills_dir=data_dir / "skills")
     cost_tracker = CostTracker()
     model_preference = ModelPreference()
+    knowledge_store = KnowledgeStore(data_dir=data_dir / "knowledge")
 
     manager = ConversationManager(
         router=orch.router,
@@ -118,8 +120,17 @@ async def bootstrap_gateway(config_path: Path) -> Gateway:
         skill_store=skill_store,
         cost_tracker=cost_tracker,
         model_preference=model_preference,
+        knowledge_store=knowledge_store,
     )
 
     gateway = Gateway(conversation_manager=manager)
     gateway.adapters.register(CLIAdapter())
+
+    # Optional Discord adapter — only registered when token is present
+    discord_token = os.environ.get("DISCORD_BOT_TOKEN")
+    if discord_token:
+        from airees.gateway.adapters.discord_adapter import DiscordAdapter
+
+        gateway.adapters.register(DiscordAdapter(bot_token=discord_token))
+
     return gateway

@@ -12,6 +12,8 @@ from airees.gateway.cost_tracker import CostTracker, ModelCost
 from airees.gateway.learning import AutoSkillCapture
 from airees.gateway.model_preference import ModelPreference
 from airees.gateway.personal_context import PersonalContext, load_personal_context
+from airees.gateway.cron import CronTrigger
+from airees.gateway.proactive import ProactiveScheduler
 from airees.gateway.server import Gateway
 from airees.gateway.session import Session, SessionStore
 from airees.brain.intent import GoalIntent, classify_intent, intent_to_prompt_hint
@@ -26,6 +28,7 @@ from airees.coordinator.worker_builder import build_worker_prompt, get_tools_for
 from airees.corpus_search import CorpusDocument, CorpusResult, CorpusSearchEngine
 from airees.db.schema import GoalStatus, GoalStore, TaskStatus
 from airees.decision_doc import DecisionDocument, DecisionEntry
+from airees.knowledge.store import KnowledgeResult, KnowledgeStore
 from airees.events import Event, EventBus, EventType
 from airees.feedback import FeedbackConfig, FeedbackEntry, FeedbackLoop
 from airees.goal_daemon import GoalDaemon
@@ -40,6 +43,8 @@ from airees.soul import Soul, load_soul
 from airees.state import PhaseStatus, ProjectState, load_state, save_state
 from airees.tools.registry import TrustLevel
 from airees.validation import ValidationWarning, validate_pipeline
+from airees.voice.stt import SpeechToText
+from airees.voice.tts import TextToSpeech
 from airees.worker_pool import WorkerPool
 
 __all__ = [
@@ -60,6 +65,7 @@ __all__ = [
     "CorpusDocument",
     "CorpusResult",
     "CorpusSearchEngine",
+    "CronTrigger",
     "DecisionDocument",
     "DecisionEntry",
     "Event",
@@ -78,6 +84,8 @@ __all__ = [
     "GoalStore",
     "HeartbeatDaemon",
     "InboundMessage",
+    "KnowledgeResult",
+    "KnowledgeStore",
     "MCPServerConfig",
     "MCPToolProvider",
     "ModelCost",
@@ -85,6 +93,7 @@ __all__ = [
     "OutboundMessage",
     "PersonalContext",
     "PhaseStatus",
+    "ProactiveScheduler",
     "ProjectState",
     "QualityGate",
     "Runner",
@@ -97,7 +106,9 @@ __all__ = [
     "SkillResult",
     "SkillStore",
     "Soul",
+    "SpeechToText",
     "TaskStatus",
+    "TextToSpeech",
     "TokenUsage",
     "TrustLevel",
     "ValidationWarning",
