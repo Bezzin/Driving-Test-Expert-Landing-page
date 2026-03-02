@@ -37,10 +37,11 @@ class TextToSpeech:
                 "Install it with: pip install 'airees[voice]'"
             )
 
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
-            temp_path = f.name
-
+        temp_path = None
         try:
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+                temp_path = f.name
+
             voice = PiperVoice.load(self.voice)
             with open(temp_path, "wb") as wav_file:
                 voice.synthesize(text, wav_file)
@@ -49,4 +50,5 @@ class TextToSpeech:
             log.info("Synthesized %d chars -> %d bytes", len(text), len(audio_data))
             return audio_data
         finally:
-            Path(temp_path).unlink(missing_ok=True)
+            if temp_path is not None:
+                Path(temp_path).unlink(missing_ok=True)

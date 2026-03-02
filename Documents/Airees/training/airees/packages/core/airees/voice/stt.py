@@ -46,14 +46,15 @@ class SpeechToText:
         model = self._get_model()
 
         # Write to temp file (faster-whisper requires a file path)
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
-            f.write(audio_data)
-            temp_path = f.name
-
+        temp_path = None
         try:
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+                temp_path = f.name
+                f.write(audio_data)
             segments, _info = model.transcribe(temp_path, language=language)
             text = " ".join(segment.text.strip() for segment in segments)
             log.info("Transcribed %d bytes -> %d chars", len(audio_data), len(text))
             return text
         finally:
-            Path(temp_path).unlink(missing_ok=True)
+            if temp_path is not None:
+                Path(temp_path).unlink(missing_ok=True)

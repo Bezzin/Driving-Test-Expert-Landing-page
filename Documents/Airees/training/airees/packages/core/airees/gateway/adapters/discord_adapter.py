@@ -26,10 +26,11 @@ class DiscordAdapter:
         name: Channel identifier, always ``"discord"``.
     """
 
-    bot_token: str
+    bot_token: str = field(repr=False)
     name: str = field(default="discord", init=False)
     _handler: MessageHandler | None = field(default=None, init=False, repr=False)
     _bot: Any = field(default=None, init=False, repr=False)
+    _task: Any = field(default=None, init=False, repr=False)
 
     def set_message_handler(self, handler: MessageHandler) -> None:
         """Register the callback invoked for each inbound message."""
@@ -76,14 +77,25 @@ class DiscordAdapter:
                 await adapter._handler(inbound)
 
         # Run bot in background (non-blocking)
-        asyncio.create_task(self._bot.start(self.bot_token))
+        self._task = asyncio.create_task(self._bot.start(self.bot_token))
+        self._task.add_done_callback(self._on_bot_done)
         log.info("Discord adapter started")
+
+    def _on_bot_done(self, task: Any) -> None:
+        """Log errors from the background bot task."""
+        if task.cancelled():
+            return
+        exc = task.exception()
+        if exc is not None:
+            log.error("Discord bot crashed: %s", exc)
 
     async def stop(self) -> None:
         """Stop the Discord bot and clean up."""
         if self._bot is not None:
             await self._bot.close()
-            log.info("Discord adapter stopped")
+        if self._task is not None and not self._task.done():
+            self._task.cancel()
+        log.info("Discord adapter stopped")
 
     async def send(self, message: OutboundMessage) -> None:
         """Send a message to a Discord channel or user DM.

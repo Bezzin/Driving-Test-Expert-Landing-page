@@ -15,6 +15,9 @@ class CronTrigger:
     Attributes:
         id: Unique trigger identifier.
         expression: Cron expression (minute hour day month weekday).
+            Only ``*`` and exact integer values are supported.
+            Ranges (1-5), steps (*/5), and lists (1,15) are not yet implemented.
+            Weekday uses Python convention: 0=Monday, 6=Sunday.
         goal_text: Goal to submit when triggered.
         channel: Channel to deliver the result to.
         recipient_id: User ID for the push notification.

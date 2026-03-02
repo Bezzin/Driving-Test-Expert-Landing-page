@@ -29,7 +29,7 @@ class TelegramAdapter:
             and route them through the STT/TTS pipeline.  Defaults to ``False``.
     """
 
-    bot_token: str
+    bot_token: str = field(repr=False)
     name: str = field(default="telegram", init=False)
     allowed_user_ids: tuple[int, ...] = ()
     voice_enabled: bool = False
@@ -82,7 +82,7 @@ class TelegramAdapter:
             TGHandler(TEXT, self._on_message)
         )
 
-        log.info("TelegramAdapter starting with bot token %s****", self.bot_token[:4])
+        log.info("TelegramAdapter starting (token configured)")
         await self._application.initialize()
         await self._application.start()
         await self._application.updater.start_polling()

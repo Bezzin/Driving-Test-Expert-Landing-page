@@ -30,6 +30,7 @@ class KnowledgeStore:
     """
 
     data_dir: Path
+    _client: Any = field(default=None, init=False, repr=False)
     _collection: Any = field(default=None, init=False, repr=False)
 
     def _get_collection(self) -> Any:
@@ -38,12 +39,17 @@ class KnowledgeStore:
             import chromadb
 
             self.data_dir.mkdir(parents=True, exist_ok=True)
-            client = chromadb.PersistentClient(path=str(self.data_dir))
-            self._collection = client.get_or_create_collection(
+            self._client = chromadb.PersistentClient(path=str(self.data_dir))
+            self._collection = self._client.get_or_create_collection(
                 name="personal_knowledge",
             )
             log.info("ChromaDB collection initialized at %s", self.data_dir)
         return self._collection
+
+    def close(self) -> None:
+        """Release ChromaDB resources."""
+        self._collection = None
+        self._client = None
 
     def ingest(self, path: Path) -> int:
         """Ingest a file into the knowledge store.
@@ -123,8 +129,8 @@ class KnowledgeStore:
         elif suffix == ".pdf":
             return self._extract_pdf(path)
         else:
-            log.warning("Unsupported file type: %s", suffix)
-            return path.read_text(encoding="utf-8", errors="ignore")
+            log.warning("Unsupported file type %s — skipping", suffix)
+            return ""
 
     def _extract_pdf(self, path: Path) -> str:
         """Extract text from a PDF file."""

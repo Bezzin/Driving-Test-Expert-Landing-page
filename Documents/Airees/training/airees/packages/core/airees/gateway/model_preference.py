@@ -57,8 +57,9 @@ class ModelPreference:
         return self._overrides.get(complexity, _DEFAULT_HINTS.get(complexity, "sonnet"))
 
     def stats(self) -> dict[str, Any]:
-        """Return raw success/failure counts."""
-        return dict(self._records)
+        """Return raw success/failure counts (deep copy)."""
+        import copy
+        return copy.deepcopy(self._records)
 
     def _recompute(self, complexity: str) -> None:
         """Recompute the override for a complexity tier."""
