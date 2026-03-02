@@ -122,3 +122,31 @@ def test_daemon_status(runner):
     """daemon status should report not running."""
     result = runner.invoke(app, ["daemon", "status"])
     assert result.exit_code == 0
+
+
+# ── Task 15: Daemon start with bootstrap ──────────────────────────
+
+
+def test_daemon_start_with_config(runner, tmp_path):
+    """daemon start with valid config should attempt bootstrap."""
+    config_file = tmp_path / "airees.yaml"
+    config_file.write_text(
+        f"brain_model: anthropic/claude-opus-4-6\ndata_dir: {tmp_path / 'data'}\n",
+        encoding="utf-8",
+    )
+    result = runner.invoke(app, [
+        "daemon", "start",
+        "--config", str(config_file),
+        "--dry-run",
+    ])
+    assert result.exit_code == 0
+    assert "bootstrap" in result.output.lower() or "ready" in result.output.lower()
+
+
+# ── Task 16: Logs command ─────────────────────────────────────────
+
+
+def test_logs_command(runner, tmp_path):
+    """logs command should work even with no log file."""
+    result = runner.invoke(app, ["logs", "--data-dir", str(tmp_path)])
+    assert result.exit_code == 0

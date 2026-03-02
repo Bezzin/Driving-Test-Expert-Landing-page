@@ -352,18 +352,49 @@ def daemon() -> None:
 
 
 @daemon.command()
-@click.option("--interval", type=int, default=30, help="Poll interval in seconds")
+@click.option("--interval", type=int, default=15, help="Poll interval in seconds")
 @click.option("--max-concurrent", type=int, default=5, help="Max concurrent goals")
-@click.option("--data-dir", type=click.Path(), default="data", help="Data directory")
-def start(interval: int, max_concurrent: int, data_dir: str) -> None:
+@click.option("--config", "config_path", type=click.Path(), default="airees.yaml", help="Path to config file")
+@click.option("--dry-run", is_flag=True, default=False, help="Bootstrap then exit without running")
+def start(interval: int, max_concurrent: int, config_path: str, dry_run: bool) -> None:
     """Start the goal daemon (polls for pending and interrupted goals)."""
-    click.echo(f"Starting GoalDaemon (interval={interval}s, max_concurrent={max_concurrent})")
+    import asyncio
 
-    data_path = Path(data_dir)
-    click.echo(f"Data dir: {data_path.resolve()}")
-    click.echo(f"State dir: {(data_path / 'states').resolve()}")
-    click.echo("GoalDaemon requires a configured BrainOrchestrator.")
-    click.echo("Full runtime bootstrap will be added in a future release.")
+    from airees.cli.bootstrap import bootstrap_from_config
+    from airees.goal_daemon import GoalDaemon
+
+    async def _start() -> None:
+        click.echo(f"Bootstrap from {config_path}...")
+        orch, heartbeat = await bootstrap_from_config(Path(config_path))
+        click.echo(
+            f"Bootstrap ready — model={orch.brain_model}, "
+            f"interval={interval}s, max_concurrent={max_concurrent}"
+        )
+
+        if dry_run:
+            click.echo("Dry run complete — exiting without starting daemon.")
+            return
+
+        goal_daemon = GoalDaemon(
+            orchestrator=orch,
+            scheduler=heartbeat.scheduler,
+            poll_interval=interval,
+            state_dir=orch.state_dir,
+        )
+
+        click.echo("Starting GoalDaemon and HeartbeatDaemon...")
+        try:
+            await asyncio.gather(
+                goal_daemon.run_forever(),
+                heartbeat.run_forever(),
+            )
+        except KeyboardInterrupt:
+            click.echo("Shutting down...")
+
+    try:
+        asyncio.run(_start())
+    except KeyboardInterrupt:
+        click.echo("Daemon stopped.")
 
 
 @daemon.command()
@@ -459,6 +490,49 @@ def doctor(config_path: str, deep: bool) -> None:
             click.echo("Skills: directory not found")
 
     click.echo("\nDone.")
+
+
+# ── Logs (top-level) ──────────────────────────────────────────────
+
+
+@app.command()
+@click.option("--tail", is_flag=True, help="Follow log output (show last 20 lines)")
+@click.option(
+    "--level",
+    type=click.Choice(["debug", "info", "warning", "error"]),
+    default="info",
+)
+@click.option("--data-dir", type=click.Path(), default="data", help="Data directory")
+def logs(tail: bool, level: str, data_dir: str) -> None:
+    """View daemon logs."""
+    log_path = Path(data_dir) / "airees.log"
+    if not log_path.exists():
+        click.echo("No log file found. Start the daemon first.")
+        return
+    content = log_path.read_text(encoding="utf-8")
+    lines = content.strip().split("\n")
+    level_order = {"debug": 0, "info": 1, "warning": 2, "error": 3}
+    min_level = level_order.get(level, 1)
+    filtered = []
+    for line in lines:
+        line_lower = line.lower()
+        matched = False
+        for lvl, order in level_order.items():
+            if lvl in line_lower and order >= min_level:
+                filtered.append(line)
+                matched = True
+                break
+        if not matched and min_level <= 1:
+            filtered.append(line)
+    if not filtered:
+        click.echo("No matching log entries")
+        return
+    if tail:
+        for line in filtered[-20:]:
+            click.echo(line)
+    else:
+        for line in filtered:
+            click.echo(line)
 
 
 if __name__ == "__main__":
