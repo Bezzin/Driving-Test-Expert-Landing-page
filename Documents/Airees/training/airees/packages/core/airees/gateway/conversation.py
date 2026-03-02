@@ -13,6 +13,7 @@ from typing import Any
 
 from airees.gateway.complexity import Complexity, classify_complexity
 from airees.gateway.cost_tracker import CostTracker
+from airees.gateway.model_preference import ModelPreference
 from airees.gateway.personal_context import PersonalContext, load_personal_context
 from airees.gateway.session import SessionStore
 from airees.gateway.types import InboundMessage, OutboundMessage
@@ -53,6 +54,7 @@ class ConversationManager:
     max_context_turns: int = 10
     cost_tracker: CostTracker | None = None
     skill_store: SkillStore | None = None
+    model_preference: ModelPreference | None = None
 
     # Lazy-loaded caches (not part of __init__)
     _soul: Soul | None = field(default=None, init=False, repr=False)
@@ -142,7 +144,12 @@ class ConversationManager:
         soul = self._get_soul()
         system_prompt = soul.to_prompt() + "\n\n" + personal.to_prompt()
         messages = [*context_messages, {"role": "user", "content": text}]
-        model = _MODEL_MAP.get(complexity.model_hint, _MODEL_MAP["haiku"])
+
+        if self.model_preference is not None:
+            hint = self.model_preference.get_model(complexity.value)
+        else:
+            hint = complexity.model_hint
+        model = _MODEL_MAP.get(hint, _MODEL_MAP["haiku"])
 
         try:
             response = await self.router.create_message(
@@ -162,6 +169,13 @@ class ConversationManager:
                     input_tokens=input_tokens,
                     output_tokens=output_tokens,
                     channel=channel,
+                )
+
+            if self.model_preference is not None:
+                self.model_preference.record(
+                    complexity=complexity.value,
+                    model_used=hint,
+                    success=True,
                 )
 
             return reply_text

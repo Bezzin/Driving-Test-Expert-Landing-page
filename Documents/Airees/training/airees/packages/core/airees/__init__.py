@@ -9,6 +9,8 @@ from airees.gateway.adapter import AdapterRegistry
 from airees.gateway.complexity import Complexity, classify_complexity
 from airees.gateway.conversation import ConversationManager
 from airees.gateway.cost_tracker import CostTracker, ModelCost
+from airees.gateway.learning import AutoSkillCapture
+from airees.gateway.model_preference import ModelPreference
 from airees.gateway.personal_context import PersonalContext, load_personal_context
 from airees.gateway.server import Gateway
 from airees.gateway.session import Session, SessionStore
@@ -44,6 +46,7 @@ __all__ = [
     "AdapterRegistry",
     "Agent",
     "Attachment",
+    "AutoSkillCapture",
     "BrainOrchestrator",
     "BrainState",
     "BrainStateMachine",
@@ -78,6 +81,7 @@ __all__ = [
     "MCPServerConfig",
     "MCPToolProvider",
     "ModelCost",
+    "ModelPreference",
     "OutboundMessage",
     "PersonalContext",
     "PhaseStatus",

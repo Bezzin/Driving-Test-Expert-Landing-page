@@ -10,10 +10,13 @@ from airees.db.schema import GoalStore
 from airees.events import EventBus
 from airees.gateway.adapters.cli_adapter import CLIAdapter
 from airees.gateway.conversation import ConversationManager
+from airees.gateway.cost_tracker import CostTracker
+from airees.gateway.model_preference import ModelPreference
 from airees.gateway.server import Gateway
 from airees.heartbeat import HeartbeatDaemon
 from airees.router.model_router import ModelRouter
 from airees.scheduler import Scheduler, SchedulerConfig
+from airees.skill_store import SkillStore
 
 
 _DEFAULTS: dict[str, Any] = {
@@ -102,12 +105,19 @@ async def bootstrap_gateway(config_path: Path) -> Gateway:
     config = load_airees_config(config_path)
     data_dir = Path(config["data_dir"])
 
+    skill_store = SkillStore(skills_dir=data_dir / "skills")
+    cost_tracker = CostTracker()
+    model_preference = ModelPreference()
+
     manager = ConversationManager(
         router=orch.router,
         event_bus=orch.event_bus,
         soul_path=data_dir / "SOUL.md",
         user_path=data_dir / "USER.md",
         orchestrator=orch,
+        skill_store=skill_store,
+        cost_tracker=cost_tracker,
+        model_preference=model_preference,
     )
 
     gateway = Gateway(conversation_manager=manager)
