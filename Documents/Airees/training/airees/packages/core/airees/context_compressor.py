@@ -107,20 +107,20 @@ class ContextCompressor:
     def _emergency_trim(
         self, messages: list[dict[str, Any]]
     ) -> list[dict[str, Any]]:
-        last_user = None
-        last_assistant = None
-        for msg in reversed(messages):
+        last_user: tuple[int, dict] | None = None
+        last_assistant: tuple[int, dict] | None = None
+        for i in range(len(messages) - 1, -1, -1):
+            msg = messages[i]
             if msg.get("role") == "user" and last_user is None:
-                last_user = msg
+                last_user = (i, msg)
             elif msg.get("role") == "assistant" and last_assistant is None:
-                last_assistant = msg
+                last_assistant = (i, msg)
             if last_user and last_assistant:
                 break
-        result = []
-        if last_user:
-            result.append(last_user)
-        if last_assistant:
-            result.append(last_assistant)
+        # Sort by original index to preserve chronological order
+        found = [x for x in (last_user, last_assistant) if x is not None]
+        found.sort(key=lambda x: x[0])
+        result = [msg for _, msg in found]
         return result if result else list(messages[-1:])
 
     async def _haiku_summarize(self, text: str) -> str:

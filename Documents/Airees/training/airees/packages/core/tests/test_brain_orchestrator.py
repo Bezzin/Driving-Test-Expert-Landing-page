@@ -509,6 +509,83 @@ async def test_handle_brain_tool_create_skill(tmp_path):
 
 
 @pytest.mark.asyncio
+async def test_plan_dispatches_phase4_tools(store, mock_router, event_bus, tmp_path):
+    """Phase 4 tool_use blocks in the plan() response should be dispatched."""
+    # Response contains both a search_corpus tool and a create_plan tool
+    resp = MagicMock()
+    resp.stop_reason = "tool_use"
+    resp.usage = MagicMock(input_tokens=100, output_tokens=200)
+
+    corpus_block = MagicMock()
+    corpus_block.type = "tool_use"
+    corpus_block.id = "tool_corpus_1"
+    corpus_block.name = "search_corpus"
+    corpus_block.input = {"query": "agent fundamentals", "top_k": 2}
+
+    plan_block = MagicMock()
+    plan_block.type = "tool_use"
+    plan_block.id = "tool_plan_1"
+    plan_block.name = "create_plan"
+    plan_block.input = {
+        "tasks": [
+            {"title": "Setup", "description": "Bootstrap", "agent_role": "coder", "dependencies": []},
+        ],
+        "strategy": "Quick build",
+    }
+    resp.content = [corpus_block, plan_block]
+    mock_router.create_message = AsyncMock(return_value=resp)
+
+    corpus = MagicMock(spec=CorpusSearchEngine)
+    corpus.search.return_value = []
+    corpus.format_results.return_value = "No results"
+
+    orch = BrainOrchestrator(
+        store=store,
+        brain_model="test",
+        router=mock_router,
+        event_bus=event_bus,
+        soul_path=tmp_path / "SOUL.md",
+        state_dir=tmp_path / "states",
+        corpus_engine=corpus,
+    )
+    goal_id = await orch.submit_goal("Test goal")
+    tasks = await orch.plan(goal_id)
+
+    # corpus search tool was dispatched
+    assert corpus.search.call_count >= 1
+    # plan was still created
+    assert len(tasks) == 1
+    assert tasks[0]["title"] == "Setup"
+
+
+@pytest.mark.asyncio
+async def test_handle_brain_tool_update_skill_passes_success(tmp_path):
+    """update_skill should forward the success field to SkillStore."""
+    skills = MagicMock(spec=SkillStore)
+    skills.update_skill.return_value = tmp_path / "test-skill.md"
+
+    orch = BrainOrchestrator(
+        store=AsyncMock(),
+        brain_model="test",
+        router=AsyncMock(),
+        event_bus=EventBus(),
+        skill_store=skills,
+    )
+    await orch._handle_brain_tool("update_skill", {
+        "name": "test-skill",
+        "lessons_learned": "Worked well",
+        "success": True,
+    })
+    skills.update_skill.assert_called_once_with(
+        name="test-skill",
+        lessons_learned="Worked well",
+        known_pitfalls="",
+        task_graph="",
+        success=True,
+    )
+
+
+@pytest.mark.asyncio
 async def test_handle_brain_tool_update_soul(tmp_path):
     soul_path = tmp_path / "SOUL.md"
     soul_path.write_text(

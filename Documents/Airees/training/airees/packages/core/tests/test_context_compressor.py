@@ -95,6 +95,73 @@ async def test_compress_stage_4_emergency():
     assert len(result) <= 2
 
 
+@pytest.mark.asyncio
+async def test_compress_stage_2_collapses_pairs():
+    budget = ContextBudget(max_tokens=1000, used_tokens=780)
+    compressor = ContextCompressor(router=AsyncMock(), budget=budget)
+    messages = [
+        {"role": "user", "content": "Task 1"},
+        {"role": "assistant", "content": "Output 1"},
+        {"role": "user", "content": "Task 2"},
+        {"role": "assistant", "content": "Output 2"},
+        {"role": "user", "content": "Task 3"},
+        {"role": "assistant", "content": "Output 3"},
+    ]
+    result = await compressor.compress(messages, stage=2)
+    # Last 4 messages kept verbatim, earlier collapsed into one summary
+    assert len(result) == 5  # 1 collapsed + 4 recent
+    assert "[Compressed earlier context]" in result[0]["content"]
+    assert result[-1]["content"] == "Output 3"
+
+
+@pytest.mark.asyncio
+async def test_compress_stage_2_short_passthrough():
+    budget = ContextBudget(max_tokens=1000, used_tokens=780)
+    compressor = ContextCompressor(router=AsyncMock(), budget=budget)
+    messages = [
+        {"role": "user", "content": "Task 1"},
+        {"role": "assistant", "content": "Output 1"},
+    ]
+    result = await compressor.compress(messages, stage=2)
+    # <= 4 messages: returned as-is
+    assert result == messages
+
+
+@pytest.mark.asyncio
+async def test_compress_stage_3_checkpoint_trim():
+    budget = ContextBudget(max_tokens=1000, used_tokens=870)
+    compressor = ContextCompressor(router=AsyncMock(), budget=budget)
+    messages = [
+        {"role": "user", "content": "Task 1"},
+        {"role": "assistant", "content": "Output 1"},
+        {"role": "user", "content": "Task 2"},
+        {"role": "assistant", "content": "Output 2"},
+        {"role": "user", "content": "Task 3"},
+        {"role": "assistant", "content": "Output 3"},
+    ]
+    result = await compressor.compress(messages, stage=3)
+    assert len(result) == 2
+    assert result[0]["content"] == "Task 3"
+    assert result[1]["content"] == "Output 3"
+
+
+@pytest.mark.asyncio
+async def test_emergency_trim_preserves_chronological_order():
+    budget = ContextBudget(max_tokens=1000, used_tokens=960)
+    compressor = ContextCompressor(router=AsyncMock(), budget=budget)
+    messages = [
+        {"role": "user", "content": "Old task"},
+        {"role": "assistant", "content": "Old output"},
+        {"role": "user", "content": "Latest task"},
+        {"role": "assistant", "content": "Latest output"},
+    ]
+    result = await compressor.compress(messages, stage=4)
+    assert len(result) == 2
+    # User must come before assistant (chronological)
+    assert result[0]["role"] == "user"
+    assert result[1]["role"] == "assistant"
+
+
 def test_update_budget():
     budget = ContextBudget(max_tokens=1000, used_tokens=500)
     compressor = ContextCompressor(router=AsyncMock(), budget=budget)

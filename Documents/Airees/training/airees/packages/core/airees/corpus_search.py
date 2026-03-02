@@ -14,7 +14,7 @@ class CorpusDocument:
     title: str
     category: str
     content: str
-    tokens: list[str]
+    tokens: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -75,7 +75,7 @@ class CorpusSearchEngine:
 
             title = self._extract_title(content)
             category = self._extract_category(md_file)
-            tokens = self._tokenize(f"{title} {category} {content}")
+            tokens = tuple(self._tokenize(f"{title} {category} {content}"))
 
             if not tokens:
                 continue
@@ -94,7 +94,7 @@ class CorpusSearchEngine:
             self._index = None
             return
 
-        corpus_tokenized = [doc.tokens for doc in self._documents]
+        corpus_tokenized = [list(doc.tokens) for doc in self._documents]
         self._index = BM25Okapi(corpus_tokenized)
 
     def search(self, query: str, top_k: int = 3) -> list[CorpusResult]:

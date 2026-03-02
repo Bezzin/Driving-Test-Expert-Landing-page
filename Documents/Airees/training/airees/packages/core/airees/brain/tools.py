@@ -195,6 +195,10 @@ def get_brain_tools() -> list[ToolDefinition]:
                     "lessons_learned": {"type": "string"},
                     "known_pitfalls": {"type": "string"},
                     "task_graph": {"type": "string"},
+                    "success": {
+                        "type": "boolean",
+                        "description": "Whether the skill execution was successful",
+                    },
                 },
                 "required": ["name"],
             },

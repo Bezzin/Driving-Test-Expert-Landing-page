@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any
 
 
@@ -16,10 +17,10 @@ class SkillDocument:
     description: str
     version: int
     success_rate: float
-    triggers: list[str]
+    triggers: tuple[str, ...]
     content: str
-    tokens: list[str]
-    frontmatter: dict[str, Any]
+    tokens: tuple[str, ...]
+    frontmatter: MappingProxyType
 
 
 @dataclass(frozen=True)
@@ -121,7 +122,7 @@ class SkillStore:
                 triggers = [triggers]
 
             search_text = f"{name} {description} {' '.join(triggers)} {body}"
-            tokens = self._tokenize(search_text)
+            tokens = tuple(self._tokenize(search_text))
 
             if not tokens:
                 continue
@@ -133,10 +134,10 @@ class SkillStore:
                     description=description,
                     version=int(fm.get("version", 1)),
                     success_rate=float(fm.get("success_rate", 0.0)),
-                    triggers=triggers,
+                    triggers=tuple(triggers),
                     content=body,
                     tokens=tokens,
-                    frontmatter=fm,
+                    frontmatter=MappingProxyType(fm),
                 )
             )
 
@@ -144,7 +145,7 @@ class SkillStore:
             self._index = None
             return
 
-        self._index = BM25Okapi([s.tokens for s in self._skills])
+        self._index = BM25Okapi([list(s.tokens) for s in self._skills])
 
     def search(self, query: str, top_k: int = 3) -> list[SkillResult]:
         if self._index is None and not self._skills:

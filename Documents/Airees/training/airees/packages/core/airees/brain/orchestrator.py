@@ -275,8 +275,17 @@ class BrainOrchestrator:
         )
 
         tasks_created = []
+        phase4_tools = {"search_corpus", "search_skills", "create_skill", "update_skill", "update_soul"}
         for block in response.content:
-            if getattr(block, "type", None) == "tool_use" and block.name == "create_plan":
+            if getattr(block, "type", None) != "tool_use":
+                continue
+
+            # Dispatch Phase 4 memory/learning tools
+            if block.name in phase4_tools:
+                await self._handle_brain_tool(block.name, block.input)
+                continue
+
+            if block.name == "create_plan":
                 plan_data = block.input
                 task_id_map: dict[int, str] = {}
 
@@ -614,8 +623,17 @@ class BrainOrchestrator:
             tools=tools_formatted,
         )
 
+        phase4_tools = {"search_corpus", "search_skills", "create_skill", "update_skill", "update_soul"}
         for block in response.content:
-            if getattr(block, "type", None) == "tool_use" and block.name == "evaluate_result":
+            if getattr(block, "type", None) != "tool_use":
+                continue
+
+            # Dispatch Phase 4 memory/learning tools
+            if block.name in phase4_tools:
+                await self._handle_brain_tool(block.name, block.input)
+                continue
+
+            if block.name == "evaluate_result":
                 action = block.input.get("action", "satisfied")
                 reasoning = block.input.get("reasoning", "")
                 await self.store.log_decision(
@@ -679,6 +697,7 @@ class BrainOrchestrator:
                 lessons_learned=tool_input.get("lessons_learned", ""),
                 known_pitfalls=tool_input.get("known_pitfalls", ""),
                 task_graph=tool_input.get("task_graph", ""),
+                success=tool_input.get("success"),
             )
             await self.event_bus.emit_async(Event(
                 event_type=EventType.SKILL_UPDATED,

@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def compute_genesis_hash(soul_path: Path) -> str:
@@ -65,15 +68,21 @@ def update_soul_file(
 
     # Append lesson
     if lesson:
-        if "# Lessons" in content:
-            content = content.replace(
-                "# Lessons",
-                f"# Lessons\n- {lesson}",
+        if re.search(r"^# Lessons", content, flags=re.MULTILINE):
+            content = re.sub(
+                r"^(# Lessons)",
+                rf"\1\n- {lesson}",
+                content,
+                count=1,
+                flags=re.MULTILINE,
             )
         else:
             content = content.rstrip() + f"\n\n# Lessons\n\n- {lesson}\n"
 
-    soul_path.write_text(content, encoding="utf-8")
+    try:
+        soul_path.write_text(content, encoding="utf-8")
+    except OSError:
+        logger.warning("Could not write soul file: %s", soul_path)
 
 
 def write_daily_log(
@@ -87,7 +96,8 @@ def write_daily_log(
 ) -> Path:
     """Append a goal completion entry to the daily memory log."""
     memory_dir.mkdir(parents=True, exist_ok=True)
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    now = datetime.now(timezone.utc)
+    date_str = now.strftime("%Y-%m-%d")
     log_path = memory_dir / f"{date_str}.md"
 
     skills_list = ", ".join(skills_created) if skills_created else "none"
@@ -97,7 +107,7 @@ def write_daily_log(
 
     entry = (
         f"\n## Goal: {goal_id}\n"
-        f"- **Completed:** {datetime.now(timezone.utc).isoformat()}\n"
+        f"- **Completed:** {now.isoformat()}\n"
         f"- **Iterations:** {iterations}\n"
         f"- **Skills created/updated:** {skills_list}\n"
         f"- **Cost:** ${total_cost:.2f}\n"
@@ -105,7 +115,10 @@ def write_daily_log(
         f"- **Lesson:** {lesson}\n"
     )
 
-    with open(log_path, "a", encoding="utf-8") as f:
-        f.write(entry)
+    try:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(entry)
+    except OSError:
+        logger.warning("Could not write daily log: %s", log_path)
 
     return log_path
