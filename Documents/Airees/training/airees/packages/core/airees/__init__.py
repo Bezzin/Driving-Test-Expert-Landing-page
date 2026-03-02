@@ -8,6 +8,7 @@ from airees.gateway.types import Attachment, InboundMessage, OutboundMessage
 from airees.gateway.adapter import AdapterRegistry
 from airees.gateway.complexity import Complexity, classify_complexity
 from airees.gateway.conversation import ConversationManager
+from airees.gateway.cost_tracker import CostTracker, ModelCost
 from airees.gateway.personal_context import PersonalContext, load_personal_context
 from airees.gateway.server import Gateway
 from airees.gateway.session import Session, SessionStore
@@ -51,6 +52,7 @@ __all__ = [
     "ContextBudget",
     "ContextCompressor",
     "ConversationManager",
+    "CostTracker",
     "Coordinator",
     "CorpusDocument",
     "CorpusResult",
@@ -75,6 +77,7 @@ __all__ = [
     "InboundMessage",
     "MCPServerConfig",
     "MCPToolProvider",
+    "ModelCost",
     "OutboundMessage",
     "PersonalContext",
     "PhaseStatus",
