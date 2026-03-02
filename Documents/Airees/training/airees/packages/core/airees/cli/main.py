@@ -416,7 +416,7 @@ def doctor(config_path: str, deep: bool) -> None:
     }
     for name, val in api_keys.items():
         if val:
-            masked = val[:8] + "..."
+            masked = val[:4] + "****"
             click.echo(f"{name}: {masked} (set)")
         else:
             click.echo(f"{name}: not set")
