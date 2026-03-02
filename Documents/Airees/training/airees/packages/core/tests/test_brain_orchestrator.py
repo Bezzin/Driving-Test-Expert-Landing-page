@@ -1,6 +1,7 @@
 """Tests for the Brain orchestrator — the main execution loop."""
 import pytest
 import pytest_asyncio
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 from airees.brain.orchestrator import BrainOrchestrator
@@ -414,3 +415,120 @@ async def test_plan_no_warning_when_different_models(
 
     # security uses sonnet, coder uses haiku — no warning
     assert len(warnings_captured) == 0
+
+
+# ---------------------------------------------------------------------------
+# Phase 4: corpus, skills, and reflection integration
+# ---------------------------------------------------------------------------
+from airees.corpus_search import CorpusSearchEngine, CorpusResult
+from airees.skill_store import SkillStore, SkillResult
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_accepts_corpus_and_skills():
+    store = AsyncMock()
+    router = AsyncMock()
+    bus = EventBus()
+    corpus = MagicMock(spec=CorpusSearchEngine)
+    skills = MagicMock(spec=SkillStore)
+
+    orch = BrainOrchestrator(
+        store=store,
+        brain_model="test",
+        router=router,
+        event_bus=bus,
+        corpus_engine=corpus,
+        skill_store=skills,
+    )
+    assert orch.corpus_engine is corpus
+    assert orch.skill_store is skills
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_defaults_none_corpus_and_skills():
+    store = AsyncMock()
+    router = AsyncMock()
+    bus = EventBus()
+
+    orch = BrainOrchestrator(
+        store=store,
+        brain_model="test",
+        router=router,
+        event_bus=bus,
+    )
+    assert orch.corpus_engine is None
+    assert orch.skill_store is None
+
+
+@pytest.mark.asyncio
+async def test_handle_brain_tool_search_corpus():
+    corpus = MagicMock(spec=CorpusSearchEngine)
+    corpus.search.return_value = [
+        CorpusResult(
+            path=Path("test.md"),
+            title="Test",
+            category="01-test",
+            score=5.0,
+            excerpt="Test content",
+        )
+    ]
+    corpus.format_results.return_value = "### Test\nTest content"
+
+    orch = BrainOrchestrator(
+        store=AsyncMock(),
+        brain_model="test",
+        router=AsyncMock(),
+        event_bus=EventBus(),
+        corpus_engine=corpus,
+    )
+    result = await orch._handle_brain_tool("search_corpus", {"query": "test"})
+    assert "Test" in result
+    corpus.search.assert_called_once_with("test", top_k=3)
+
+
+@pytest.mark.asyncio
+async def test_handle_brain_tool_create_skill(tmp_path):
+    skills = MagicMock(spec=SkillStore)
+    skills.create_skill.return_value = tmp_path / "test-skill.md"
+
+    orch = BrainOrchestrator(
+        store=AsyncMock(),
+        brain_model="test",
+        router=AsyncMock(),
+        event_bus=EventBus(),
+        skill_store=skills,
+    )
+    result = await orch._handle_brain_tool("create_skill", {
+        "name": "test-skill",
+        "description": "Test",
+        "triggers": ["test"],
+        "task_graph": "1. Test",
+    })
+    assert "created" in result
+    skills.create_skill.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_brain_tool_update_soul(tmp_path):
+    soul_path = tmp_path / "SOUL.md"
+    soul_path.write_text(
+        "---\nformat: soul/v1\nname: Airees\nversion: 1\n---\n\n"
+        "# Core Purpose\nI am Airees.\n\n# Capabilities\n\n- Skills mastered: 0\n",
+        encoding="utf-8",
+    )
+
+    orch = BrainOrchestrator(
+        store=AsyncMock(),
+        brain_model="test",
+        router=AsyncMock(),
+        event_bus=EventBus(),
+        soul_path=soul_path,
+    )
+    result = await orch._handle_brain_tool("update_soul", {
+        "capabilities_update": {"skills_mastered": 5},
+        "lesson": "Test lesson",
+    })
+    assert "updated" in result.lower()
+    content = soul_path.read_text(encoding="utf-8")
+    assert "version: 2" in content
+    assert "Skills mastered: 5" in content

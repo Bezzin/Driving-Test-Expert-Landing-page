@@ -9,8 +9,11 @@ from pathlib import Path
 from typing import Any
 
 from airees.brain.intent import classify_intent
+from airees.brain.reflection import update_soul_file, write_daily_log
+from airees.corpus_search import CorpusSearchEngine
 from airees.decision_doc import DecisionDocument, DecisionEntry
 from airees.brain.prompt import build_brain_prompt
+from airees.skill_store import SkillStore
 from airees.brain.state_machine import BrainState, BrainStateMachine
 from airees.brain.tools import get_brain_tools
 from airees.coordinator.executor import Coordinator
@@ -49,6 +52,9 @@ class BrainOrchestrator:
     quality_gate: QualityGate = field(
         default_factory=lambda: QualityGate(name="default", min_score=7.0, max_retries=3)
     )
+    corpus_engine: CorpusSearchEngine | None = None
+    skill_store: SkillStore | None = None
+    skills_dir: Path = Path("data/skills")
 
     _decision_docs: dict[str, DecisionDocument] = field(
         default_factory=dict, init=False, repr=False
@@ -225,7 +231,33 @@ class BrainOrchestrator:
         if goal is None:
             raise ValueError(f"Goal not found: {goal_id}")
         soul = load_soul(self.soul_path)
-        prompt = build_brain_prompt(soul=soul, goal=goal["description"], intent=intent)
+
+        # Search corpus for relevant best practices
+        corpus_context = None
+        if self.corpus_engine:
+            corpus_results = self.corpus_engine.search(goal["description"], top_k=3)
+            if corpus_results:
+                corpus_context = self.corpus_engine.format_results(corpus_results)
+
+        # Search skills for matching pipeline
+        active_skill = None
+        if self.skill_store:
+            skill_results = self.skill_store.search(goal["description"], top_k=1)
+            if skill_results:
+                active_skill = self.skill_store.load_skill(skill_results[0].name)
+                await self.event_bus.emit_async(Event(
+                    event_type=EventType.SKILL_MATCHED,
+                    agent_name="brain",
+                    data={"skill": skill_results[0].name, "score": skill_results[0].score},
+                ))
+
+        prompt = build_brain_prompt(
+            soul=soul,
+            goal=goal["description"],
+            intent=intent,
+            active_skill=active_skill,
+            corpus_context=corpus_context,
+        )
 
         brain_tools = get_brain_tools()
         registry = ToolRegistry()
@@ -391,11 +423,20 @@ class BrainOrchestrator:
         from airees.coordinator.worker_builder import get_tools_for_role
 
         role_tool_names = get_tools_for_role(task["agent_role"])
+
+        # Search corpus for relevant best practices for this task
+        corpus_context = None
+        if self.corpus_engine:
+            corpus_results = self.corpus_engine.search(task["description"], top_k=2)
+            if corpus_results:
+                corpus_context = self.corpus_engine.format_results(corpus_results)
+
         worker_prompt = build_worker_prompt(
             task_title=task["title"],
             task_description=task["description"],
             agent_role=task["agent_role"],
             available_tools=role_tool_names if role_tool_names else None,
+            corpus_context=corpus_context,
         )
         model_id = select_model(agent_role=task["agent_role"])
         model = ModelConfig(model_id=model_id)
@@ -593,3 +634,71 @@ class BrainOrchestrator:
                 return action
 
         return "satisfied"
+
+    async def _handle_brain_tool(self, tool_name: str, tool_input: dict) -> str:
+        """Execute a brain tool call and return the result."""
+        if tool_name == "search_corpus" and self.corpus_engine:
+            results = self.corpus_engine.search(
+                tool_input.get("query", ""),
+                top_k=tool_input.get("top_k", 3),
+            )
+            return self.corpus_engine.format_results(results)
+
+        if tool_name == "search_skills" and self.skill_store:
+            results = self.skill_store.search(tool_input.get("query", ""))
+            if not results:
+                return "No matching skills found."
+            lines = []
+            for r in results:
+                lines.append(
+                    f"- **{r.name}** (v{r.version}, {r.success_rate:.0%} success): "
+                    f"{r.content[:100]}..."
+                )
+            return "\n".join(lines)
+
+        if tool_name == "create_skill" and self.skill_store:
+            path = self.skill_store.create_skill(
+                name=tool_input["name"],
+                description=tool_input["description"],
+                triggers=tool_input["triggers"],
+                task_graph=tool_input["task_graph"],
+                lessons_learned=tool_input.get("lessons_learned", ""),
+                quality_gates=tool_input.get("quality_gates", ""),
+                known_pitfalls=tool_input.get("known_pitfalls", ""),
+            )
+            await self.event_bus.emit_async(Event(
+                event_type=EventType.SKILL_CREATED,
+                agent_name="brain",
+                data={"skill": tool_input["name"], "path": str(path)},
+            ))
+            return f"Skill '{tool_input['name']}' created at {path}"
+
+        if tool_name == "update_skill" and self.skill_store:
+            path = self.skill_store.update_skill(
+                name=tool_input["name"],
+                lessons_learned=tool_input.get("lessons_learned", ""),
+                known_pitfalls=tool_input.get("known_pitfalls", ""),
+                task_graph=tool_input.get("task_graph", ""),
+            )
+            await self.event_bus.emit_async(Event(
+                event_type=EventType.SKILL_UPDATED,
+                agent_name="brain",
+                data={"skill": tool_input["name"]},
+            ))
+            return f"Skill '{tool_input['name']}' updated"
+
+        if tool_name == "update_soul":
+            update_soul_file(
+                self.soul_path,
+                capabilities_update=tool_input.get("capabilities_update"),
+                strategy_update=tool_input.get("strategy_update"),
+                lesson=tool_input.get("lesson"),
+            )
+            await self.event_bus.emit_async(Event(
+                event_type=EventType.SOUL_UPDATED,
+                agent_name="brain",
+                data=tool_input,
+            ))
+            return "SOUL.md updated"
+
+        return f"Unknown tool: {tool_name}"
