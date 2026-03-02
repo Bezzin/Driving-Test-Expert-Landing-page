@@ -16,6 +16,7 @@ from airees.gateway.cost_tracker import CostTracker
 from airees.gateway.personal_context import PersonalContext, load_personal_context
 from airees.gateway.session import SessionStore
 from airees.gateway.types import InboundMessage, OutboundMessage
+from airees.skill_store import SkillStore
 from airees.soul import Soul, load_soul
 
 log = logging.getLogger(__name__)
@@ -25,6 +26,8 @@ _MODEL_MAP: dict[str, str] = {
     "sonnet": "anthropic/claude-sonnet-4-5",
     "opus": "anthropic/claude-opus-4-5",
 }
+
+_SKILL_CONFIDENCE_THRESHOLD = 0.001
 
 
 @dataclass
@@ -49,6 +52,7 @@ class ConversationManager:
     sessions: SessionStore = field(default_factory=SessionStore)
     max_context_turns: int = 10
     cost_tracker: CostTracker | None = None
+    skill_store: SkillStore | None = None
 
     # Lazy-loaded caches (not part of __init__)
     _soul: Soul | None = field(default=None, init=False, repr=False)
@@ -75,32 +79,47 @@ class ConversationManager:
         1. Get or create session
         2. Retrieve conversation context
         3. Load personal context
-        4. Classify complexity
-        5. Route to quick or orchestrated path
-        6. Record the turn
-        7. Return the outbound message
+        4. Check skill store for a cached pattern
+        5. If no skill match, classify complexity
+        6. Route to skill, quick, or orchestrated path
+        7. Record the turn
+        8. Return the outbound message
         """
         session = self.sessions.get_or_create(message.channel, message.sender_id)
         context_messages = session.get_context_messages(self.max_context_turns)
         personal = self._get_personal()
-        complexity = await classify_complexity(message.text)
 
-        log.info(
-            "Handling message from %s:%s — complexity=%s",
-            message.channel,
-            message.sender_id,
-            complexity.value,
-        )
+        # Check skill store for a cached pattern
+        skill_result = None
+        if self.skill_store is not None:
+            results = self.skill_store.search(message.text, top_k=1)
+            if results and results[0].score >= _SKILL_CONFIDENCE_THRESHOLD:
+                skill_result = results[0]
+                log.info("Skill match: %s (score=%.2f)", skill_result.name, skill_result.score)
 
-        if complexity is Complexity.COMPLEX and self.orchestrator is not None:
-            reply_text = await self._run_orchestrated(
-                message.text, context_messages, personal
+        if skill_result is not None:
+            reply_text = await self._run_skill(
+                message.text, context_messages, personal, skill_result,
+                channel=message.channel,
             )
         else:
-            reply_text = await self._run_quick(
-                message.text, context_messages, personal,
-                complexity=complexity, channel=message.channel,
+            complexity = await classify_complexity(message.text)
+            log.info(
+                "Handling message from %s:%s — complexity=%s",
+                message.channel,
+                message.sender_id,
+                complexity.value,
             )
+
+            if complexity is Complexity.COMPLEX and self.orchestrator is not None:
+                reply_text = await self._run_orchestrated(
+                    message.text, context_messages, personal
+                )
+            else:
+                reply_text = await self._run_quick(
+                    message.text, context_messages, personal,
+                    complexity=complexity, channel=message.channel,
+                )
 
         session.add_turn(user_text=message.text, assistant_text=reply_text)
 
@@ -148,6 +167,47 @@ class ConversationManager:
             return reply_text
         except Exception as exc:
             log.error("_run_quick failed: %s", exc, exc_info=True)
+            return "I'm sorry, something went wrong. Please try again."
+
+    async def _run_skill(
+        self,
+        text: str,
+        context_messages: list[dict[str, str]],
+        personal: PersonalContext,
+        skill: Any,
+        *,
+        channel: str = "unknown",
+    ) -> str:
+        """Handle a message using a cached skill pattern."""
+        soul = self._get_soul()
+        system_prompt = (
+            soul.to_prompt() + "\n\n" + personal.to_prompt()
+            + f"\n\nYou have a proven approach for this type of request:\n{skill.content}"
+        )
+        messages = [*context_messages, {"role": "user", "content": text}]
+        model = _MODEL_MAP["haiku"]  # Skills always use cheapest model
+
+        try:
+            response = await self.router.create_message(
+                model=model,
+                system=system_prompt,
+                messages=messages,
+                max_tokens=1024,
+            )
+            reply_text = response.content[0].text
+
+            if self.cost_tracker is not None:
+                context_text = " ".join(m["content"] for m in messages)
+                input_tokens = (len(system_prompt) + len(context_text)) // 4
+                output_tokens = len(reply_text) // 4
+                self.cost_tracker.record(
+                    model=model, input_tokens=input_tokens,
+                    output_tokens=output_tokens, channel=channel,
+                )
+
+            return reply_text
+        except Exception as exc:
+            log.error("_run_skill failed: %s", exc, exc_info=True)
             return "I'm sorry, something went wrong. Please try again."
 
     async def _run_orchestrated(

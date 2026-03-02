@@ -1,12 +1,15 @@
 """Tests for ConversationManager — the central gateway orchestrator."""
 from __future__ import annotations
 
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
+
+from airees.skill_store import SkillStore
 
 from airees.gateway.conversation import ConversationManager
 from airees.gateway.session import SessionStore
@@ -208,3 +211,56 @@ async def test_cost_tracker_records_on_quick_message():
     assert tracker.total_turns == 1
     assert tracker.total_cost > 0
     assert "cli" in tracker.by_channel()
+
+
+# -- SkillStore integration ----------------------------------------------------
+
+
+def _make_skill_store(tmp_path: Path) -> SkillStore:
+    """Create a SkillStore with one test skill."""
+    skills_dir = tmp_path / "skills"
+    skills_dir.mkdir()
+    store = SkillStore(skills_dir=skills_dir)
+    store.create_skill(
+        name="daily-summary",
+        description="Summarize my day",
+        triggers=["summarize my day", "daily summary", "what happened today"],
+        task_graph="1. Gather calendar events\n2. Summarize",
+    )
+    return store
+
+
+@pytest.mark.asyncio
+async def test_skill_match_skips_brain():
+    """When SkillStore matches with high confidence, skip the brain."""
+    router = FakeRouter(reply="skill-based reply")
+    store = _make_skill_store(Path(tempfile.mkdtemp()))
+    mgr = _make_manager(router=router)
+    mgr.skill_store = store
+
+    msg = InboundMessage(channel="cli", sender_id="user-1", text="summarize my day")
+    response = await mgr.handle(msg)
+
+    assert isinstance(response, OutboundMessage)
+    assert response.text  # Should get a response
+    # Router should be called (skill content passed as context to quick path)
+    assert len(router._calls) == 1
+    # The system prompt should contain the skill's task graph content
+    system_prompt = router._calls[0]["system"]
+    assert "proven approach" in system_prompt
+    assert "Task Graph" in system_prompt
+    # Skill path always uses haiku (cheapest model)
+    assert "haiku" in router._calls[0]["model"]
+
+
+@pytest.mark.asyncio
+async def test_no_skill_store_falls_through():
+    """Without a SkillStore, routing works as before."""
+    router = FakeRouter(reply="normal reply")
+    mgr = _make_manager(router=router)
+    # skill_store is None by default
+
+    msg = InboundMessage(channel="cli", sender_id="user-1", text="summarize my day")
+    response = await mgr.handle(msg)
+
+    assert response.text == "normal reply"
