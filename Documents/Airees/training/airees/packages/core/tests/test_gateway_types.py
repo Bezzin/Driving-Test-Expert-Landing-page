@@ -108,6 +108,14 @@ def test_inbound_message_metadata_immutable():
         msg.metadata["key"] = "changed"
 
 
+def test_inbound_message_metadata_alias_safe():
+    """Mutating the original dict must not affect the message."""
+    orig = {"key": "original"}
+    msg = InboundMessage(channel="cli", sender_id="u1", text="hi", metadata=orig)
+    orig["key"] = "mutated"
+    assert msg.metadata["key"] == "original"
+
+
 # -- OutboundMessage ----------------------------------------------------------
 
 
@@ -167,3 +175,11 @@ def test_outbound_message_metadata_immutable():
     assert msg.metadata["key"] == "value"
     with pytest.raises(TypeError):
         msg.metadata["key"] = "changed"
+
+
+def test_outbound_message_metadata_alias_safe():
+    """Mutating the original dict must not affect the message."""
+    orig = {"key": "original"}
+    msg = OutboundMessage(channel="cli", recipient_id="u1", text="hi", metadata=orig)
+    orig["key"] = "mutated"
+    assert msg.metadata["key"] == "original"

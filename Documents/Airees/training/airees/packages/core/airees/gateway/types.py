@@ -55,8 +55,8 @@ class InboundMessage:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        # Wrap mutable dict in a read-only proxy
-        object.__setattr__(self, "metadata", _types.MappingProxyType(self.metadata))
+        # Copy then wrap — prevents external alias mutation
+        object.__setattr__(self, "metadata", _types.MappingProxyType(dict(self.metadata)))
 
 
 @dataclass(frozen=True)
@@ -80,5 +80,5 @@ class OutboundMessage:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        # Wrap mutable dict in a read-only proxy
-        object.__setattr__(self, "metadata", _types.MappingProxyType(self.metadata))
+        # Copy then wrap — prevents external alias mutation
+        object.__setattr__(self, "metadata", _types.MappingProxyType(dict(self.metadata)))

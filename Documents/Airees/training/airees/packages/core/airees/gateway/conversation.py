@@ -135,7 +135,8 @@ class ConversationManager:
             reply_text = response.content[0].text
 
             if self.cost_tracker is not None:
-                input_tokens = len(system_prompt + text) // 4
+                context_text = " ".join(m["content"] for m in messages)
+                input_tokens = (len(system_prompt) + len(context_text)) // 4
                 output_tokens = len(reply_text) // 4
                 self.cost_tracker.record(
                     model=model,

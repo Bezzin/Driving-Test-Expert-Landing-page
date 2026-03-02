@@ -76,6 +76,12 @@ class SessionStore:
     session_ttl: float = 3600.0
     _sessions: dict[str, Session] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        if self.max_sessions < 1:
+            raise ValueError(f"max_sessions must be >= 1, got {self.max_sessions}")
+        if self.session_ttl <= 0:
+            raise ValueError(f"session_ttl must be > 0, got {self.session_ttl}")
+
     # -- eviction -------------------------------------------------------------
 
     def _evict_stale(self) -> None:

@@ -151,3 +151,16 @@ def test_store_remove_nonexistent():
     store = SessionStore()
     removed = store.remove("cli", "nobody")
     assert removed is False
+
+
+# -- Validation ---------------------------------------------------------------
+
+
+def test_store_rejects_invalid_max_sessions():
+    with pytest.raises(ValueError, match="max_sessions must be >= 1"):
+        SessionStore(max_sessions=0)
+
+
+def test_store_rejects_invalid_session_ttl():
+    with pytest.raises(ValueError, match="session_ttl must be > 0"):
+        SessionStore(session_ttl=-1.0)
