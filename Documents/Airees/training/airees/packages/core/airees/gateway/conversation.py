@@ -121,8 +121,8 @@ class ConversationManager:
             )
             return response.content[0].text
         except Exception as exc:
-            log.error("_run_quick failed: %s", exc)
-            return f"I encountered an error: {exc}"
+            log.error("_run_quick failed: %s", exc, exc_info=True)
+            return "I'm sorry, something went wrong. Please try again."
 
     async def _run_orchestrated(
         self,
@@ -136,5 +136,5 @@ class ConversationManager:
             result = await self.orchestrator.execute_goal(goal_id)
             return result
         except Exception as exc:
-            log.error("_run_orchestrated failed: %s", exc)
-            return f"I encountered an error: {exc}"
+            log.error("_run_orchestrated failed: %s", exc, exc_info=True)
+            return "I'm sorry, something went wrong processing your request. Please try again."

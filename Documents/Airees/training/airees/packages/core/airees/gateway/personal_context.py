@@ -35,11 +35,13 @@ class PersonalContext:
 
     def to_prompt(self) -> str:
         """Format the personal context as a system prompt fragment."""
-        return (
-            f"The user's name is {self.name}.\n"
-            f"Their timezone is {self.timezone}.\n\n"
-            f"User context:\n{self.content}"
-        )
+        lines = [
+            f"The user's name is {self.name}.",
+            f"Their timezone is {self.timezone}.",
+        ]
+        if self.content:
+            lines.append(f"\nUser context:\n{self.content}")
+        return "\n".join(lines)
 
 
 def load_personal_context(path: Path) -> PersonalContext:
