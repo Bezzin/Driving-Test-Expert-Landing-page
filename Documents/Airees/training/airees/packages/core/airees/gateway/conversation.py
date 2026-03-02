@@ -17,6 +17,7 @@ from airees.gateway.model_preference import ModelPreference
 from airees.gateway.personal_context import PersonalContext, load_personal_context
 from airees.gateway.session import SessionStore
 from airees.gateway.types import InboundMessage, OutboundMessage
+from airees.knowledge.store import KnowledgeStore
 from airees.skill_store import SkillStore
 from airees.soul import Soul, load_soul
 
@@ -55,6 +56,7 @@ class ConversationManager:
     cost_tracker: CostTracker | None = None
     skill_store: SkillStore | None = None
     model_preference: ModelPreference | None = None
+    knowledge_store: KnowledgeStore | None = None
 
     # Lazy-loaded caches (not part of __init__)
     _soul: Soul | None = field(default=None, init=False, repr=False)
@@ -73,6 +75,27 @@ class ConversationManager:
             self._personal = load_personal_context(self.user_path)
             log.info("Personal context loaded: %s", self._personal.name)
         return self._personal
+
+    def _build_system_prompt(
+        self, text: str, personal: PersonalContext, extra: str = "",
+    ) -> str:
+        """Build the system prompt with optional knowledge enrichment."""
+        soul = self._get_soul()
+        system_prompt = soul.to_prompt() + "\n\n" + personal.to_prompt()
+
+        # Enrich with knowledge base results
+        if self.knowledge_store is not None:
+            kb_results = self.knowledge_store.search(text, top_k=3)
+            if kb_results:
+                kb_context = "\n\nRelevant knowledge:\n" + "\n".join(
+                    f"- [{r.source}] {r.text[:200]}" for r in kb_results
+                )
+                system_prompt += kb_context
+
+        if extra:
+            system_prompt += extra
+
+        return system_prompt
 
     async def handle(self, message: InboundMessage) -> OutboundMessage:
         """Process an inbound message and produce an outbound reply.
@@ -141,8 +164,7 @@ class ConversationManager:
         channel: str = "unknown",
     ) -> str:
         """Handle a quick/moderate message via the model router."""
-        soul = self._get_soul()
-        system_prompt = soul.to_prompt() + "\n\n" + personal.to_prompt()
+        system_prompt = self._build_system_prompt(text, personal)
         messages = [*context_messages, {"role": "user", "content": text}]
 
         if self.model_preference is not None:
@@ -193,10 +215,9 @@ class ConversationManager:
         channel: str = "unknown",
     ) -> str:
         """Handle a message using a cached skill pattern."""
-        soul = self._get_soul()
-        system_prompt = (
-            soul.to_prompt() + "\n\n" + personal.to_prompt()
-            + f"\n\nYou have a proven approach for this type of request:\n{skill.content}"
+        system_prompt = self._build_system_prompt(
+            text, personal,
+            extra=f"\n\nYou have a proven approach for this type of request:\n{skill.content}",
         )
         messages = [*context_messages, {"role": "user", "content": text}]
         model = _MODEL_MAP["haiku"]  # Skills always use cheapest model

@@ -381,6 +381,79 @@ def skill_info(name: str, skills_dir: str) -> None:
         click.echo(f"\n... ({len(content) - 500} more characters)")
 
 
+# ── KB (Knowledge Base) group ──────────────────────────────────────
+
+
+@app.group()
+def kb() -> None:
+    """Manage the knowledge base."""
+    pass
+
+
+@kb.command("ingest")
+@click.argument("path", type=click.Path(exists=True))
+@click.option("--data-dir", type=click.Path(), default="data")
+def kb_ingest(path: str, data_dir: str) -> None:
+    """Ingest a file or directory into the knowledge base."""
+    from airees.knowledge.store import KnowledgeStore
+
+    store = KnowledgeStore(data_dir=Path(data_dir) / "knowledge")
+    target = Path(path)
+
+    if target.is_file():
+        count = store.ingest(target)
+        click.echo(f"Ingested {count} chunks from {target.name}")
+    elif target.is_dir():
+        total = 0
+        for f in target.rglob("*"):
+            if f.is_file() and f.suffix.lower() in (".txt", ".md", ".pdf"):
+                total += store.ingest(f)
+        click.echo(f"Ingested {total} chunks from {target}")
+
+
+@kb.command("search")
+@click.argument("query")
+@click.option("--data-dir", type=click.Path(), default="data")
+@click.option("--top-k", type=int, default=3)
+def kb_search(query: str, data_dir: str, top_k: int) -> None:
+    """Search the knowledge base."""
+    from airees.knowledge.store import KnowledgeStore
+
+    store = KnowledgeStore(data_dir=Path(data_dir) / "knowledge")
+    results = store.search(query, top_k=top_k)
+    if not results:
+        click.echo("No results found.")
+        return
+    for r in results:
+        click.echo(f"[{r.score:.2f}] {r.source}")
+        click.echo(f"  {r.text[:200]}")
+        click.echo()
+
+
+@kb.command("stats")
+@click.option("--data-dir", type=click.Path(), default="data")
+def kb_stats(data_dir: str) -> None:
+    """Show knowledge base statistics."""
+    from airees.knowledge.store import KnowledgeStore
+
+    store = KnowledgeStore(data_dir=Path(data_dir) / "knowledge")
+    s = store.stats()
+    click.echo(f"Documents: {s['document_count']}")
+    click.echo(f"Data dir: {s['data_dir']}")
+
+
+@kb.command("delete")
+@click.argument("source")
+@click.option("--data-dir", type=click.Path(), default="data")
+def kb_delete(source: str, data_dir: str) -> None:
+    """Delete a document from the knowledge base."""
+    from airees.knowledge.store import KnowledgeStore
+
+    store = KnowledgeStore(data_dir=Path(data_dir) / "knowledge")
+    count = store.delete(source)
+    click.echo(f"Deleted {count} chunks from {source}")
+
+
 # ── Daemon group (extends existing) ────────────────────────────────
 
 
