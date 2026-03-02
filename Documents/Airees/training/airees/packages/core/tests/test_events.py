@@ -91,3 +91,25 @@ def test_goal_resumed_event_type():
 
 def test_feedback_recorded_event_type():
     assert EventType.FEEDBACK_RECORDED.value == "feedback.recorded"
+
+
+def test_corpus_search_event_type():
+    assert EventType.CORPUS_SEARCH.value == "corpus.search"
+
+def test_skill_matched_event_type():
+    assert EventType.SKILL_MATCHED.value == "skill.matched"
+
+def test_skill_created_event_type():
+    assert EventType.SKILL_CREATED.value == "skill.created"
+
+def test_skill_updated_event_type():
+    assert EventType.SKILL_UPDATED.value == "skill.updated"
+
+def test_context_compressed_event_type():
+    assert EventType.CONTEXT_COMPRESSED.value == "context.compressed"
+
+def test_soul_updated_event_type():
+    assert EventType.SOUL_UPDATED.value == "soul.updated"
+
+def test_reflection_triggered_event_type():
+    assert EventType.REFLECTION_TRIGGERED.value == "reflection.triggered"

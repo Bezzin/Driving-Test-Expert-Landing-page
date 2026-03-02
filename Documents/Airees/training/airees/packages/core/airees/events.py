@@ -39,6 +39,13 @@ class EventType(Enum):
     VALIDATION_WARNING = "validation.warning"
     GOAL_RESUMED = "goal.resumed"
     FEEDBACK_RECORDED = "feedback.recorded"
+    CORPUS_SEARCH = "corpus.search"
+    SKILL_MATCHED = "skill.matched"
+    SKILL_CREATED = "skill.created"
+    SKILL_UPDATED = "skill.updated"
+    CONTEXT_COMPRESSED = "context.compressed"
+    SOUL_UPDATED = "soul.updated"
+    REFLECTION_TRIGGERED = "reflection.triggered"
 
 
 @dataclass(frozen=True)
