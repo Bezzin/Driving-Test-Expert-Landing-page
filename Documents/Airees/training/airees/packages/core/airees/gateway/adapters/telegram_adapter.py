@@ -25,18 +25,37 @@ class TelegramAdapter:
         name: Channel identifier, always ``"telegram"``.
         allowed_user_ids: Tuple of Telegram user IDs permitted to interact.
             An empty tuple means all users are allowed.
+        voice_enabled: When ``True``, the adapter will accept voice messages
+            and route them through the STT/TTS pipeline.  Defaults to ``False``.
     """
 
     bot_token: str
     name: str = field(default="telegram", init=False)
     allowed_user_ids: tuple[int, ...] = ()
+    voice_enabled: bool = False
     _handler: MessageHandler | None = field(default=None, init=False, repr=False)
     _bot: Any = field(default=None, init=False, repr=False)
     _application: Any = field(default=None, init=False, repr=False)
+    _stt: Any = field(default=None, init=False, repr=False)
+    _tts: Any = field(default=None, init=False, repr=False)
 
     def set_message_handler(self, handler: MessageHandler) -> None:
         """Register the callback invoked for each inbound message."""
         self._handler = handler
+
+    def _get_stt(self):
+        """Lazy-load SpeechToText."""
+        if self._stt is None:
+            from airees.voice.stt import SpeechToText
+            self._stt = SpeechToText()
+        return self._stt
+
+    def _get_tts(self):
+        """Lazy-load TextToSpeech."""
+        if self._tts is None:
+            from airees.voice.tts import TextToSpeech
+            self._tts = TextToSpeech()
+        return self._tts
 
     async def start(self) -> None:
         """Initialize the Telegram bot and start polling.
