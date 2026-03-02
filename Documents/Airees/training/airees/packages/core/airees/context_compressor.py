@@ -1,10 +1,10 @@
 """Progressive context compression for long-running goals.
 
 4-stage cascade:
-- Stage 0 (<60%): No compression
-- Stage 1 (60-74%): Summarize completed assistant outputs via Haiku
-- Stage 2 (75-84%): Collapse completed message pairs into one-liners
-- Stage 3 (85-94%): Checkpoint — keep only recent messages
+- Stage 0 (<70%): No compression
+- Stage 1 (70-79%): Summarize completed assistant outputs via Haiku
+- Stage 2 (80-89%): Collapse completed message pairs into one-liners
+- Stage 3 (90-94%): Checkpoint — keep only recent messages
 - Stage 4 (95%+): Emergency — keep only the last exchange
 """
 from __future__ import annotations
@@ -21,7 +21,7 @@ class ContextCompressor:
     router: Any
     budget: ContextBudget
 
-    _THRESHOLDS = (60.0, 75.0, 85.0, 95.0)
+    _THRESHOLDS = (70.0, 80.0, 90.0, 95.0)
 
     def detect_stage(self) -> int:
         pct = self.budget.usage_percent

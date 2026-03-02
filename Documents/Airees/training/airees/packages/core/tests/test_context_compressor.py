@@ -28,19 +28,19 @@ def test_detect_stage_no_compression():
 
 
 def test_detect_stage_1():
-    budget = ContextBudget(max_tokens=1000, used_tokens=650)
+    budget = ContextBudget(max_tokens=1000, used_tokens=750)
     compressor = ContextCompressor(router=AsyncMock(), budget=budget)
     assert compressor.detect_stage() == 1
 
 
 def test_detect_stage_2():
-    budget = ContextBudget(max_tokens=1000, used_tokens=780)
+    budget = ContextBudget(max_tokens=1000, used_tokens=850)
     compressor = ContextCompressor(router=AsyncMock(), budget=budget)
     assert compressor.detect_stage() == 2
 
 
 def test_detect_stage_3():
-    budget = ContextBudget(max_tokens=1000, used_tokens=870)
+    budget = ContextBudget(max_tokens=1000, used_tokens=920)
     compressor = ContextCompressor(router=AsyncMock(), budget=budget)
     assert compressor.detect_stage() == 3
 
@@ -167,3 +167,26 @@ def test_update_budget():
     compressor = ContextCompressor(router=AsyncMock(), budget=budget)
     compressor.update_budget(ContextBudget(max_tokens=1000, used_tokens=700))
     assert compressor.budget.used_tokens == 700
+
+
+def test_thresholds_are_70_80_90_95():
+    """Verify compressor uses corpus-recommended thresholds."""
+    from airees.context_budget import ContextBudget
+    compressor = ContextCompressor(router=None, budget=ContextBudget(max_tokens=1000, used_tokens=0))
+    assert compressor._THRESHOLDS == (70.0, 80.0, 90.0, 95.0)
+
+
+def test_detect_stage_at_65_percent_is_zero():
+    """65% should be stage 0 (below 70% threshold)."""
+    from airees.context_budget import ContextBudget
+    budget = ContextBudget(max_tokens=1000, used_tokens=650)
+    compressor = ContextCompressor(router=None, budget=budget)
+    assert compressor.detect_stage() == 0
+
+
+def test_detect_stage_at_72_percent_is_one():
+    """72% should be stage 1 (between 70% and 80%)."""
+    from airees.context_budget import ContextBudget
+    budget = ContextBudget(max_tokens=1000, used_tokens=720)
+    compressor = ContextCompressor(router=None, budget=budget)
+    assert compressor.detect_stage() == 1
