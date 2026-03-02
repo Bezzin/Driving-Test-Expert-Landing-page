@@ -20,6 +20,7 @@ from airees.events import Event, EventBus, EventType
 from airees.feedback import FeedbackConfig, FeedbackEntry, FeedbackLoop
 from airees.goal_daemon import GoalDaemon
 from airees.heartbeat import HeartbeatDaemon
+from airees.mcp_client import MCPServerConfig, MCPToolProvider
 from airees.quality_gate import GateAction, GateResult, QualityGate
 from airees.router.fallback import FallbackRouter
 from airees.runner import Runner, RunResult, TokenUsage
@@ -27,6 +28,7 @@ from airees.scheduler import Scheduler, SchedulerConfig
 from airees.skill_store import SkillDocument, SkillResult, SkillStore
 from airees.soul import Soul, load_soul
 from airees.state import PhaseStatus, ProjectState, load_state, save_state
+from airees.tools.registry import TrustLevel
 from airees.validation import ValidationWarning, validate_pipeline
 from airees.worker_pool import WorkerPool
 
@@ -58,6 +60,8 @@ __all__ = [
     "GoalStatus",
     "GoalStore",
     "HeartbeatDaemon",
+    "MCPServerConfig",
+    "MCPToolProvider",
     "PhaseStatus",
     "ProjectState",
     "QualityGate",
@@ -71,6 +75,7 @@ __all__ = [
     "Soul",
     "TaskStatus",
     "TokenUsage",
+    "TrustLevel",
     "ValidationWarning",
     "WorkerPool",
     "build_brain_prompt",
