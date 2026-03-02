@@ -383,13 +383,10 @@ def start(interval: int, max_concurrent: int, config_path: str, dry_run: bool) -
         )
 
         click.echo("Starting GoalDaemon and HeartbeatDaemon...")
-        try:
-            await asyncio.gather(
-                goal_daemon.run_forever(),
-                heartbeat.run_forever(),
-            )
-        except KeyboardInterrupt:
-            click.echo("Shutting down...")
+        await asyncio.gather(
+            goal_daemon.run_forever(),
+            heartbeat.run_forever(),
+        )
 
     try:
         asyncio.run(_start())

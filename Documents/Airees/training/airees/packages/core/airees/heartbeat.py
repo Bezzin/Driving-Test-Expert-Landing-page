@@ -137,7 +137,7 @@ class HeartbeatDaemon:
         """Trigger corpus reindex if corpus engine is available."""
         if self.corpus_engine is not None:
             try:
-                self.corpus_engine.build_index()
+                await asyncio.to_thread(self.corpus_engine._build_index)
             except Exception as e:
                 return f"Memory compaction failed: {e}"
         return None
