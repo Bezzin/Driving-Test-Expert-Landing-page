@@ -10,8 +10,10 @@ from airees.brain.state_machine import BrainState, BrainStateMachine
 from airees.brain.tools import get_brain_tools
 from airees.concurrency import ConcurrencyManager
 from airees.context_budget import ContextBudget
+from airees.context_compressor import ContextCompressor
 from airees.coordinator.executor import Coordinator
 from airees.coordinator.worker_builder import build_worker_prompt, get_tools_for_role, select_model
+from airees.corpus_search import CorpusDocument, CorpusResult, CorpusSearchEngine
 from airees.db.schema import GoalStatus, GoalStore, TaskStatus
 from airees.decision_doc import DecisionDocument, DecisionEntry
 from airees.events import Event, EventBus, EventType
@@ -21,6 +23,7 @@ from airees.quality_gate import GateAction, GateResult, QualityGate
 from airees.router.fallback import FallbackRouter
 from airees.runner import Runner, RunResult, TokenUsage
 from airees.scheduler import Scheduler, SchedulerConfig
+from airees.skill_store import SkillDocument, SkillResult, SkillStore
 from airees.soul import Soul, load_soul
 from airees.state import PhaseStatus, ProjectState, load_state, save_state
 from airees.validation import ValidationWarning, validate_pipeline
@@ -33,7 +36,11 @@ __all__ = [
     "BrainStateMachine",
     "ConcurrencyManager",
     "ContextBudget",
+    "ContextCompressor",
     "Coordinator",
+    "CorpusDocument",
+    "CorpusResult",
+    "CorpusSearchEngine",
     "DecisionDocument",
     "DecisionEntry",
     "Event",
@@ -56,6 +63,9 @@ __all__ = [
     "RunResult",
     "Scheduler",
     "SchedulerConfig",
+    "SkillDocument",
+    "SkillResult",
+    "SkillStore",
     "Soul",
     "TaskStatus",
     "TokenUsage",
