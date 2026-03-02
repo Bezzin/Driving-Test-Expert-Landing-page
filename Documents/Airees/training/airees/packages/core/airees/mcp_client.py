@@ -1,18 +1,24 @@
 """MCP tool provider — discovers and executes tools from MCP servers.
 
-Supports stdio, SSE, and streamable HTTP transports. Tools are cached
-by default for static servers. Each tool gets TrustLevel.MCP.
+Currently supports stdio transport. SSE and streamable HTTP transport
+support is planned for a future release. Tools are cached by default
+for static servers. Each tool gets TrustLevel.MCP.
 """
 from __future__ import annotations
 
-import json
+import asyncio
 import logging
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
 from airees.tools.registry import ToolDefinition, TrustLevel
 
 logger = logging.getLogger(__name__)
+
+_SAFE_COMMAND_RE = re.compile(r"^[a-zA-Z0-9_./@: -]+$")
+
+TOOL_EXECUTION_TIMEOUT = 30.0
 
 
 @dataclass(frozen=True)
@@ -24,7 +30,7 @@ class MCPServerConfig:
     command: str | None = None
     args: tuple[str, ...] = ()
     url: str | None = None
-    env: dict[str, str] = field(default_factory=dict)
+    env: tuple[tuple[str, str], ...] = ()
     cache_tools: bool = True
 
 
@@ -38,6 +44,7 @@ class MCPToolProvider:
 
     servers: list[MCPServerConfig]
     _sessions: dict[str, Any] = field(default_factory=dict, init=False, repr=False)
+    _transports: dict[str, Any] = field(default_factory=dict, init=False, repr=False)
     _tool_cache: dict[str, list[ToolDefinition]] = field(default_factory=dict, init=False, repr=False)
     _tool_to_server: dict[str, str] = field(default_factory=dict, init=False, repr=False)
 
@@ -57,15 +64,27 @@ class MCPToolProvider:
         for server in self.servers:
             try:
                 if server.transport == "stdio" and server.command:
+                    _validate_command(server.command)
+                    env_dict = dict(server.env) if server.env else None
                     params = StdioServerParameters(
                         command=server.command,
                         args=list(server.args),
-                        env=server.env or None,
+                        env=env_dict,
                     )
-                    read_stream, write_stream = await stdio_client(params).__aenter__()
-                    session = ClientSession(read_stream, write_stream)
-                    await session.__aenter__()
-                    await session.initialize()
+                    transport_cm = stdio_client(params)
+                    read_stream, write_stream = await transport_cm.__aenter__()
+                    try:
+                        session = ClientSession(read_stream, write_stream)
+                        await session.__aenter__()
+                        try:
+                            await session.initialize()
+                        except Exception:
+                            await session.__aexit__(None, None, None)
+                            raise
+                    except Exception:
+                        await transport_cm.__aexit__(None, None, None)
+                        raise
+                    self._transports[server.name] = transport_cm
                     self._sessions[server.name] = session
                     logger.info("Connected to MCP server: %s (stdio)", server.name)
                 else:
@@ -100,6 +119,12 @@ class MCPToolProvider:
                 result = await session.list_tools()
                 server_tools: list[ToolDefinition] = []
                 for tool in result.tools:
+                    existing = self._tool_to_server.get(tool.name)
+                    if existing is not None and existing != server.name:
+                        logger.warning(
+                            "Tool '%s' from server '%s' shadows same-named tool from '%s'",
+                            tool.name, server.name, existing,
+                        )
                     tool_def = ToolDefinition(
                         name=tool.name,
                         description=tool.description or "",
@@ -131,6 +156,7 @@ class MCPToolProvider:
 
         Raises:
             ValueError: If the tool is not found on any connected server.
+            TimeoutError: If the tool execution exceeds the timeout.
         """
         server_name = self._tool_to_server.get(tool_name)
         if server_name is None:
@@ -140,14 +166,23 @@ class MCPToolProvider:
         if session is None:
             raise ValueError(f"No active session for server '{server_name}'")
 
-        result = await session.call_tool(tool_name, arguments=tool_input)
+        try:
+            result = await asyncio.wait_for(
+                session.call_tool(tool_name, arguments=tool_input),
+                timeout=TOOL_EXECUTION_TIMEOUT,
+            )
+        except asyncio.TimeoutError:
+            raise TimeoutError(
+                f"Tool '{tool_name}' on server '{server_name}' "
+                f"timed out after {TOOL_EXECUTION_TIMEOUT}s"
+            )
 
         # Extract text from result content blocks
         texts = []
         for content in result.content:
             if hasattr(content, "text"):
                 texts.append(content.text)
-        return "\n".join(texts) if texts else json.dumps(str(result))
+        return "\n".join(texts) if texts else str(result)
 
     def get_tools(self) -> list[ToolDefinition]:
         """Return all cached tool definitions (sync accessor)."""
@@ -157,13 +192,33 @@ class MCPToolProvider:
         return tools
 
     async def close(self) -> None:
-        """Disconnect all MCP server sessions."""
-        for name, session in self._sessions.items():
-            try:
-                await session.__aexit__(None, None, None)
-                logger.info("Disconnected from MCP server: %s", name)
-            except Exception as e:
-                logger.warning("Error closing session '%s': %s", name, e)
-        self._sessions.clear()
-        self._tool_cache.clear()
-        self._tool_to_server.clear()
+        """Disconnect all MCP server sessions and transports."""
+        sessions = dict(self._sessions)
+        transports = dict(self._transports)
+        try:
+            for name, session in sessions.items():
+                try:
+                    await session.__aexit__(None, None, None)
+                    logger.info("Disconnected from MCP server: %s", name)
+                except Exception as e:
+                    logger.warning("Error closing session '%s': %s", name, e)
+                transport = transports.get(name)
+                if transport:
+                    try:
+                        await transport.__aexit__(None, None, None)
+                    except Exception as e:
+                        logger.warning("Error closing transport '%s': %s", name, e)
+        finally:
+            self._sessions.clear()
+            self._transports.clear()
+            self._tool_cache.clear()
+            self._tool_to_server.clear()
+
+
+def _validate_command(command: str) -> None:
+    """Validate that command is a simple executable path, not a shell expression."""
+    if not _SAFE_COMMAND_RE.match(command):
+        raise ValueError(
+            f"MCP server command contains disallowed characters: {command!r}. "
+            "Use args for parameters instead of embedding them in command."
+        )

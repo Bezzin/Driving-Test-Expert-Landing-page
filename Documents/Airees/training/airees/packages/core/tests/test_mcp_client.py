@@ -1,8 +1,9 @@
 """Tests for MCP tool provider."""
+import asyncio
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from airees.mcp_client import MCPServerConfig, MCPToolProvider
+from airees.mcp_client import MCPServerConfig, MCPToolProvider, _validate_command
 from airees.tools.registry import TrustLevel
 
 
@@ -11,11 +12,22 @@ def test_mcp_server_config_creates():
     config = MCPServerConfig(
         name="test",
         transport="stdio",
-        command="python server.py",
+        command="python",
     )
     assert config.name == "test"
     assert config.transport == "stdio"
     assert config.cache_tools is True
+
+
+def test_mcp_server_config_env_is_immutable_tuple():
+    """MCPServerConfig env should be a tuple of tuples, not a mutable dict."""
+    config = MCPServerConfig(
+        name="test",
+        transport="stdio",
+        command="echo",
+        env=(("KEY", "VALUE"),),
+    )
+    assert config.env == (("KEY", "VALUE"),)
 
 
 def test_mcp_tool_provider_creates():
@@ -73,6 +85,20 @@ async def test_discover_tools_caches_results():
 
 
 @pytest.mark.asyncio
+async def test_discover_tools_handles_list_error():
+    """discover_tools should gracefully degrade when list_tools raises."""
+    mock_session = AsyncMock()
+    mock_session.list_tools = AsyncMock(side_effect=RuntimeError("connection lost"))
+
+    config = MCPServerConfig(name="flaky", transport="stdio", command="echo")
+    provider = MCPToolProvider(servers=[config])
+    provider._sessions = {"flaky": mock_session}
+
+    tools = await provider.discover_tools()
+    assert tools == []
+
+
+@pytest.mark.asyncio
 async def test_execute_routes_to_correct_server():
     """execute should route to the server that owns the tool."""
     mock_result = MagicMock()
@@ -96,6 +122,53 @@ async def test_execute_unknown_tool_raises():
     provider = MCPToolProvider(servers=[])
     with pytest.raises(ValueError, match="not found"):
         await provider.execute("nonexistent", {})
+
+
+@pytest.mark.asyncio
+async def test_execute_missing_session_raises():
+    """execute should raise ValueError when session is disconnected."""
+    provider = MCPToolProvider(servers=[])
+    provider._tool_to_server = {"orphan_tool": "dead-server"}
+
+    with pytest.raises(ValueError, match="No active session"):
+        await provider.execute("orphan_tool", {})
+
+
+@pytest.mark.asyncio
+async def test_close_cleans_up_sessions():
+    """close() should disconnect sessions and clear all internal state."""
+    mock_session = AsyncMock()
+    mock_session.__aexit__ = AsyncMock(return_value=None)
+
+    provider = MCPToolProvider(servers=[])
+    provider._sessions = {"srv": mock_session}
+    provider._tool_cache = {"srv": []}
+    provider._tool_to_server = {"tool": "srv"}
+
+    await provider.close()
+
+    assert len(provider._sessions) == 0
+    assert len(provider._tool_cache) == 0
+    assert len(provider._tool_to_server) == 0
+    mock_session.__aexit__.assert_called_once()
+
+
+def test_validate_command_accepts_safe_paths():
+    """_validate_command should accept normal executable paths."""
+    _validate_command("python")
+    _validate_command("node")
+    _validate_command("/usr/bin/python3")
+    _validate_command("C:/Python312/python.exe")
+
+
+def test_validate_command_rejects_shell_injection():
+    """_validate_command should reject commands with shell metacharacters."""
+    with pytest.raises(ValueError, match="disallowed characters"):
+        _validate_command("echo hello; rm -rf /")
+    with pytest.raises(ValueError, match="disallowed characters"):
+        _validate_command("python && malicious")
+    with pytest.raises(ValueError, match="disallowed characters"):
+        _validate_command("cmd | evil")
 
 
 def test_mcp_types_exported_from_package():
