@@ -5,6 +5,8 @@ import { Marquee } from './components/UI/Marquee';
 import { FeatureRow } from './components/Features/FeatureRow';
 import { Footer } from './components/Layout/Footer';
 import { DrivingTutor } from './components/AI/DrivingTutor';
+import { WhatsAppButton } from './components/UI/WhatsAppButton';
+import { ServiceStatusBanner } from './components/UI/ServiceStatusBanner';
 import { AppLandingPage } from './components/Pages/AppLandingPage';
 import { ASSETS, APP_PATH, LEGACY_APP_PATH, TESTIMONIALS, TRUST_STATS } from './constants';
 import { Feature } from './types';
@@ -60,6 +62,8 @@ function HomePage() {
 
   return (
     <div className="bg-bg min-h-screen text-white selection:bg-accent/30 selection:text-white overflow-x-hidden">
+
+      <ServiceStatusBanner />
 
       {/* Background Texture */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
@@ -230,6 +234,7 @@ function HomePage() {
 
       <Footer />
       <DrivingTutor />
+      <WhatsAppButton />
     </div>
   );
 }
