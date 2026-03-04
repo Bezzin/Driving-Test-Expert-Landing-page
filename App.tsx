@@ -5,6 +5,7 @@ import { Marquee } from './components/UI/Marquee';
 import { FeatureRow } from './components/Features/FeatureRow';
 import { Footer } from './components/Layout/Footer';
 import { DrivingTutor } from './components/AI/DrivingTutor';
+import { WhatsAppButton } from './components/UI/WhatsAppButton';
 import { AppLandingPage } from './components/Pages/AppLandingPage';
 import { ASSETS, APP_PATH, LEGACY_APP_PATH, TESTIMONIALS, TRUST_STATS } from './constants';
 import { Feature } from './types';
@@ -230,6 +231,7 @@ function HomePage() {
 
       <Footer />
       <DrivingTutor />
+      <WhatsAppButton />
     </div>
   );
 }

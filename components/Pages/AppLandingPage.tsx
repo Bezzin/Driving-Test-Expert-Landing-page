@@ -4,6 +4,7 @@ import { Footer } from '../Layout/Footer';
 import { Reveal } from '../UI/Reveal';
 import { APP_SCREENSHOTS, HOME_PATH, PLAY_STORE_URL, APP_STORE_URL, TESTIMONIALS, TRUST_STATS } from '../../constants';
 import { ArrowRight, Smartphone, Apple, MapPin, Navigation, Shield, Star, PlayCircle } from 'lucide-react';
+import { WhatsAppButton } from '../UI/WhatsAppButton';
 
 const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@JoshRamwell';
 const YOUTUBE_VIDEOS_URL = 'https://www.youtube.com/@JoshRamwell/videos';
@@ -428,6 +429,7 @@ export const AppLandingPage: React.FC = () => {
       </section>
 
       <Footer />
+      <WhatsAppButton />
 
       {showStickyCta && (
         <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-[#FFD700]/20 bg-black/85 p-3 backdrop-blur-md md:hidden">
