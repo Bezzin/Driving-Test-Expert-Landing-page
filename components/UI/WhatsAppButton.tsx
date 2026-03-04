@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const WA_NUM = [52, 52, 55, 56, 51, 51, 50, 49, 54, 49, 48].map(c => String.fromCharCode(c)).join('');
+const WA_NUM = [52, 52, 55, 56, 51, 51, 50, 49, 50, 54, 49, 48].map(c => String.fromCharCode(c)).join('');
 
 export const WhatsAppButton: React.FC = () => {
   const [visible, setVisible] = useState(false);
