@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navbar } from '../Layout/Navbar';
 import { Footer } from '../Layout/Footer';
 import { Reveal } from '../UI/Reveal';
+import { ServiceStatusBanner } from '../UI/ServiceStatusBanner';
 import { APP_SCREENSHOTS, HOME_PATH, PLAY_STORE_URL, APP_STORE_URL, TESTIMONIALS, TRUST_STATS } from '../../constants';
 import { ArrowRight, Smartphone, Apple, MapPin, Navigation, Shield, Star, PlayCircle } from 'lucide-react';
 
@@ -54,6 +55,7 @@ export const AppLandingPage: React.FC = () => {
     <div className="min-h-screen overflow-x-hidden bg-[#121212] pb-24 text-white selection:bg-[#FFD700]/30 selection:text-white md:pb-0">
       <div className="fixed inset-0 z-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
 
+      <ServiceStatusBanner />
       <Navbar />
 
       <section className="relative min-h-[100svh] overflow-hidden pt-24 md:pt-28" id="top">
