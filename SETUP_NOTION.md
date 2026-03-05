@@ -45,8 +45,8 @@ If you want to use Vercel instead, the function structure would need to be chang
 Create a `.env` file in the root directory with your credentials:
 
 ```env
-NOTION_API_KEY=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
-NOTION_DATABASE_ID=e5df5c44abbd45d2969ca6b3c0b7635c
+NOTION_API_KEY=your_notion_api_key_here
+NOTION_DATABASE_ID=your_database_id_here
 ```
 
 **Important:** The `.env` file is already in `.gitignore` to protect your credentials.
@@ -56,8 +56,8 @@ NOTION_DATABASE_ID=e5df5c44abbd45d2969ca6b3c0b7635c
 1. Go to your Netlify site dashboard
 2. Navigate to **Site settings** → **Environment variables**
 3. Add the following variables:
-   - `NOTION_API_KEY` = `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`
-   - `NOTION_DATABASE_ID` = `e5df5c44abbd45d2969ca6b3c0b7635c`
+   - `NOTION_API_KEY` = your Notion integration token (starts with `ntn_` or `secret_`)
+   - `NOTION_DATABASE_ID` = your database ID from Step 3
 4. Click **"Save"**
 5. Redeploy your site
 
