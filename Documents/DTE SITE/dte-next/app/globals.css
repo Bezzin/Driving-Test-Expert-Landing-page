@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-accent: #FCA311;
+  --color-accent-glow: rgba(252, 163, 17, 0.3);
+  --color-card: #18181b;
+  --color-bg: #0f0f0f;
+
+  --font-sans: var(--font-inter), sans-serif;
+  --font-brand: var(--font-poppins), sans-serif;
+
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delayed: float 6s ease-in-out 3s infinite;
+  --animate-fade-up: fadeInUp 0.8s ease-out forwards;
+  --animate-pulse-glow: pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-shine: shine 1.5s infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+body {
+  background-color: #0f0f0f;
+  color: #e5e7eb;
+}
+
+.glass {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass:hover {
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.glass-orange {
+  background: rgba(252, 163, 17, 0.05);
+  border: 1px solid rgba(252, 163, 17, 0.2);
+  box-shadow: 0 10px 40px rgba(252, 163, 17, 0.1);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-orange:hover {
+  box-shadow: 0 20px 60px rgba(252, 163, 17, 0.2);
+  border-color: rgba(252, 163, 17, 0.4);
+}
+
+.stroke-ghost {
+  -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+  color: transparent;
+}
+
+.mask-linear-gradient {
+  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
