@@ -16,6 +16,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "xlsx": "^0.18.5",
+    "youtube-captions-scraper": "^2.0.3",
     "youtube-transcript": "^1.2.1"
   },
   "devDependencies": {
