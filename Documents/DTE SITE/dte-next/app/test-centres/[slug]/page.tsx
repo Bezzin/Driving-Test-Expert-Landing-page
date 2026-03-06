@@ -12,8 +12,21 @@ import { TipsSection } from '@/components/centres/TipsSection'
 import { NearbyCentres } from '@/components/centres/NearbyCentres'
 import { CentreFaq } from '@/components/centres/CentreFaq'
 import { AppCtaBlock } from '@/components/centres/AppCtaBlock'
+import { RoutePreview } from '@/components/centres/RoutePreview'
 import { Navbar } from '@/components/Layout/Navbar'
 import { Footer } from '@/components/Layout/Footer'
+
+// Test: load route data for Stafford only
+function getRouteData(slug: string) {
+  try {
+    if (slug === 'stafford') {
+      return require('@/data/routes/stafford.json')
+    }
+  } catch {
+    return null
+  }
+  return null
+}
 
 function getRegionSlug(regionName: string): string {
   const regions = getAllRegions()
@@ -75,6 +88,7 @@ export default async function CentrePage({
 
   const content = getContentBySlug(slug)
   const regionSlug = getRegionSlug(centre.region)
+  const routeData = getRouteData(slug)
 
   return (
     <>
@@ -88,7 +102,20 @@ export default async function CentrePage({
         />
         <CentreHero centre={centre} />
         <PassRateStats centre={centre} />
-        <RouteSection centre={centre} content={content} />
+        {routeData ? (
+          <RoutePreview
+            centreName={centre.name}
+            centreSlug={centre.slug}
+            postcode={routeData.postcode}
+            routeCount={routeData.routeCount}
+            allRoads={routeData.allRoads}
+            routes={routeData.routes}
+            latitude={centre.latitude}
+            longitude={centre.longitude}
+          />
+        ) : (
+          <RouteSection centre={centre} content={content} />
+        )}
         <ChallengesSection centre={centre} content={content} />
         <TipsSection centre={centre} content={content} />
         <NearbyCentres centre={centre} regionSlug={regionSlug} />
