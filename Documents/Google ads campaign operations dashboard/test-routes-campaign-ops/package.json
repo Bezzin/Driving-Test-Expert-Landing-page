@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "tsx scripts/seed-test-centres.ts && tsx scripts/seed-automation-rules.ts",
+    "db:audit": "tsx scripts/audit-rls.ts",
+    "sync": "curl -s http://localhost:3000/api/campaigns/sync | jq .",
+    "automate": "curl -s -X POST http://localhost:3000/api/automation/run | jq ."
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
