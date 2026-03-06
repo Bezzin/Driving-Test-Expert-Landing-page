@@ -69,6 +69,30 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* Guides */}
+        <div className="border-t border-white/5 pt-8 mb-8">
+          <h3 className="text-sm font-semibold text-white/60 mb-4 text-center">
+            Guides
+          </h3>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-sm">
+            <a
+              href="/blog/"
+              className="text-white/40 hover:text-accent transition-colors"
+            >
+              Driving Test Tips
+            </a>
+            <span className="hidden md:block text-white/20">&bull;</span>
+            <a
+              href="https://www.youtube.com/@JoshRamwell"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/40 hover:text-accent transition-colors"
+            >
+              YouTube Channel
+            </a>
+          </div>
+        </div>
+
         {/* Legal Links */}
         <div className="border-t border-white/5 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-sm">

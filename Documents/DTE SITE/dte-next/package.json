@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "blog:scrape": "tsx scripts/scrape-youtube.ts",
+    "blog:transcripts": "tsx scripts/fetch-transcripts.ts",
+    "blog:generate": "tsx scripts/generate-blog-posts.ts",
+    "blog:link": "tsx scripts/link-blog-to-centres.ts",
+    "blog:all": "npm run blog:scrape && npm run blog:generate && npm run blog:link"
   },
   "dependencies": {
     "@google/genai": "^1.44.0",

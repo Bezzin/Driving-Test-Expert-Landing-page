@@ -38,7 +38,7 @@ async function fetchTranscriptText(captionUrl: string): Promise<string> {
 
   // Parse XML text segments: <text start="..." dur="...">content</text>
   const segments: string[] = []
-  const regex = /<text[^>]*>(.*?)<\/text>/gs
+  const regex = new RegExp('<text[^>]*>(.*?)</text>', 'gs')
   let m: RegExpExecArray | null
   while ((m = regex.exec(xml)) !== null) {
     // Decode HTML entities

@@ -9,6 +9,7 @@ export const NAV_ITEMS: import('./types').NavItem[] = [
       { label: 'Pass Rates', href: '/pass-rates/' },
     ],
   },
+  { label: 'Blog', href: '/blog/' },
   { label: 'Our Apps', href: '/test-routes-app' },
   { label: 'About', href: '#about' },
 ]

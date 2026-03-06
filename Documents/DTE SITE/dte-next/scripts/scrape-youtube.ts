@@ -30,10 +30,10 @@ async function scrapeChannel(): Promise<YouTubeVideo[]> {
   const html = await res.text()
 
   // Extract ytInitialData from script tags
-  const match = html.match(/var ytInitialData = ({.*?});<\/script>/s)
+  const match = html.match(new RegExp('var ytInitialData = ({.*?});</script>', 's'))
   if (!match) {
     // Fallback: try another pattern
-    const match2 = html.match(/ytInitialData\s*=\s*({.*?});/s)
+    const match2 = html.match(new RegExp('ytInitialData\\s*=\\s*({.*?});', 's'))
     if (!match2) throw new Error('Could not find ytInitialData in page HTML')
     return parseYtInitialData(match2[1])
   }
