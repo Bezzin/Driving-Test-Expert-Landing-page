@@ -1,0 +1,65 @@
+name: Auto-update blog from YouTube
+
+on:
+  schedule:
+    # Runs daily at 6am UTC (7am BST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+jobs:
+  update-blog:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dte-next
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: dte-next/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Scrape YouTube for new videos
+        run: npm run blog:scrape
+
+      - name: Generate blog posts for new videos
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npm run blog:generate
+
+      - name: Link blog posts to centres
+        run: npm run blog:link
+
+      - name: Check for new posts
+        id: check
+        run: |
+          if git diff --quiet data/blog/ data/centre-content.json data/youtube/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No new blog posts generated"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            NEW_COUNT=$(git diff --name-only --diff-filter=A data/blog/ | wc -l)
+            echo "new_posts=$NEW_COUNT" >> "$GITHUB_OUTPUT"
+            echo "$NEW_COUNT new blog post(s) detected"
+          fi
+
+      - name: Commit new posts
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/blog/ data/youtube/ data/centre-content.json
+          git commit -m "feat(blog): auto-generate ${{ steps.check.outputs.new_posts }} new post(s) from YouTube"
+          git push
+
+      - name: Trigger Netlify deploy
+        if: steps.check.outputs.changed == 'true'
+        run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_HOOK }}
