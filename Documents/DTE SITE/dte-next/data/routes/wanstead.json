@@ -1,0 +1,60 @@
+{
+  "centreId": "wanstead",
+  "centreName": "Wanstead Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Wanstead, 2 Devon House, Hermon Hill, Wanstead",
+  "postcode": "E11 2AW",
+  "routeCount": 1,
+  "allRoads": [
+    "Ashbourne Avenue",
+    "Cambridge Park Road",
+    "Chelmsford Road",
+    "Chestnut Drive",
+    "Chigwell Road",
+    "Cowslip Road",
+    "Cranbourne Avenue",
+    "Eastern Avenue",
+    "Elmcroft Avenue",
+    "George Lane",
+    "High Road",
+    "Highstone Avenue",
+    "Hollybush Hill",
+    "New Wanstead",
+    "Nightingale Lane",
+    "Snaresbrook Road",
+    "The Viaduct",
+    "Victoria Road",
+    "Wellesley Road",
+    "Woodford New Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 8.3,
+      "durationMins": 20,
+      "keyRoads": [
+        "Ashbourne Avenue",
+        "Cambridge Park Road",
+        "Chelmsford Road",
+        "Chestnut Drive",
+        "Chigwell Road",
+        "Cowslip Road",
+        "Cranbourne Avenue",
+        "Eastern Avenue",
+        "Elmcroft Avenue",
+        "George Lane",
+        "High Road",
+        "Highstone Avenue",
+        "Hollybush Hill",
+        "New Wanstead",
+        "Nightingale Lane",
+        "Snaresbrook Road",
+        "The Viaduct",
+        "Victoria Road",
+        "Wellesley Road",
+        "Woodford New Road"
+      ],
+      "roundabouts": 3,
+      "turns": 15
+    }
+  ]
+}

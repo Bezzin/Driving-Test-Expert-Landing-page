@@ -1,0 +1,32 @@
+{
+  "centreId": "benbecula-island",
+  "centreName": "Benbecula Island Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Benbecula Island, Balivanich Airport, Benbecula Island",
+  "postcode": "HS7 5LA",
+  "routeCount": 1,
+  "allRoads": [
+    "Baile na Cille",
+    "Clobhsa Tindill; Tindill Close",
+    "Ionad Columba; Columba Place",
+    "Meall Ard; Meallard",
+    "Rathad Tindill; Tindill Road",
+    "Slighe Winfield; Winfield Way"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 16.8,
+      "durationMins": 40,
+      "keyRoads": [
+        "Baile na Cille",
+        "Clobhsa Tindill; Tindill Close",
+        "Ionad Columba; Columba Place",
+        "Meall Ard; Meallard",
+        "Rathad Tindill; Tindill Road",
+        "Slighe Winfield; Winfield Way"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    }
+  ]
+}

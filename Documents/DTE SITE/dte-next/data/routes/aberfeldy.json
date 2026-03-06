@@ -1,0 +1,143 @@
+{
+  "centreId": "aberfeldy",
+  "centreName": "Aberfeldy Driving Test Centre",
+  "address": "2 The Square, Aberfeldy, PH15 2DD",
+  "postcode": "PH15 2DD",
+  "routeCount": 7,
+  "allRoads": [
+    "Aberfeldy Road",
+    "Bank Street",
+    "Breadalbane Terrace",
+    "Burnside",
+    "Chapel Street",
+    "Comrie Bridge",
+    "Crieff Road",
+    "Distillery Drive",
+    "Dull Road",
+    "Dunkeld Street",
+    "Kenmore Street",
+    "Mill Street",
+    "Old Wade's Road",
+    "Poplar Avenue",
+    "Tay Bridge Terrace",
+    "Taybridge Drive",
+    "Taybridge Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 11.3,
+      "durationMins": 31,
+      "keyRoads": [
+        "Chapel Street",
+        "Crieff Road",
+        "Distillery Drive",
+        "Dunkeld Street",
+        "Old Wade's Road",
+        "Tay Bridge Terrace"
+      ],
+      "roundabouts": 0,
+      "turns": 11
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 23.7,
+      "durationMins": 37,
+      "keyRoads": [
+        "Aberfeldy Road",
+        "Comrie Bridge",
+        "Crieff Road",
+        "Dull Road",
+        "Kenmore Street",
+        "Taybridge Drive",
+        "Taybridge Road"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 23.7,
+      "durationMins": 37,
+      "keyRoads": [
+        "Aberfeldy Road",
+        "Comrie Bridge",
+        "Crieff Road",
+        "Dull Road",
+        "Kenmore Street",
+        "Taybridge Drive",
+        "Taybridge Road"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    },
+    {
+      "routeNumber": 4,
+      "distanceKm": 23,
+      "durationMins": 35,
+      "keyRoads": [
+        "Aberfeldy Road",
+        "Bank Street",
+        "Comrie Bridge",
+        "Crieff Road",
+        "Dull Road",
+        "Mill Street",
+        "Poplar Avenue",
+        "Tay Bridge Terrace"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    },
+    {
+      "routeNumber": 6,
+      "distanceKm": 11.4,
+      "durationMins": 31,
+      "keyRoads": [
+        "Breadalbane Terrace",
+        "Burnside",
+        "Chapel Street",
+        "Crieff Road",
+        "Distillery Drive",
+        "Dunkeld Street",
+        "Old Wade's Road",
+        "Tay Bridge Terrace"
+      ],
+      "roundabouts": 0,
+      "turns": 15
+    },
+    {
+      "routeNumber": 7,
+      "distanceKm": 12.4,
+      "durationMins": 34,
+      "keyRoads": [
+        "Chapel Street",
+        "Crieff Road",
+        "Distillery Drive",
+        "Dunkeld Street",
+        "Kenmore Street",
+        "Old Wade's Road",
+        "Tay Bridge Terrace",
+        "Taybridge Drive",
+        "Taybridge Road"
+      ],
+      "roundabouts": 0,
+      "turns": 14
+    },
+    {
+      "routeNumber": 8,
+      "distanceKm": 23.7,
+      "durationMins": 37,
+      "keyRoads": [
+        "Aberfeldy Road",
+        "Comrie Bridge",
+        "Crieff Road",
+        "Dull Road",
+        "Kenmore Street",
+        "Taybridge Drive",
+        "Taybridge Road"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    }
+  ]
+}

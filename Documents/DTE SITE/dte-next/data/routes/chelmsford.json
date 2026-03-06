@@ -1,0 +1,58 @@
+{
+  "centreId": "chelmsford",
+  "centreName": "Chelmsford Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Chelmsford LGV, 15 Hanbury Road, Widford Industrial Estate, Chelmsford",
+  "postcode": "CM1 3DR",
+  "routeCount": 1,
+  "allRoads": [
+    "Beeches Road",
+    "Forest Drive",
+    "Hanbury Road",
+    "Harewood Road",
+    "High Bridge Road",
+    "London Road",
+    "New Street",
+    "Parkway",
+    "Rainsford Lane",
+    "Ravensbourne Drive",
+    "Rectory Lane",
+    "Robjohns Road",
+    "Savernake Road",
+    "Southend Road",
+    "Springfield Road",
+    "Three Mile Hill",
+    "Victoria Road",
+    "Westway",
+    "Writtle Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 18.7,
+      "durationMins": 45,
+      "keyRoads": [
+        "Beeches Road",
+        "Forest Drive",
+        "Hanbury Road",
+        "Harewood Road",
+        "High Bridge Road",
+        "London Road",
+        "New Street",
+        "Parkway",
+        "Rainsford Lane",
+        "Ravensbourne Drive",
+        "Rectory Lane",
+        "Robjohns Road",
+        "Savernake Road",
+        "Southend Road",
+        "Springfield Road",
+        "Three Mile Hill",
+        "Victoria Road",
+        "Westway",
+        "Writtle Road"
+      ],
+      "roundabouts": 8,
+      "turns": 9
+    }
+  ]
+}

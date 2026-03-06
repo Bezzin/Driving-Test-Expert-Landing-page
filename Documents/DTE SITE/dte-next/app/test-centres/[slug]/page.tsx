@@ -16,16 +16,12 @@ import { RoutePreview } from '@/components/centres/RoutePreview'
 import { Navbar } from '@/components/Layout/Navbar'
 import { Footer } from '@/components/Layout/Footer'
 
-// Test: load route data for Stafford only
 function getRouteData(slug: string) {
   try {
-    if (slug === 'stafford') {
-      return require('@/data/routes/stafford.json')
-    }
+    return require(`@/data/routes/${slug}.json`)
   } catch {
     return null
   }
-  return null
 }
 
 function getRegionSlug(regionName: string): string {

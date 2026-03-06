@@ -1,0 +1,46 @@
+{
+  "centreId": "lerwick",
+  "centreName": "Lerwick Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Lerwick (Shetland), Isleburgh House, King Harald Street, Lerwick",
+  "postcode": "ZE1 0DJ",
+  "routeCount": 1,
+  "allRoads": [
+    "Annsbrae Place",
+    "Commercial Road",
+    "Gilbertson Road",
+    "Haldane Burgess Crescent",
+    "Harbour Street",
+    "Hayfield Lane",
+    "Holmsgarth Road",
+    "Market Street",
+    "North Lochside",
+    "North Road",
+    "Robertson Crescent",
+    "South Road",
+    "St. Magnus Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 16,
+      "durationMins": 38,
+      "keyRoads": [
+        "Annsbrae Place",
+        "Commercial Road",
+        "Gilbertson Road",
+        "Haldane Burgess Crescent",
+        "Harbour Street",
+        "Hayfield Lane",
+        "Holmsgarth Road",
+        "Market Street",
+        "North Lochside",
+        "North Road",
+        "Robertson Crescent",
+        "South Road",
+        "St. Magnus Street"
+      ],
+      "roundabouts": 5,
+      "turns": 13
+    }
+  ]
+}

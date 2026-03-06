@@ -1,0 +1,52 @@
+{
+  "centreId": "burton-upon-trent",
+  "centreName": "Burton upon Trent Driving Test Centre",
+  "address": "27 Swan Walk, Burton-on-Trent, DE14 1DD",
+  "postcode": "DE14 1DD",
+  "routeCount": 1,
+  "allRoads": [
+    "Borough Road",
+    "Branston Road",
+    "Calais Road",
+    "Charnwood Road",
+    "Dallow Street",
+    "Derby Street",
+    "Dunstall Road",
+    "Foston Avenue",
+    "Horninglow Road",
+    "Main Road",
+    "Moor Street",
+    "Mosley Street",
+    "Tutbury Road",
+    "Victoria Road",
+    "Wellington Park",
+    "Wellington Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 14.8,
+      "durationMins": 35,
+      "keyRoads": [
+        "Borough Road",
+        "Branston Road",
+        "Calais Road",
+        "Charnwood Road",
+        "Dallow Street",
+        "Derby Street",
+        "Dunstall Road",
+        "Foston Avenue",
+        "Horninglow Road",
+        "Main Road",
+        "Moor Street",
+        "Mosley Street",
+        "Tutbury Road",
+        "Victoria Road",
+        "Wellington Park",
+        "Wellington Road"
+      ],
+      "roundabouts": 7,
+      "turns": 12
+    }
+  ]
+}

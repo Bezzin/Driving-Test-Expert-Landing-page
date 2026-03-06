@@ -1,0 +1,40 @@
+{
+  "centreId": "shrewsbury-driving-test-centre--routes",
+  "centreName": "Shrewsbury Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Shrewsbury, Stafford Drive, Battlefield Enterprise Park",
+  "postcode": "SY1 3BF",
+  "routeCount": 1,
+  "allRoads": [
+    "Bage Way",
+    "Harlescott Lane",
+    "Knights Way",
+    "Meadow Farm Drive",
+    "Pritchard Way",
+    "Robertson Way",
+    "Sundorne Road",
+    "Telford Way",
+    "Vanguard Way",
+    "Whitchurch Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 19.3,
+      "durationMins": 46,
+      "keyRoads": [
+        "Bage Way",
+        "Harlescott Lane",
+        "Knights Way",
+        "Meadow Farm Drive",
+        "Pritchard Way",
+        "Robertson Way",
+        "Sundorne Road",
+        "Telford Way",
+        "Vanguard Way",
+        "Whitchurch Road"
+      ],
+      "roundabouts": 8,
+      "turns": 5
+    }
+  ]
+}

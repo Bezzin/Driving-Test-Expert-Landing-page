@@ -1,0 +1,32 @@
+{
+  "centreId": "chertsey",
+  "centreName": "Chertsey Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Chertsey, Unit 4, The Forum, Hanworth Lane, Chertsey",
+  "postcode": "KT16 9JX",
+  "routeCount": 1,
+  "allRoads": [
+    "Green Lane",
+    "Guildford Road",
+    "Marsh Lane",
+    "Murray Road",
+    "School Lane",
+    "Simplemarsh Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 8.5,
+      "durationMins": 20,
+      "keyRoads": [
+        "Green Lane",
+        "Guildford Road",
+        "Marsh Lane",
+        "Murray Road",
+        "School Lane",
+        "Simplemarsh Road"
+      ],
+      "roundabouts": 6,
+      "turns": 4
+    }
+  ]
+}

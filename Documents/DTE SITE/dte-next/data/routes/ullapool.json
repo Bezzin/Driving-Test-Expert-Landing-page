@@ -1,0 +1,84 @@
+{
+  "centreId": "ullapool",
+  "centreName": "Ullapool Driving Test Centre",
+  "address": "Ullapool Fire Station, Lady Smith Street, Ullapool",
+  "postcode": "IV26 2UW",
+  "routeCount": 3,
+  "allRoads": [
+    "Argyle Street",
+    "Custom House Street",
+    "Ladysmith Street",
+    "Market Street",
+    "Mill Street",
+    "North Road",
+    "Pulteney Street",
+    "Quay Street",
+    "Riverside Terrace",
+    "Seaforth Road",
+    "Shore Street",
+    "West Argyle Street",
+    "West Lane",
+    "West Terrace"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 3.1,
+      "durationMins": 7,
+      "keyRoads": [
+        "Argyle Street",
+        "Custom House Street",
+        "Ladysmith Street",
+        "Market Street",
+        "Mill Street",
+        "Quay Street",
+        "Riverside Terrace",
+        "Seaforth Road",
+        "Shore Street",
+        "West Argyle Street",
+        "West Lane",
+        "West Terrace"
+      ],
+      "roundabouts": 0,
+      "turns": 10
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 5.3,
+      "durationMins": 18,
+      "keyRoads": [
+        "Argyle Street",
+        "Custom House Street",
+        "Ladysmith Street",
+        "Market Street",
+        "Mill Street",
+        "Pulteney Street",
+        "Quay Street",
+        "Seaforth Road",
+        "West Argyle Street",
+        "West Terrace"
+      ],
+      "roundabouts": 0,
+      "turns": 18
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 6,
+      "durationMins": 18,
+      "keyRoads": [
+        "Custom House Street",
+        "Ladysmith Street",
+        "Market Street",
+        "Mill Street",
+        "North Road",
+        "Pulteney Street",
+        "Quay Street",
+        "Riverside Terrace",
+        "Shore Street",
+        "West Argyle Street"
+      ],
+      "roundabouts": 0,
+      "turns": 13
+    }
+  ]
+}

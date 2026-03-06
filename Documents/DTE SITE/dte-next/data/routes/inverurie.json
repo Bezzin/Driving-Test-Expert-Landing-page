@@ -1,0 +1,50 @@
+{
+  "centreId": "inverurie",
+  "centreName": "Inverurie Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Inverurie (Grampian), Garioch Indoor Bowling Centre, Harlaw Industrial Estate",
+  "postcode": "AB51 4FR",
+  "routeCount": 1,
+  "allRoads": [
+    "Blackhall Road",
+    "Cuninghill Avenue",
+    "Cuninghill Road",
+    "Davah Road",
+    "George Square",
+    "High Street",
+    "Kellands Road",
+    "Manse Road",
+    "Middlemuir Road",
+    "North Street",
+    "Saphock Place",
+    "St. James's Place",
+    "Strathburn Gardens",
+    "West High Street",
+    "Westfield Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 9.4,
+      "durationMins": 23,
+      "keyRoads": [
+        "Blackhall Road",
+        "Cuninghill Avenue",
+        "Cuninghill Road",
+        "Davah Road",
+        "George Square",
+        "High Street",
+        "Kellands Road",
+        "Manse Road",
+        "Middlemuir Road",
+        "North Street",
+        "Saphock Place",
+        "St. James's Place",
+        "Strathburn Gardens",
+        "West High Street",
+        "Westfield Road"
+      ],
+      "roundabouts": 1,
+      "turns": 16
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "centreId": "loughton",
+  "centreName": "Loughton Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Loughton, Crown Buildings, 284 High Road, Loughton, Essex",
+  "postcode": "IG10 1RB",
+  "routeCount": 1,
+  "allRoads": [
+    "Abridge Road",
+    "Border's Lane",
+    "Carroll Hill",
+    "Chigwell Lane",
+    "Church Lane",
+    "Coppice Row",
+    "Golding's Hill",
+    "High Road",
+    "King's Green",
+    "London Road",
+    "Market Place",
+    "Morgan Crescent",
+    "Orchard Drive",
+    "Piercing Hill",
+    "Rectory Lane",
+    "The Uplands",
+    "Traps Hill",
+    "Wellfields"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 14.9,
+      "durationMins": 36,
+      "keyRoads": [
+        "Abridge Road",
+        "Border's Lane",
+        "Carroll Hill",
+        "Chigwell Lane",
+        "Church Lane",
+        "Coppice Row",
+        "Golding's Hill",
+        "High Road",
+        "King's Green",
+        "London Road",
+        "Market Place",
+        "Morgan Crescent",
+        "Orchard Drive",
+        "Piercing Hill",
+        "Rectory Lane",
+        "The Uplands",
+        "Traps Hill",
+        "Wellfields"
+      ],
+      "roundabouts": 2,
+      "turns": 11
+    }
+  ]
+}

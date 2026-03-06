@@ -1,0 +1,50 @@
+{
+  "centreId": "worthing",
+  "centreName": "Worthing Driving Test Centre",
+  "address": "DVSA Art Room, Field Place, The Boulevard, Worthing, West Sussex",
+  "postcode": "BN13 1NP",
+  "routeCount": 1,
+  "allRoads": [
+    "Aglaia Road",
+    "Boundary Road",
+    "Broadwater Road",
+    "Christchurch Road",
+    "Crescent Road",
+    "George V Avenue",
+    "Goring Road",
+    "Grafton Road",
+    "Grand Avenue",
+    "Heene Road",
+    "Richmond Road",
+    "Shelley Road",
+    "Teville Road",
+    "Wallace Avenue",
+    "West Parade"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 10,
+      "durationMins": 24,
+      "keyRoads": [
+        "Aglaia Road",
+        "Boundary Road",
+        "Broadwater Road",
+        "Christchurch Road",
+        "Crescent Road",
+        "George V Avenue",
+        "Goring Road",
+        "Grafton Road",
+        "Grand Avenue",
+        "Heene Road",
+        "Richmond Road",
+        "Shelley Road",
+        "Teville Road",
+        "Wallace Avenue",
+        "West Parade"
+      ],
+      "roundabouts": 2,
+      "turns": 11
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "centreId": "enfield-brancroft-way",
+  "centreName": "Enfield (Brancroft Way) Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Enfield LGV, 33 Brancroft Way, Brimsdown, Enfield",
+  "postcode": "EN3 7NJ",
+  "routeCount": 1,
+  "allRoads": [
+    "Bell Lane",
+    "Brancroft Way",
+    "Brimsdown Avenue",
+    "Eastfield Road",
+    "Goldsdown Road",
+    "Goodwood Avenue",
+    "Green Street",
+    "Hertford Road",
+    "Longfield Avenue",
+    "Mollison Avenue",
+    "Osborne Road",
+    "Turkey Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 8.2,
+      "durationMins": 20,
+      "keyRoads": [
+        "Bell Lane",
+        "Brancroft Way",
+        "Brimsdown Avenue",
+        "Eastfield Road",
+        "Goldsdown Road",
+        "Goodwood Avenue",
+        "Green Street",
+        "Hertford Road",
+        "Longfield Avenue",
+        "Mollison Avenue",
+        "Osborne Road",
+        "Turkey Street"
+      ],
+      "roundabouts": 1,
+      "turns": 13
+    }
+  ]
+}

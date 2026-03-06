@@ -1,0 +1,52 @@
+{
+  "centreId": "haddington",
+  "centreName": "Haddington Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Haddington, Herdmanflatt, Haddington",
+  "postcode": "EH41 3NG",
+  "routeCount": 1,
+  "allRoads": [
+    "Beechwood Road",
+    "Birk Hedges",
+    "Dunbar Road",
+    "Florabank Road",
+    "Hardgate",
+    "Herdmanflat",
+    "Hopetoun Drive",
+    "Hospital Road",
+    "Knox Place",
+    "Market Street",
+    "Meadowpark",
+    "Mill Wynd",
+    "Riverside Drive",
+    "Station Road",
+    "Traprain Terrace",
+    "Tynebank Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 14.8,
+      "durationMins": 35,
+      "keyRoads": [
+        "Beechwood Road",
+        "Birk Hedges",
+        "Dunbar Road",
+        "Florabank Road",
+        "Hardgate",
+        "Herdmanflat",
+        "Hopetoun Drive",
+        "Hospital Road",
+        "Knox Place",
+        "Market Street",
+        "Meadowpark",
+        "Mill Wynd",
+        "Riverside Drive",
+        "Station Road",
+        "Traprain Terrace",
+        "Tynebank Road"
+      ],
+      "roundabouts": 3,
+      "turns": 18
+    }
+  ]
+}

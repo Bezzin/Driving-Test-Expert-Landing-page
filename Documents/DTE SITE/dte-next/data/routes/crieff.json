@@ -1,0 +1,28 @@
+{
+  "centreId": "crieff",
+  "centreName": "Crieff Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Crieff, Crieff Fire Station, Broich Road, Crieff",
+  "postcode": "PH7 3SB",
+  "routeCount": 1,
+  "allRoads": [
+    "Broich Road",
+    "Gallowhill",
+    "Station Road",
+    "Wardside"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 11.3,
+      "durationMins": 27,
+      "keyRoads": [
+        "Broich Road",
+        "Gallowhill",
+        "Station Road",
+        "Wardside"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    }
+  ]
+}

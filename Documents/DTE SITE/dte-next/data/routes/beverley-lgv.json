@@ -1,0 +1,36 @@
+{
+  "centreId": "beverley-lgv",
+  "centreName": "Beverley LGV Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Beverley LGV, Old Beck Road, Off Groveshill Road, Beverley",
+  "postcode": "HU17 0JG",
+  "routeCount": 1,
+  "allRoads": [
+    "Beverley Road",
+    "Cranbrook Avenue",
+    "Endike Lane",
+    "Greenwood Avenue",
+    "Hall Road",
+    "Hull Road",
+    "Inglemire Lane",
+    "New Village Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 26.8,
+      "durationMins": 64,
+      "keyRoads": [
+        "Beverley Road",
+        "Cranbrook Avenue",
+        "Endike Lane",
+        "Greenwood Avenue",
+        "Hall Road",
+        "Hull Road",
+        "Inglemire Lane",
+        "New Village Road"
+      ],
+      "roundabouts": 4,
+      "turns": 5
+    }
+  ]
+}

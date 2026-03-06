@@ -1,0 +1,52 @@
+{
+  "centreId": "hornchurch",
+  "centreName": "Hornchurch Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Hornchurch, 75 Station Lane, Hornchurch",
+  "postcode": "RM12 6JX",
+  "routeCount": 1,
+  "allRoads": [
+    "Belgrave Avenue",
+    "Billet Lane",
+    "Brentwood Road",
+    "Cambridge Avenue",
+    "Colchester Road",
+    "Corbets Tey Road",
+    "Gooshays Drive",
+    "Hall Lane",
+    "High Street",
+    "North Street",
+    "Slewins Lane",
+    "Southend Arterial Road",
+    "Squirrels Heath Road",
+    "St Mary's Lane",
+    "Walden Way",
+    "Wykeham Avenue"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 12.1,
+      "durationMins": 29,
+      "keyRoads": [
+        "Belgrave Avenue",
+        "Billet Lane",
+        "Brentwood Road",
+        "Cambridge Avenue",
+        "Colchester Road",
+        "Corbets Tey Road",
+        "Gooshays Drive",
+        "Hall Lane",
+        "High Street",
+        "North Street",
+        "Slewins Lane",
+        "Southend Arterial Road",
+        "Squirrels Heath Road",
+        "St Mary's Lane",
+        "Walden Way",
+        "Wykeham Avenue"
+      ],
+      "roundabouts": 2,
+      "turns": 11
+    }
+  ]
+}

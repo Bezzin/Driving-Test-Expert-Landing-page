@@ -1,0 +1,46 @@
+{
+  "centreId": "stornoway",
+  "centreName": "Stornoway Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Stornoway, Fishermans Mission, 1 Quay Street, Stornoway",
+  "postcode": "HS1 2XX",
+  "routeCount": 1,
+  "allRoads": [
+    "Giubhairsiadar; Guershader",
+    "Lanaig Fhada; Long Lane",
+    "Mol a Deas; South Beach Street",
+    "Rathad Chnoc nan Gobhar; Goathill Road",
+    "Rathad MhicAmhlaidh; Macaulay Road",
+    "Rathad MhicLeoid; MacLeod Road",
+    "Rathad MhicMhathain; Matheson Road",
+    "Rathad Pheirseabhail; Perceval Road",
+    "Rathad Shanndabhaig; Sandwick Road",
+    "Rathad an Eilein; Island Road",
+    "Slighe Phortrona; Portrona Drive",
+    "Slighe Stiubhairt; Stewart Drive",
+    "Sràid Einicleit; Newton Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 6.2,
+      "durationMins": 15,
+      "keyRoads": [
+        "Giubhairsiadar; Guershader",
+        "Lanaig Fhada; Long Lane",
+        "Mol a Deas; South Beach Street",
+        "Rathad Chnoc nan Gobhar; Goathill Road",
+        "Rathad MhicAmhlaidh; Macaulay Road",
+        "Rathad MhicLeoid; MacLeod Road",
+        "Rathad MhicMhathain; Matheson Road",
+        "Rathad Pheirseabhail; Perceval Road",
+        "Rathad Shanndabhaig; Sandwick Road",
+        "Rathad an Eilein; Island Road",
+        "Slighe Phortrona; Portrona Drive",
+        "Slighe Stiubhairt; Stewart Drive",
+        "Sràid Einicleit; Newton Street"
+      ],
+      "roundabouts": 3,
+      "turns": 9
+    }
+  ]
+}

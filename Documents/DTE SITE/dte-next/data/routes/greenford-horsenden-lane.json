@@ -1,0 +1,48 @@
+{
+  "centreId": "greenford-horsenden-lane",
+  "centreName": "Greenford Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre, 96 Horsenden Lane North, Greenford",
+  "postcode": "UB6 7QH",
+  "routeCount": 1,
+  "allRoads": [
+    "Bowrons Avenue",
+    "Bridgewater Road",
+    "Chaplin Road",
+    "Ealing Road",
+    "Harrow Road",
+    "Melville Avenue",
+    "Norton Road",
+    "Robin Hood Way",
+    "Rosewood Avenue",
+    "Sudbury Court Drive",
+    "Sudbury Court Road",
+    "Talbot Road",
+    "Watford Road",
+    "Whitton Avenue East"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 8.8,
+      "durationMins": 21,
+      "keyRoads": [
+        "Bowrons Avenue",
+        "Bridgewater Road",
+        "Chaplin Road",
+        "Ealing Road",
+        "Harrow Road",
+        "Melville Avenue",
+        "Norton Road",
+        "Robin Hood Way",
+        "Rosewood Avenue",
+        "Sudbury Court Drive",
+        "Sudbury Court Road",
+        "Talbot Road",
+        "Watford Road",
+        "Whitton Avenue East"
+      ],
+      "roundabouts": 3,
+      "turns": 14
+    }
+  ]
+}

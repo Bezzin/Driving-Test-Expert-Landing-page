@@ -1,0 +1,96 @@
+{
+  "centreId": "kingussie",
+  "centreName": "Kingussie Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Kingussie, Kingussie Shinty Club The Market Stance, Ruthven Road, Kingussie",
+  "postcode": "PH21 1EN",
+  "routeCount": 3,
+  "allRoads": [
+    "Ardbroilach Road",
+    "Balavil Brae",
+    "Church Terrace",
+    "Duke Street",
+    "Dunbarry Road",
+    "East Terrace",
+    "Garraline Terrace",
+    "Glen Road",
+    "Gynack Road",
+    "Gynack Street",
+    "High Street",
+    "King Street",
+    "Main Street",
+    "Middle Terrace",
+    "Newtonmore Road",
+    "Perth Road",
+    "Ruthven Road",
+    "Spey Street",
+    "Tait's Brae"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 16.4,
+      "durationMins": 39,
+      "keyRoads": [
+        "Ardbroilach Road",
+        "Church Terrace",
+        "Duke Street",
+        "Dunbarry Road",
+        "Garraline Terrace",
+        "Glen Road",
+        "Gynack Road",
+        "High Street",
+        "King Street",
+        "Main Street",
+        "Middle Terrace",
+        "Newtonmore Road",
+        "Perth Road",
+        "Ruthven Road",
+        "Spey Street",
+        "Tait's Brae"
+      ],
+      "roundabouts": 0,
+      "turns": 18
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 11,
+      "durationMins": 19,
+      "keyRoads": [
+        "Balavil Brae",
+        "Church Terrace",
+        "Duke Street",
+        "Glen Road",
+        "High Street",
+        "King Street",
+        "Main Street",
+        "Newtonmore Road",
+        "Ruthven Road",
+        "Spey Street"
+      ],
+      "roundabouts": 0,
+      "turns": 7
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 12.6,
+      "durationMins": 24,
+      "keyRoads": [
+        "Ardbroilach Road",
+        "Balavil Brae",
+        "Church Terrace",
+        "Duke Street",
+        "Dunbarry Road",
+        "East Terrace",
+        "Glen Road",
+        "Gynack Street",
+        "High Street",
+        "King Street",
+        "Main Street",
+        "Newtonmore Road",
+        "Spey Street"
+      ],
+      "roundabouts": 0,
+      "turns": 10
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "centreId": "inveraray",
+  "centreName": "Inveraray Driving Test Centre",
+  "address": "Main Street East, Inveraray, PA32 8TX",
+  "postcode": "PA32 8TX",
+  "routeCount": 1,
+  "allRoads": [
+    "Barn Brae",
+    "Barn Park",
+    "Church Square",
+    "Damally Road",
+    "Front Street",
+    "Main Street East",
+    "Main Street South",
+    "Main Street West"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 4.2,
+      "durationMins": 14,
+      "keyRoads": [
+        "Barn Brae",
+        "Barn Park",
+        "Church Square",
+        "Damally Road",
+        "Front Street",
+        "Main Street East",
+        "Main Street South",
+        "Main Street West"
+      ],
+      "roundabouts": 0,
+      "turns": 9
+    }
+  ]
+}

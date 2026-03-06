@@ -1,0 +1,50 @@
+{
+  "centreId": "girvan",
+  "centreName": "Girvan Driving Test Centre",
+  "address": "The Carrick Buildings Learning, Centre, Henrietta Street, Girvan",
+  "postcode": "KA26 9AL",
+  "routeCount": 1,
+  "allRoads": [
+    "Bridge Street",
+    "Church Square",
+    "Dalrymple Street",
+    "Duncan Street",
+    "George Street",
+    "Glendoune Street",
+    "Hamilton Street",
+    "Hawkhill Road",
+    "Henrietta Street",
+    "Montgomerie Street",
+    "North Park Avenue",
+    "Queens Drive",
+    "The Avenue",
+    "Victory Park Road",
+    "Wreck Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 14.3,
+      "durationMins": 34,
+      "keyRoads": [
+        "Bridge Street",
+        "Church Square",
+        "Dalrymple Street",
+        "Duncan Street",
+        "George Street",
+        "Glendoune Street",
+        "Hamilton Street",
+        "Hawkhill Road",
+        "Henrietta Street",
+        "Montgomerie Street",
+        "North Park Avenue",
+        "Queens Drive",
+        "The Avenue",
+        "Victory Park Road",
+        "Wreck Road"
+      ],
+      "roundabouts": 2,
+      "turns": 14
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "centreId": "oxford",
+  "centreName": "Oxford Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Oxford (Cowley), James Wolfe Road, Cowley",
+  "postcode": "OX4 2PY",
+  "routeCount": 1,
+  "allRoads": [
+    "Beaumont Road",
+    "Eastern By-pass Road",
+    "Horspath Driftway",
+    "Margaret Road",
+    "Mark Road",
+    "Quarry High Street",
+    "Quarry Hollow",
+    "Quarry Road",
+    "Rock Edge",
+    "Weyland Road",
+    "York Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 10.5,
+      "durationMins": 25,
+      "keyRoads": [
+        "Beaumont Road",
+        "Eastern By-pass Road",
+        "Horspath Driftway",
+        "Margaret Road",
+        "Mark Road",
+        "Quarry High Street",
+        "Quarry Hollow",
+        "Quarry Road",
+        "Rock Edge",
+        "Weyland Road",
+        "York Road"
+      ],
+      "roundabouts": 0,
+      "turns": 11
+    }
+  ]
+}

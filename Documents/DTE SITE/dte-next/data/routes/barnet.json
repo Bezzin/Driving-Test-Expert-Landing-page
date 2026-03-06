@@ -1,0 +1,50 @@
+{
+  "centreId": "barnet",
+  "centreName": "Barnet Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Barnet, Raydean House, 15-17 Western Parade",
+  "postcode": "EN5 1AD",
+  "routeCount": 1,
+  "allRoads": [
+    "Barnet Hill",
+    "Barnet Road",
+    "Dexter Road",
+    "Great North Road",
+    "Leeside",
+    "Mayhill Road",
+    "Mays Lane",
+    "Quinta Drive",
+    "Raydean Road",
+    "Rowley Green Road",
+    "Rowley Lane",
+    "St Albans Road",
+    "Stanhope Road",
+    "Valley View",
+    "Western Parade"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 13.5,
+      "durationMins": 32,
+      "keyRoads": [
+        "Barnet Hill",
+        "Barnet Road",
+        "Dexter Road",
+        "Great North Road",
+        "Leeside",
+        "Mayhill Road",
+        "Mays Lane",
+        "Quinta Drive",
+        "Raydean Road",
+        "Rowley Green Road",
+        "Rowley Lane",
+        "St Albans Road",
+        "Stanhope Road",
+        "Valley View",
+        "Western Parade"
+      ],
+      "roundabouts": 2,
+      "turns": 12
+    }
+  ]
+}

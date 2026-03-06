@@ -1,0 +1,44 @@
+{
+  "centreId": "warwick",
+  "centreName": "Warwick Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Warwick, Ground Floor Wedgnock House Wedgnock Lane, Warwick",
+  "postcode": "CV34 5AP",
+  "routeCount": 1,
+  "allRoads": [
+    "Adelaide Road",
+    "Banbury Road",
+    "Birmingham Road",
+    "Kenilworth Road",
+    "Leamington Road",
+    "Lillington Avenue",
+    "Myton Crescent",
+    "Myton Road",
+    "Northgate",
+    "Park Drive",
+    "Princes Drive",
+    "Wedgnock Lane"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 17.7,
+      "durationMins": 42,
+      "keyRoads": [
+        "Adelaide Road",
+        "Banbury Road",
+        "Birmingham Road",
+        "Kenilworth Road",
+        "Leamington Road",
+        "Lillington Avenue",
+        "Myton Crescent",
+        "Myton Road",
+        "Northgate",
+        "Park Drive",
+        "Princes Drive",
+        "Wedgnock Lane"
+      ],
+      "roundabouts": 9,
+      "turns": 6
+    }
+  ]
+}

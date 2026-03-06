@@ -1,0 +1,44 @@
+{
+  "centreId": "callander",
+  "centreName": "Callander Driving Test Centre",
+  "address": "Driver and Vehicle Standars Agency, DTC Callander, Callander Youth Hostel, 6 Bridgend",
+  "postcode": "FK17 8AH",
+  "routeCount": 1,
+  "allRoads": [
+    "Ancaster Road",
+    "Bracklinn Road",
+    "Bridge Street",
+    "Drumloist Road",
+    "Katrine Crescent",
+    "Keltie Bridge",
+    "Leny Feus",
+    "Leny Road",
+    "Lubnaig Drive",
+    "Main Street",
+    "Mollands Road",
+    "Station Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 10.1,
+      "durationMins": 24,
+      "keyRoads": [
+        "Ancaster Road",
+        "Bracklinn Road",
+        "Bridge Street",
+        "Drumloist Road",
+        "Katrine Crescent",
+        "Keltie Bridge",
+        "Leny Feus",
+        "Leny Road",
+        "Lubnaig Drive",
+        "Main Street",
+        "Mollands Road",
+        "Station Road"
+      ],
+      "roundabouts": 0,
+      "turns": 16
+    }
+  ]
+}

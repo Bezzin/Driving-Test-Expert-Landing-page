@@ -1,0 +1,78 @@
+{
+  "centreId": "lochgilphead",
+  "centreName": "Lochgilphead Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Lochgilphead, Lochgilphead Community Centre, Manse Brae",
+  "postcode": "PA31 8QX",
+  "routeCount": 3,
+  "allRoads": [
+    "Argyll Street",
+    "Campbell Street",
+    "Colchester Square",
+    "Cossack Street",
+    "Dewar Avenue",
+    "Kilmory Road",
+    "Lochnell Street",
+    "Lorne Street",
+    "MacDonald Terrace",
+    "Manse Brae",
+    "Oban Road",
+    "Smithy Lane",
+    "Union Street",
+    "Whitegates Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 3.8,
+      "durationMins": 9,
+      "keyRoads": [
+        "Argyll Street",
+        "Cossack Street",
+        "Kilmory Road",
+        "MacDonald Terrace",
+        "Manse Brae",
+        "Oban Road",
+        "Whitegates Road"
+      ],
+      "roundabouts": 0,
+      "turns": 7
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 6.5,
+      "durationMins": 18,
+      "keyRoads": [
+        "Argyll Street",
+        "Colchester Square",
+        "Dewar Avenue",
+        "Lochnell Street",
+        "Lorne Street",
+        "Manse Brae",
+        "Oban Road",
+        "Smithy Lane",
+        "Union Street"
+      ],
+      "roundabouts": 0,
+      "turns": 16
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 7.6,
+      "durationMins": 19,
+      "keyRoads": [
+        "Argyll Street",
+        "Campbell Street",
+        "Colchester Square",
+        "Dewar Avenue",
+        "Lochnell Street",
+        "Lorne Street",
+        "Manse Brae",
+        "Oban Road",
+        "Smithy Lane",
+        "Union Street"
+      ],
+      "roundabouts": 0,
+      "turns": 18
+    }
+  ]
+}

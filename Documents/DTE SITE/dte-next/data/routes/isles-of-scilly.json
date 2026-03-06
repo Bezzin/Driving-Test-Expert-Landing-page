@@ -1,0 +1,81 @@
+{
+  "centreId": "isles-of-scilly",
+  "centreName": "Isles of Scilly Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Isles of Scilly, Town Hall, St Marys",
+  "postcode": "TR21 0LW",
+  "routeCount": 3,
+  "allRoads": [
+    "Carn Thomas",
+    "Church Road",
+    "Church Street",
+    "Hugh Street",
+    "Ingram's Opening",
+    "Old Town Lane",
+    "Parting Carn Lane",
+    "Pump Road",
+    "Silver Street",
+    "Telegraph Road",
+    "The Bank",
+    "The Parade",
+    "Town Lane",
+    "Well Cross"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 6,
+      "durationMins": 14,
+      "keyRoads": [
+        "Parting Carn Lane",
+        "Pump Road",
+        "Telegraph Road",
+        "The Parade"
+      ],
+      "roundabouts": 0,
+      "turns": 4
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 12.5,
+      "durationMins": 19,
+      "keyRoads": [
+        "Carn Thomas",
+        "Church Road",
+        "Church Street",
+        "Hugh Street",
+        "Ingram's Opening",
+        "Old Town Lane",
+        "Parting Carn Lane",
+        "Pump Road",
+        "Silver Street",
+        "Telegraph Road",
+        "The Bank",
+        "The Parade",
+        "Town Lane",
+        "Well Cross"
+      ],
+      "roundabouts": 0,
+      "turns": 17
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 11.4,
+      "durationMins": 17,
+      "keyRoads": [
+        "Carn Thomas",
+        "Church Road",
+        "Church Street",
+        "Hugh Street",
+        "Ingram's Opening",
+        "Pump Road",
+        "Silver Street",
+        "Telegraph Road",
+        "The Bank",
+        "The Parade",
+        "Well Cross"
+      ],
+      "roundabouts": 0,
+      "turns": 16
+    }
+  ]
+}

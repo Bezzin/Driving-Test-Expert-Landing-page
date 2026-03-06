@@ -1,0 +1,44 @@
+{
+  "centreId": "bangor",
+  "centreName": "Bangor Driving Test Centre",
+  "address": "Gateway Park, Llandegai Ind Estate, Llandegai, Bangor",
+  "postcode": "LL57 4YH",
+  "routeCount": 1,
+  "allRoads": [
+    "Belmont Road",
+    "Deiniol Road",
+    "Farrar Road",
+    "Ffordd Cynan",
+    "Ffordd Llandegai",
+    "Ffriddoedd Road",
+    "Garth Road",
+    "Glynne Road",
+    "High Street",
+    "Llandegai Road",
+    "Penrhos Road",
+    "Station Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 15.3,
+      "durationMins": 37,
+      "keyRoads": [
+        "Belmont Road",
+        "Deiniol Road",
+        "Farrar Road",
+        "Ffordd Cynan",
+        "Ffordd Llandegai",
+        "Ffriddoedd Road",
+        "Garth Road",
+        "Glynne Road",
+        "High Street",
+        "Llandegai Road",
+        "Penrhos Road",
+        "Station Road"
+      ],
+      "roundabouts": 8,
+      "turns": 13
+    }
+  ]
+}

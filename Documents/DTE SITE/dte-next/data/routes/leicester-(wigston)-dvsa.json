@@ -1,0 +1,60 @@
+{
+  "centreId": "leicester-(wigston)-dvsa",
+  "centreName": "Leicester (Wigston) DVSA Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Leicester (Wigston), Tigers Road off Saffron Road, South Wigston",
+  "postcode": "LE18 4WS",
+  "routeCount": 1,
+  "allRoads": [
+    "Aylestone Drive",
+    "Burnaston Road",
+    "Cheriton Road",
+    "Cork Lane",
+    "Dorset Avenue",
+    "Eastwood Road",
+    "Gedge Way",
+    "Glenhills Way",
+    "Glenville Avenue",
+    "Gloucester Crescent",
+    "Leicester Road",
+    "Little Glen Road",
+    "Lutterworth Road",
+    "Saffron Lane",
+    "Saffron Road",
+    "Stonesby Avenue",
+    "The Fairway",
+    "Tigers Road",
+    "West View Avenue",
+    "Windley Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 9,
+      "durationMins": 22,
+      "keyRoads": [
+        "Aylestone Drive",
+        "Burnaston Road",
+        "Cheriton Road",
+        "Cork Lane",
+        "Dorset Avenue",
+        "Eastwood Road",
+        "Gedge Way",
+        "Glenhills Way",
+        "Glenville Avenue",
+        "Gloucester Crescent",
+        "Leicester Road",
+        "Little Glen Road",
+        "Lutterworth Road",
+        "Saffron Lane",
+        "Saffron Road",
+        "Stonesby Avenue",
+        "The Fairway",
+        "Tigers Road",
+        "West View Avenue",
+        "Windley Road"
+      ],
+      "roundabouts": 1,
+      "turns": 16
+    }
+  ]
+}

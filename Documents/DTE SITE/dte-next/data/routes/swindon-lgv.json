@@ -1,0 +1,34 @@
+{
+  "centreId": "swindon-lgv",
+  "centreName": "Swindon LGV Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Swindon LGV, Chisledon Camp, Chisledon",
+  "postcode": "SN4 0FH",
+  "routeCount": 1,
+  "allRoads": [
+    "Dorcan Way",
+    "Draycott Road",
+    "Ladysmith Road",
+    "Marlborough Road",
+    "New Road",
+    "The Ridgeway",
+    "Wheatstone Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 15,
+      "durationMins": 36,
+      "keyRoads": [
+        "Dorcan Way",
+        "Draycott Road",
+        "Ladysmith Road",
+        "Marlborough Road",
+        "New Road",
+        "The Ridgeway",
+        "Wheatstone Road"
+      ],
+      "roundabouts": 3,
+      "turns": 4
+    }
+  ]
+}

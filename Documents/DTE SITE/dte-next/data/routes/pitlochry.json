@@ -1,0 +1,45 @@
+{
+  "centreId": "pitlochry",
+  "centreName": "Pitlochry Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Pitlochry, The Hall, West Moulin Road, Pitlochry",
+  "postcode": "PH16 5EA",
+  "routeCount": 2,
+  "allRoads": [
+    "Atholl Road",
+    "Bridge Road",
+    "General Wade's Military Road",
+    "Larchwood Road",
+    "Mill Lane",
+    "Perth Road",
+    "Strathview Terrace",
+    "West Moulin Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 4.6,
+      "durationMins": 14,
+      "keyRoads": [
+        "Atholl Road",
+        "Larchwood Road",
+        "Mill Lane",
+        "Perth Road",
+        "Strathview Terrace",
+        "West Moulin Road"
+      ],
+      "roundabouts": 0,
+      "turns": 7
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 8.7,
+      "durationMins": 21,
+      "keyRoads": [
+        "Bridge Road",
+        "General Wade's Military Road"
+      ],
+      "roundabouts": 0,
+      "turns": 4
+    }
+  ]
+}

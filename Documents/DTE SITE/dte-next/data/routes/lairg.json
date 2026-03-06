@@ -1,0 +1,56 @@
+{
+  "centreId": "lairg",
+  "centreName": "Lairg Driving Test Centre",
+  "address": "4 Church Hill Road, Lairg, IV27 4BL",
+  "postcode": "IV27 4BL",
+  "routeCount": 3,
+  "allRoads": [
+    "Church Hill Road",
+    "Lochside U1956",
+    "Main Street",
+    "Manse Road",
+    "Ord Place"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 12.2,
+      "durationMins": 25,
+      "keyRoads": [
+        "Church Hill Road",
+        "Lochside U1956",
+        "Main Street",
+        "Manse Road",
+        "Ord Place"
+      ],
+      "roundabouts": 0,
+      "turns": 20
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 19.8,
+      "durationMins": 32,
+      "keyRoads": [
+        "Church Hill Road",
+        "Main Street",
+        "Ord Place"
+      ],
+      "roundabouts": 0,
+      "turns": 16
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 11.7,
+      "durationMins": 23,
+      "keyRoads": [
+        "Church Hill Road",
+        "Lochside U1956",
+        "Main Street",
+        "Manse Road",
+        "Ord Place"
+      ],
+      "roundabouts": 0,
+      "turns": 21
+    }
+  ]
+}

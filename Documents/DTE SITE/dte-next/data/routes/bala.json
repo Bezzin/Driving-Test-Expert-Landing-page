@@ -1,0 +1,300 @@
+{
+  "centreId": "bala",
+  "centreName": "Bala Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Bala, Unit 4, Penllyn Workshops, Bala",
+  "postcode": "LL23 7SP",
+  "routeCount": 17,
+  "allRoads": [
+    "Aran Street",
+    "Arenig Street",
+    "Berwyn Street",
+    "Cae Croes",
+    "Cambrian Terrace",
+    "Castle Street",
+    "Cefnddwysarn",
+    "Church Street",
+    "Craig y Fron",
+    "Ffordd y Gerddi",
+    "Ffrydan Road",
+    "High Street",
+    "Mount Lane",
+    "Mount Street",
+    "Pensarn Road",
+    "Plasey Street",
+    "Station Road",
+    "Stryd y Fron",
+    "Tegid Street",
+    "Yr Hafan"
+  ],
+  "routes": [
+    {
+      "routeNumber": 2,
+      "distanceKm": 5.2,
+      "durationMins": 11,
+      "keyRoads": [
+        "Cae Croes",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Station Road",
+        "Stryd y Fron"
+      ],
+      "roundabouts": 0,
+      "turns": 6
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 5.2,
+      "durationMins": 11,
+      "keyRoads": [
+        "Cae Croes",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Station Road",
+        "Stryd y Fron"
+      ],
+      "roundabouts": 0,
+      "turns": 6
+    },
+    {
+      "routeNumber": 4,
+      "distanceKm": 5.2,
+      "durationMins": 11,
+      "keyRoads": [
+        "Cae Croes",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Station Road",
+        "Stryd y Fron"
+      ],
+      "roundabouts": 0,
+      "turns": 7
+    },
+    {
+      "routeNumber": 5,
+      "distanceKm": 5.2,
+      "durationMins": 11,
+      "keyRoads": [
+        "Cae Croes",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Station Road",
+        "Stryd y Fron"
+      ],
+      "roundabouts": 0,
+      "turns": 6
+    },
+    {
+      "routeNumber": 6,
+      "distanceKm": 5.2,
+      "durationMins": 11,
+      "keyRoads": [
+        "Cae Croes",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Station Road",
+        "Stryd y Fron"
+      ],
+      "roundabouts": 0,
+      "turns": 6
+    },
+    {
+      "routeNumber": 7,
+      "distanceKm": 16.6,
+      "durationMins": 24,
+      "keyRoads": [
+        "Arenig Street",
+        "Castle Street",
+        "Ffrydan Road",
+        "High Street"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    },
+    {
+      "routeNumber": 8,
+      "distanceKm": 21.6,
+      "durationMins": 37,
+      "keyRoads": [
+        "Aran Street",
+        "Arenig Street",
+        "Castle Street",
+        "Church Street",
+        "Ffrydan Road",
+        "High Street",
+        "Pensarn Road",
+        "Station Road",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 9
+    },
+    {
+      "routeNumber": 9,
+      "distanceKm": 20.2,
+      "durationMins": 28,
+      "keyRoads": [
+        "Arenig Street",
+        "Church Street",
+        "Ffrydan Road",
+        "High Street",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 7
+    },
+    {
+      "routeNumber": 10,
+      "distanceKm": 16.5,
+      "durationMins": 25,
+      "keyRoads": [
+        "Aran Street",
+        "Arenig Street",
+        "Castle Street",
+        "Ffordd y Gerddi",
+        "Ffrydan Road",
+        "High Street",
+        "Station Road",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    },
+    {
+      "routeNumber": 11,
+      "distanceKm": 16,
+      "durationMins": 23,
+      "keyRoads": [
+        "Mount Street",
+        "Plasey Street",
+        "Station Road",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 8
+    },
+    {
+      "routeNumber": 12,
+      "distanceKm": 18.1,
+      "durationMins": 30,
+      "keyRoads": [
+        "Arenig Street",
+        "Cae Croes",
+        "Castle Street",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Plasey Street",
+        "Station Road",
+        "Stryd y Fron",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 15
+    },
+    {
+      "routeNumber": 13,
+      "distanceKm": 17.5,
+      "durationMins": 29,
+      "keyRoads": [
+        "Aran Street",
+        "Arenig Street",
+        "Berwyn Street",
+        "Cambrian Terrace",
+        "Cefnddwysarn",
+        "Church Street",
+        "Ffrydan Road",
+        "High Street",
+        "Mount Street",
+        "Station Road",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 12
+    },
+    {
+      "routeNumber": 14,
+      "distanceKm": 18.5,
+      "durationMins": 30,
+      "keyRoads": [
+        "Aran Street",
+        "Castle Street",
+        "Craig y Fron",
+        "Ffrydan Road",
+        "Mount Lane",
+        "Mount Street",
+        "Pensarn Road",
+        "Plasey Street",
+        "Station Road",
+        "Stryd y Fron",
+        "Tegid Street",
+        "Yr Hafan"
+      ],
+      "roundabouts": 0,
+      "turns": 19
+    },
+    {
+      "routeNumber": 15,
+      "distanceKm": 17.4,
+      "durationMins": 28,
+      "keyRoads": [
+        "Cambrian Terrace",
+        "Castle Street",
+        "Ffrydan Road",
+        "Mount Street",
+        "Plasey Street",
+        "Station Road",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 12
+    },
+    {
+      "routeNumber": 16,
+      "distanceKm": 18.3,
+      "durationMins": 31,
+      "keyRoads": [
+        "Arenig Street",
+        "Cae Croes",
+        "Castle Street",
+        "Ffrydan Road",
+        "Pensarn Road",
+        "Plasey Street",
+        "Station Road",
+        "Stryd y Fron",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 16
+    },
+    {
+      "routeNumber": 17,
+      "distanceKm": 17,
+      "durationMins": 28,
+      "keyRoads": [
+        "Cefnddwysarn",
+        "Church Street",
+        "Mount Street",
+        "Plasey Street",
+        "Station Road",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 10
+    },
+    {
+      "routeNumber": 18,
+      "distanceKm": 17.9,
+      "durationMins": 28,
+      "keyRoads": [
+        "Castle Street",
+        "Craig y Fron",
+        "Ffrydan Road",
+        "High Street",
+        "Pensarn Road",
+        "Plasey Street",
+        "Tegid Street"
+      ],
+      "roundabouts": 0,
+      "turns": 9
+    }
+  ]
+}

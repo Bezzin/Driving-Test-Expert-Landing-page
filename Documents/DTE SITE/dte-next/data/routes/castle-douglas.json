@@ -1,0 +1,443 @@
+{
+  "centreId": "castle-douglas",
+  "centreName": "Castle Douglas Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Castle Douglas, Carlingwark Cottage, Carlingwark Arc, Castle Douglas",
+  "postcode": "DG7 1TH",
+  "routeCount": 20,
+  "allRoads": [
+    "Abercromby Road",
+    "Academy Street",
+    "Alvingham Avenue",
+    "Braeside Crescent",
+    "Brown Crescent",
+    "Cairnsmore Road",
+    "Carlingwark Street",
+    "Castle Douglas Bypass",
+    "Church Street",
+    "Cotton Street",
+    "Dunmuir Road",
+    "Ernespie Road",
+    "Gordon Drive",
+    "Jenny's Loaning",
+    "King Street",
+    "Laurel Bank Terrace",
+    "Lochside Road",
+    "Main Street",
+    "Market Street",
+    "Marle Street",
+    "Meadow View",
+    "New Market Street",
+    "Oakwell Road",
+    "Old Military Road",
+    "Queen Street",
+    "Railway Terrace",
+    "Ringford Bypass",
+    "Robb Place",
+    "St Andrew Drive",
+    "St Andrew Street",
+    "St Georges",
+    "St Ringan Drive",
+    "Torrs Road",
+    "Trueman Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 13.8,
+      "durationMins": 33,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Braeside Crescent",
+        "Cairnsmore Road",
+        "Castle Douglas Bypass",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Laurel Bank Terrace",
+        "Marle Street",
+        "Railway Terrace"
+      ],
+      "roundabouts": 4,
+      "turns": 12
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 11.6,
+      "durationMins": 19,
+      "keyRoads": [
+        "Academy Street",
+        "Church Street",
+        "Dunmuir Road",
+        "Ernespie Road",
+        "King Street",
+        "Market Street",
+        "New Market Street",
+        "Oakwell Road",
+        "Queen Street",
+        "St Andrew Street"
+      ],
+      "roundabouts": 2,
+      "turns": 9
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 9.4,
+      "durationMins": 17,
+      "keyRoads": [
+        "Academy Street",
+        "Brown Crescent",
+        "Ernespie Road",
+        "Gordon Drive",
+        "Jenny's Loaning",
+        "King Street",
+        "New Market Street",
+        "Oakwell Road",
+        "Queen Street",
+        "Torrs Road"
+      ],
+      "roundabouts": 5,
+      "turns": 10
+    },
+    {
+      "routeNumber": 4,
+      "distanceKm": 13.3,
+      "durationMins": 22,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Castle Douglas Bypass",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Marle Street",
+        "Queen Street"
+      ],
+      "roundabouts": 5,
+      "turns": 11
+    },
+    {
+      "routeNumber": 5,
+      "distanceKm": 12.6,
+      "durationMins": 22,
+      "keyRoads": [
+        "Alvingham Avenue",
+        "Castle Douglas Bypass",
+        "Dunmuir Road",
+        "Ernespie Road",
+        "Gordon Drive",
+        "Jenny's Loaning",
+        "King Street",
+        "Oakwell Road",
+        "Robb Place",
+        "St Georges",
+        "Torrs Road"
+      ],
+      "roundabouts": 6,
+      "turns": 11
+    },
+    {
+      "routeNumber": 6,
+      "distanceKm": 9.4,
+      "durationMins": 20,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Laurel Bank Terrace",
+        "Market Street",
+        "New Market Street",
+        "Oakwell Road",
+        "Queen Street",
+        "Railway Terrace",
+        "St Andrew Drive",
+        "St Andrew Street",
+        "St Ringan Drive",
+        "Trueman Street"
+      ],
+      "roundabouts": 4,
+      "turns": 17
+    },
+    {
+      "routeNumber": 7,
+      "distanceKm": 8.8,
+      "durationMins": 18,
+      "keyRoads": [
+        "Academy Street",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Dunmuir Road",
+        "Ernespie Road",
+        "King Street",
+        "Queen Street",
+        "Robb Place",
+        "St Andrew Drive",
+        "St Andrew Street",
+        "St Georges",
+        "St Ringan Drive"
+      ],
+      "roundabouts": 3,
+      "turns": 19
+    },
+    {
+      "routeNumber": 8,
+      "distanceKm": 10.6,
+      "durationMins": 21,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Alvingham Avenue",
+        "Braeside Crescent",
+        "Cairnsmore Road",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Cotton Street",
+        "Jenny's Loaning",
+        "King Street",
+        "Laurel Bank Terrace",
+        "Oakwell Road",
+        "Queen Street",
+        "Railway Terrace",
+        "Torrs Road"
+      ],
+      "roundabouts": 3,
+      "turns": 17
+    },
+    {
+      "routeNumber": 9,
+      "distanceKm": 10.6,
+      "durationMins": 18,
+      "keyRoads": [
+        "Academy Street",
+        "Carlingwark Street",
+        "Castle Douglas Bypass",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Meadow View",
+        "Queen Street",
+        "St Andrew Drive",
+        "St Andrew Street",
+        "St Ringan Drive"
+      ],
+      "roundabouts": 5,
+      "turns": 10
+    },
+    {
+      "routeNumber": 10,
+      "distanceKm": 11.2,
+      "durationMins": 20,
+      "keyRoads": [
+        "Academy Street",
+        "Carlingwark Street",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Marle Street",
+        "Meadow View",
+        "Queen Street",
+        "St Andrew Drive",
+        "St Andrew Street",
+        "St Ringan Drive"
+      ],
+      "roundabouts": 4,
+      "turns": 12
+    },
+    {
+      "routeNumber": 11,
+      "distanceKm": 10.2,
+      "durationMins": 25,
+      "keyRoads": [
+        "Academy Street",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Dunmuir Road",
+        "Ernespie Road",
+        "King Street",
+        "Lochside Road",
+        "Marle Street",
+        "Old Military Road",
+        "Queen Street",
+        "Robb Place",
+        "St Andrew Drive",
+        "St Andrew Street",
+        "St Georges",
+        "St Ringan Drive"
+      ],
+      "roundabouts": 3,
+      "turns": 21
+    },
+    {
+      "routeNumber": 12,
+      "distanceKm": 12.5,
+      "durationMins": 26,
+      "keyRoads": [
+        "Academy Street",
+        "Carlingwark Street",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Meadow View",
+        "Old Military Road",
+        "Queen Street",
+        "St Andrew Street"
+      ],
+      "roundabouts": 5,
+      "turns": 15
+    },
+    {
+      "routeNumber": 13,
+      "distanceKm": 15.2,
+      "durationMins": 27,
+      "keyRoads": [
+        "Academy Street",
+        "Cotton Street",
+        "Dunmuir Road",
+        "Ernespie Road",
+        "King Street",
+        "Lochside Road",
+        "Marle Street",
+        "Old Military Road",
+        "Robb Place",
+        "St Andrew Drive",
+        "St Andrew Street",
+        "St Georges",
+        "St Ringan Drive"
+      ],
+      "roundabouts": 2,
+      "turns": 20
+    },
+    {
+      "routeNumber": 14,
+      "distanceKm": 12.4,
+      "durationMins": 22,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Cairnsmore Road",
+        "Castle Douglas Bypass",
+        "Church Street",
+        "Cotton Street",
+        "Ernespie Road",
+        "Gordon Drive",
+        "Jenny's Loaning",
+        "King Street",
+        "Laurel Bank Terrace",
+        "Oakwell Road",
+        "Queen Street",
+        "Railway Terrace",
+        "Torrs Road"
+      ],
+      "roundabouts": 5,
+      "turns": 11
+    },
+    {
+      "routeNumber": 15,
+      "distanceKm": 20.8,
+      "durationMins": 26,
+      "keyRoads": [
+        "Academy Street",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street"
+      ],
+      "roundabouts": 4,
+      "turns": 6
+    },
+    {
+      "routeNumber": 16,
+      "distanceKm": 19.6,
+      "durationMins": 30,
+      "keyRoads": [
+        "Academy Street",
+        "Alvingham Avenue",
+        "Cotton Street",
+        "Ernespie Road",
+        "Jenny's Loaning",
+        "Laurel Bank Terrace",
+        "Main Street",
+        "Oakwell Road",
+        "Queen Street",
+        "Railway Terrace",
+        "Torrs Road"
+      ],
+      "roundabouts": 3,
+      "turns": 11
+    },
+    {
+      "routeNumber": 17,
+      "distanceKm": 21,
+      "durationMins": 31,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Braeside Crescent",
+        "Cairnsmore Road",
+        "Castle Douglas Bypass",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Laurel Bank Terrace",
+        "Market Street",
+        "Marle Street",
+        "New Market Street",
+        "Oakwell Road",
+        "Queen Street",
+        "Railway Terrace"
+      ],
+      "roundabouts": 4,
+      "turns": 13
+    },
+    {
+      "routeNumber": 18,
+      "distanceKm": 19.4,
+      "durationMins": 26,
+      "keyRoads": [
+        "Academy Street",
+        "Castle Douglas Bypass",
+        "Cotton Street",
+        "Ernespie Road",
+        "King Street",
+        "Old Military Road",
+        "St Andrew Street"
+      ],
+      "roundabouts": 2,
+      "turns": 12
+    },
+    {
+      "routeNumber": 19,
+      "distanceKm": 24.1,
+      "durationMins": 31,
+      "keyRoads": [
+        "Academy Street",
+        "Cotton Street",
+        "King Street",
+        "Queen Street",
+        "St Andrew Street"
+      ],
+      "roundabouts": 2,
+      "turns": 7
+    },
+    {
+      "routeNumber": 20,
+      "distanceKm": 28,
+      "durationMins": 35,
+      "keyRoads": [
+        "Abercromby Road",
+        "Academy Street",
+        "Cotton Street",
+        "Ringford Bypass"
+      ],
+      "roundabouts": 1,
+      "turns": 5
+    }
+  ]
+}

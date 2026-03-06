@@ -1,0 +1,50 @@
+{
+  "centreId": "irvine",
+  "centreName": "Irvine Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Irvine Driving Test Centre, Century Court, Riverside Business Park",
+  "postcode": "KA11 5DJ",
+  "routeCount": 1,
+  "allRoads": [
+    "Annick Road",
+    "Ballot Road",
+    "Bank Street",
+    "Beach Drive",
+    "Burns Street",
+    "Cochrane Street",
+    "East Road",
+    "Gottries Road",
+    "Marine Drive",
+    "Marress Road",
+    "Montgomery Street",
+    "Moss Drive",
+    "Riverside Way",
+    "Thornhouse Avenue",
+    "Townhead"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 11.3,
+      "durationMins": 27,
+      "keyRoads": [
+        "Annick Road",
+        "Ballot Road",
+        "Bank Street",
+        "Beach Drive",
+        "Burns Street",
+        "Cochrane Street",
+        "East Road",
+        "Gottries Road",
+        "Marine Drive",
+        "Marress Road",
+        "Montgomery Street",
+        "Moss Drive",
+        "Riverside Way",
+        "Thornhouse Avenue",
+        "Townhead"
+      ],
+      "roundabouts": 9,
+      "turns": 9
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "centreId": "grantown-on-spey",
+  "centreName": "Grantown on Spey Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Grantown-on-Spey, Grantown-on-spey Fire Station, Woodside Avenue, Grantown-on-Spey",
+  "postcode": "PH26 3JR",
+  "routeCount": 1,
+  "allRoads": [
+    "Station Road",
+    "Woodside Avenue"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 17,
+      "durationMins": 41,
+      "keyRoads": [
+        "Station Road",
+        "Woodside Avenue"
+      ],
+      "roundabouts": 3,
+      "turns": 10
+    }
+  ]
+}

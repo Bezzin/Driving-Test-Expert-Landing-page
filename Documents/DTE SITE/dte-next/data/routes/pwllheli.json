@@ -1,0 +1,122 @@
+{
+  "centreId": "pwllheli",
+  "centreName": "Pwllheli Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Pwllheli, 33 A Cardiff Road, Pwllheli",
+  "postcode": "LL53 5NT",
+  "routeCount": 5,
+  "allRoads": [
+    "Abererch Road",
+    "Ala Road",
+    "Cardiff Road",
+    "Churton Street",
+    "Gaol Street",
+    "Glan Cymerau",
+    "Glancymerau Road",
+    "High Street",
+    "Lôn Nant Stigallt",
+    "New Street",
+    "North Street",
+    "Penrhydlyniog",
+    "Potts Street",
+    "Sand Street",
+    "Sarn Badrig",
+    "Station Square",
+    "The Promenade",
+    "Y Maes"
+  ],
+  "routes": [
+    {
+      "routeNumber": 2,
+      "distanceKm": 4.4,
+      "durationMins": 12,
+      "keyRoads": [
+        "Abererch Road",
+        "Gaol Street",
+        "High Street",
+        "Lôn Nant Stigallt",
+        "New Street",
+        "North Street",
+        "Sand Street"
+      ],
+      "roundabouts": 0,
+      "turns": 6
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 4.4,
+      "durationMins": 12,
+      "keyRoads": [
+        "Abererch Road",
+        "Gaol Street",
+        "High Street",
+        "Lôn Nant Stigallt",
+        "New Street",
+        "North Street",
+        "Sand Street"
+      ],
+      "roundabouts": 0,
+      "turns": 4
+    },
+    {
+      "routeNumber": 4,
+      "distanceKm": 6.7,
+      "durationMins": 18,
+      "keyRoads": [
+        "Abererch Road",
+        "Churton Street",
+        "Gaol Street",
+        "High Street",
+        "Lôn Nant Stigallt",
+        "New Street",
+        "North Street",
+        "Potts Street",
+        "Sand Street",
+        "Sarn Badrig",
+        "Station Square",
+        "The Promenade",
+        "Y Maes"
+      ],
+      "roundabouts": 0,
+      "turns": 14
+    },
+    {
+      "routeNumber": 5,
+      "distanceKm": 7.6,
+      "durationMins": 20,
+      "keyRoads": [
+        "Abererch Road",
+        "Cardiff Road",
+        "Churton Street",
+        "Glan Cymerau",
+        "Glancymerau Road",
+        "High Street",
+        "Lôn Nant Stigallt",
+        "New Street",
+        "Penrhydlyniog",
+        "Potts Street",
+        "Sand Street",
+        "Sarn Badrig",
+        "Station Square",
+        "The Promenade",
+        "Y Maes"
+      ],
+      "roundabouts": 0,
+      "turns": 19
+    },
+    {
+      "routeNumber": 6,
+      "distanceKm": 5.8,
+      "durationMins": 12,
+      "keyRoads": [
+        "Abererch Road",
+        "Ala Road",
+        "High Street",
+        "Lôn Nant Stigallt",
+        "New Street",
+        "Sand Street"
+      ],
+      "roundabouts": 1,
+      "turns": 5
+    }
+  ]
+}

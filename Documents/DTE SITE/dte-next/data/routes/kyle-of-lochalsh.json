@@ -1,0 +1,30 @@
+{
+  "centreId": "kyle-of-lochalsh",
+  "centreName": "Kyle of Lochalsh Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Kyle of Lochalsh, Kyle of Lochalsh Fire Station, Stoney Road",
+  "postcode": "IV40 8BP",
+  "routeCount": 1,
+  "allRoads": [
+    "Church Road",
+    "Main Street",
+    "Station Road",
+    "Stoney Road",
+    "The Square"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 15.4,
+      "durationMins": 25,
+      "keyRoads": [
+        "Church Road",
+        "Main Street",
+        "Station Road",
+        "Stoney Road",
+        "The Square"
+      ],
+      "roundabouts": 0,
+      "turns": 16
+    }
+  ]
+}

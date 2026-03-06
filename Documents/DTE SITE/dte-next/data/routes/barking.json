@@ -1,0 +1,56 @@
+{
+  "centreId": "barking",
+  "centreName": "Barking Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Barking, 84 Tanner Street, Barking",
+  "postcode": "IG11 8QF",
+  "routeCount": 1,
+  "allRoads": [
+    "Barking Northern Relief Road",
+    "Breamore Road",
+    "Faircross Avenue",
+    "Green Lane",
+    "Gyllyngdune Gardens",
+    "Hulse Avenue",
+    "Ilford Hill",
+    "Leamington Gardens",
+    "London Road",
+    "Longbridge Road",
+    "North Circular Road",
+    "Parkway",
+    "Queen's Road",
+    "Rosslyn Road",
+    "South Park Drive",
+    "Water Lane",
+    "Wilmington Gardens",
+    "Winston Way"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 9.5,
+      "durationMins": 23,
+      "keyRoads": [
+        "Barking Northern Relief Road",
+        "Breamore Road",
+        "Faircross Avenue",
+        "Green Lane",
+        "Gyllyngdune Gardens",
+        "Hulse Avenue",
+        "Ilford Hill",
+        "Leamington Gardens",
+        "London Road",
+        "Longbridge Road",
+        "North Circular Road",
+        "Parkway",
+        "Queen's Road",
+        "Rosslyn Road",
+        "South Park Drive",
+        "Water Lane",
+        "Wilmington Gardens",
+        "Winston Way"
+      ],
+      "roundabouts": 4,
+      "turns": 10
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "centreId": "borehamwood",
+  "centreName": "Borehamwood Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre, Ground Floor, Unit 1, Stirling Court, Stirling Way, Borehamwood",
+  "postcode": "WD6 2BT",
+  "routeCount": 1,
+  "allRoads": [
+    "Arundel Drive",
+    "Aycliffe Road",
+    "Balmoral Drive",
+    "Barnet Bypass",
+    "Brook Road",
+    "Cowley Hill",
+    "Furzehill Road",
+    "Gateshead Road",
+    "Hartforde Road",
+    "Kenilworth Drive",
+    "Norfolk Gardens",
+    "Palmers Road",
+    "Ripon Way",
+    "Rowley Lane",
+    "Shenley Road",
+    "Stapleton Road",
+    "Stirling Way",
+    "Theobald Street",
+    "Well End Road",
+    "Woodhall Lane"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 14.2,
+      "durationMins": 34,
+      "keyRoads": [
+        "Arundel Drive",
+        "Aycliffe Road",
+        "Balmoral Drive",
+        "Barnet Bypass",
+        "Brook Road",
+        "Cowley Hill",
+        "Furzehill Road",
+        "Gateshead Road",
+        "Hartforde Road",
+        "Kenilworth Drive",
+        "Norfolk Gardens",
+        "Palmers Road",
+        "Ripon Way",
+        "Rowley Lane",
+        "Shenley Road",
+        "Stapleton Road",
+        "Stirling Way",
+        "Theobald Street",
+        "Well End Road",
+        "Woodhall Lane"
+      ],
+      "roundabouts": 7,
+      "turns": 14
+    }
+  ]
+}

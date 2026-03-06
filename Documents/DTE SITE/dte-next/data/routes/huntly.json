@@ -1,0 +1,94 @@
+{
+  "centreId": "huntly",
+  "centreName": "Huntly Driving Test Centre",
+  "address": "2 Duke Street, Huntly, AB54 8DL",
+  "postcode": "AB54 8DL",
+  "routeCount": 3,
+  "allRoads": [
+    "Castle Street",
+    "Church Street",
+    "Clashmach View",
+    "Deveron Road",
+    "Deveron Street",
+    "Duke Street",
+    "East Park Street",
+    "George V Avenue",
+    "Gladstone Road",
+    "Gordon Street",
+    "King Street",
+    "Lennox Terrace",
+    "Market Street",
+    "Mc Veagh Street",
+    "Meadow Street",
+    "Nelson Street",
+    "New Road",
+    "Old Road",
+    "Park Street",
+    "Scott Drive",
+    "Settrington Street",
+    "Steven Road",
+    "The Square",
+    "Victoria Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 5.9,
+      "durationMins": 16,
+      "keyRoads": [
+        "Castle Street",
+        "Clashmach View",
+        "Duke Street",
+        "East Park Street",
+        "George V Avenue",
+        "Market Street",
+        "Mc Veagh Street",
+        "New Road",
+        "Old Road",
+        "Park Street",
+        "Steven Road",
+        "The Square"
+      ],
+      "roundabouts": 1,
+      "turns": 11
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 5,
+      "durationMins": 17,
+      "keyRoads": [
+        "Castle Street",
+        "Clashmach View",
+        "Deveron Street",
+        "East Park Street",
+        "George V Avenue",
+        "Gordon Street",
+        "King Street",
+        "Lennox Terrace",
+        "Mc Veagh Street",
+        "Meadow Street",
+        "Old Road",
+        "Steven Road"
+      ],
+      "roundabouts": 1,
+      "turns": 10
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 6.2,
+      "durationMins": 13,
+      "keyRoads": [
+        "Church Street",
+        "Deveron Road",
+        "Gladstone Road",
+        "Gordon Street",
+        "Nelson Street",
+        "Scott Drive",
+        "Settrington Street",
+        "Victoria Street"
+      ],
+      "roundabouts": 1,
+      "turns": 7
+    }
+  ]
+}

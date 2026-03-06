@@ -1,0 +1,40 @@
+{
+  "centreId": "berwick-on-tweed",
+  "centreName": "Berwick On Tweed Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Berwick-On-Tweed, Tweedside Industrial Estate, Northumberland Street, Berwick-On-Tweed",
+  "postcode": "TD15 2UY",
+  "routeCount": 1,
+  "allRoads": [
+    "Bankhill",
+    "Berwick Bypass",
+    "Billendean Terrace",
+    "Castle Drive",
+    "Castle Terrace",
+    "Castlegate",
+    "Dock Road",
+    "Main Street",
+    "Ord Drive",
+    "Prince Edward Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 16.2,
+      "durationMins": 39,
+      "keyRoads": [
+        "Bankhill",
+        "Berwick Bypass",
+        "Billendean Terrace",
+        "Castle Drive",
+        "Castle Terrace",
+        "Castlegate",
+        "Dock Road",
+        "Main Street",
+        "Ord Drive",
+        "Prince Edward Road"
+      ],
+      "roundabouts": 3,
+      "turns": 11
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "centreId": "tolworth",
+  "centreName": "Tolworth Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Tolworth, Douglas House,  1b  Douglas Road, Tolworth",
+  "postcode": "KT6 7RZ",
+  "routeCount": 1,
+  "allRoads": [
+    "Angel Road",
+    "Balaclava Road",
+    "Brighton Road",
+    "Cotterill Road",
+    "Dennan Road",
+    "Ditton Road",
+    "Douglas Road",
+    "Effingham Road",
+    "Ewell Road",
+    "Hook Rise South",
+    "Hook Road",
+    "Kingston Bypass",
+    "Manor Road North",
+    "Red Lion Road",
+    "Thorkhill Road",
+    "Thornhill Road",
+    "Tolworth Park Road",
+    "Upper Brighton Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 9.4,
+      "durationMins": 23,
+      "keyRoads": [
+        "Angel Road",
+        "Balaclava Road",
+        "Brighton Road",
+        "Cotterill Road",
+        "Dennan Road",
+        "Ditton Road",
+        "Douglas Road",
+        "Effingham Road",
+        "Ewell Road",
+        "Hook Rise South",
+        "Hook Road",
+        "Kingston Bypass",
+        "Manor Road North",
+        "Red Lion Road",
+        "Thorkhill Road",
+        "Thornhill Road",
+        "Tolworth Park Road",
+        "Upper Brighton Road"
+      ],
+      "roundabouts": 4,
+      "turns": 12
+    }
+  ]
+}

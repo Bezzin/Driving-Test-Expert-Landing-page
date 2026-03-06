@@ -40,6 +40,35 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* Test Centres */}
+        <div className="border-t border-white/5 pt-8 mb-8">
+          <h3 className="text-sm font-semibold text-white/60 mb-4 text-center">
+            Test Centres
+          </h3>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-sm">
+            <a
+              href="/test-centres/"
+              className="text-white/40 hover:text-accent transition-colors"
+            >
+              All Test Centres
+            </a>
+            <span className="hidden md:block text-white/20">&bull;</span>
+            <a
+              href="/test-centres/easiest/"
+              className="text-white/40 hover:text-accent transition-colors"
+            >
+              Easiest Centres
+            </a>
+            <span className="hidden md:block text-white/20">&bull;</span>
+            <a
+              href="/pass-rates/"
+              className="text-white/40 hover:text-accent transition-colors"
+            >
+              Pass Rates
+            </a>
+          </div>
+        </div>
+
         {/* Legal Links */}
         <div className="border-t border-white/5 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-sm">

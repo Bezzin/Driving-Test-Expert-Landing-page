@@ -1,0 +1,44 @@
+{
+  "centreId": "golspie",
+  "centreName": "Golspie Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Golspie, Golspie Fire Station, Back Road, Golspie",
+  "postcode": "KW10 6SP",
+  "routeCount": 1,
+  "allRoads": [
+    "Back Road",
+    "Church Street",
+    "Ferry Road",
+    "Fountain Road",
+    "Main Street",
+    "Old Bank Road",
+    "Ross Street",
+    "Seaforth Road",
+    "Sibell Road",
+    "South Argo Terrace",
+    "Station Road",
+    "Tower Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 5.4,
+      "durationMins": 13,
+      "keyRoads": [
+        "Back Road",
+        "Church Street",
+        "Ferry Road",
+        "Fountain Road",
+        "Main Street",
+        "Old Bank Road",
+        "Ross Street",
+        "Seaforth Road",
+        "Sibell Road",
+        "South Argo Terrace",
+        "Station Road",
+        "Tower Street"
+      ],
+      "roundabouts": 0,
+      "turns": 15
+    }
+  ]
+}

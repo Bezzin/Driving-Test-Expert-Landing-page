@@ -1,0 +1,48 @@
+{
+  "centreId": "kelso",
+  "centreName": "Kelso Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Kelso, Lloyd Land Rover, Pinnaclehill Ind Est, Lee Forbes Way, Kelso",
+  "postcode": "TD5 8WD",
+  "routeCount": 1,
+  "allRoads": [
+    "Angraflat Road",
+    "Bowmont Street",
+    "Bridge Street",
+    "Coalmarket",
+    "Cunyie Nuik",
+    "High Croft",
+    "Inch Road",
+    "Pipewell Brae",
+    "Rose Lane",
+    "Rotary Way",
+    "Simon Square",
+    "Station Road",
+    "The Square",
+    "Yetholm Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 11.8,
+      "durationMins": 28,
+      "keyRoads": [
+        "Angraflat Road",
+        "Bowmont Street",
+        "Bridge Street",
+        "Coalmarket",
+        "Cunyie Nuik",
+        "High Croft",
+        "Inch Road",
+        "Pipewell Brae",
+        "Rose Lane",
+        "Rotary Way",
+        "Simon Square",
+        "Station Road",
+        "The Square",
+        "Yetholm Road"
+      ],
+      "roundabouts": 13,
+      "turns": 9
+    }
+  ]
+}

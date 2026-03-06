@@ -1,5 +1,15 @@
-export const NAV_ITEMS = [
-  { label: 'Our Apps', href: '#apps' },
+export const NAV_ITEMS: import('./types').NavItem[] = [
+  {
+    label: 'Test Centres',
+    href: '/test-centres/',
+    children: [
+      { label: 'All Test Centres', href: '/test-centres/' },
+      { label: 'Easiest Centres', href: '/test-centres/easiest/' },
+      { label: 'Hardest Centres', href: '/test-centres/hardest/' },
+      { label: 'Pass Rates', href: '/pass-rates/' },
+    ],
+  },
+  { label: 'Our Apps', href: '/test-routes-app' },
   { label: 'About', href: '#about' },
 ]
 

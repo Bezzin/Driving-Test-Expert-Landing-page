@@ -1,0 +1,26 @@
+{
+  "centreId": "chichester-driving-test-routes-routes",
+  "centreName": "Chichester Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Unit 16, Telford Court, Dunkirk Trading Estate, Chester Gates, Dunkirk, CHESTER",
+  "postcode": "CH1 6LT",
+  "routeCount": 1,
+  "allRoads": [
+    "Drayton Lane",
+    "Meadow Way",
+    "Tangmere Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 14.9,
+      "durationMins": 36,
+      "keyRoads": [
+        "Drayton Lane",
+        "Meadow Way",
+        "Tangmere Road"
+      ],
+      "roundabouts": 0,
+      "turns": 1
+    }
+  ]
+}

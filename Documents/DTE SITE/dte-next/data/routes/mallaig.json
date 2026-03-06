@@ -1,0 +1,44 @@
+{
+  "centreId": "mallaig",
+  "centreName": "Mallaig Driving Test Centre",
+  "address": "Driver and Vehicle Standards Agency, Driving Test Centre Mallaig, Mallaig and Morar Community Centre, West Bay",
+  "postcode": "PH41 4PX",
+  "routeCount": 2,
+  "allRoads": [
+    "Davie's Brae",
+    "East Bay",
+    "Harbour Road",
+    "Loch Nevis Crescent",
+    "Loch Nevis Terrace",
+    "Road to the Isles",
+    "Station Road"
+  ],
+  "routes": [
+    {
+      "routeNumber": 1,
+      "distanceKm": 6.2,
+      "durationMins": 17,
+      "keyRoads": [
+        "East Bay",
+        "Loch Nevis Crescent",
+        "Loch Nevis Terrace",
+        "Station Road"
+      ],
+      "roundabouts": 2,
+      "turns": 6
+    },
+    {
+      "routeNumber": 2,
+      "distanceKm": 10.8,
+      "durationMins": 26,
+      "keyRoads": [
+        "Davie's Brae",
+        "Harbour Road",
+        "Road to the Isles",
+        "Station Road"
+      ],
+      "roundabouts": 2,
+      "turns": 2
+    }
+  ]
+}

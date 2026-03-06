@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import {
   NAV_ITEMS,
   ASSETS,
@@ -10,17 +10,21 @@ import {
   APP_PATH,
   LEGACY_APP_PATH,
 } from '@/lib/constants'
+import type { NavItem } from '@/lib/types'
 import { AppStoreBadge, PlayStoreBadge } from '@/components/UI/StoreBadges'
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
   const normalizedPath = pathname.replace(/\/$/, '')
   const isAppPage =
     normalizedPath === APP_PATH.replace(/\/$/, '') ||
     normalizedPath === LEGACY_APP_PATH.replace(/\/$/, '')
-  const navItems = isAppPage
+  const navItems: NavItem[] = isAppPage
     ? [
         { label: 'Our Apps', href: '#download' },
         { label: 'About', href: '#about' },
@@ -30,6 +34,10 @@ export const Navbar: React.FC = () => {
     ? { label: 'Get Test Routes', href: '#download' }
     : { label: 'Get Test Routes', href: APP_PATH }
 
+  const closeDropdown = useCallback(() => {
+    setOpenDropdown(null)
+  }, [])
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
@@ -37,6 +45,27 @@ export const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Close dropdown on route change
+  useEffect(() => {
+    closeDropdown()
+    setIsOpen(false)
+    setMobileExpanded(null)
+  }, [pathname, closeDropdown])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown()
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [closeDropdown])
 
   return (
     <>
@@ -56,16 +85,55 @@ export const Navbar: React.FC = () => {
           </a>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/70">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="transition hover:text-accent"
-              >
-                {item.label}
-              </a>
-            ))}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/70" ref={dropdownRef}>
+            {navItems.map((item) =>
+              item.children ? (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => setOpenDropdown(item.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
+                  <button
+                    onClick={() =>
+                      setOpenDropdown(
+                        openDropdown === item.label ? null : item.label
+                      )
+                    }
+                    className="flex items-center gap-1 transition hover:text-accent"
+                  >
+                    {item.label}
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-200 ${openDropdown === item.label ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  <div
+                    className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${openDropdown === item.label ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'}`}
+                  >
+                    <div className="bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl py-2 min-w-[200px]">
+                      {item.children.map((child) => (
+                        <a
+                          key={child.label}
+                          href={child.href}
+                          className="block px-5 py-2.5 text-sm text-white/70 hover:text-accent hover:bg-white/5 transition-colors"
+                        >
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="transition hover:text-accent"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
             <div className="flex items-center gap-2">
               <AppStoreBadge className="h-8" />
               <PlayStoreBadge className="h-8" />
@@ -105,16 +173,49 @@ export const Navbar: React.FC = () => {
           <X size={32} />
         </button>
         <nav className="flex flex-col gap-8 text-center text-3xl font-bold tracking-tight font-brand">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className="hover:text-accent transition text-white"
-            >
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) =>
+            item.children ? (
+              <div key={item.label} className="flex flex-col items-center gap-4">
+                <button
+                  onClick={() =>
+                    setMobileExpanded(
+                      mobileExpanded === item.label ? null : item.label
+                    )
+                  }
+                  className="flex items-center gap-2 hover:text-accent transition text-white"
+                >
+                  {item.label}
+                  <ChevronDown
+                    size={24}
+                    className={`transition-transform duration-200 ${mobileExpanded === item.label ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {mobileExpanded === item.label && (
+                  <div className="flex flex-col gap-3">
+                    {item.children.map((child) => (
+                      <a
+                        key={child.label}
+                        href={child.href}
+                        onClick={() => setIsOpen(false)}
+                        className="text-lg font-medium text-white/60 hover:text-accent transition"
+                      >
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                className="hover:text-accent transition text-white"
+              >
+                {item.label}
+              </a>
+            )
+          )}
           <div className="flex items-center justify-center gap-4">
             <AppStoreBadge className="h-10" />
             <PlayStoreBadge className="h-10" />

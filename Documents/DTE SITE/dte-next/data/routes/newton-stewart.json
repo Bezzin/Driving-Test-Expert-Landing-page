@@ -1,0 +1,63 @@
+{
+  "centreId": "newton-stewart",
+  "centreName": "Newton Stewart Driving Test Centre",
+  "address": "Driving Vehicle Standard Agency, Driving Test Centre Newton Stewart, The Crown Hotel",
+  "postcode": "DG8 6JW",
+  "routeCount": 2,
+  "allRoads": [
+    "Albert Street",
+    "Auchendoon Road",
+    "Corvisel Road",
+    "Dashwood Square",
+    "Mcgregor Drive",
+    "New Galloway Road",
+    "Newton Stewart Bypass",
+    "Princes Avenue",
+    "Princes Street",
+    "Princes Terrace",
+    "Queen Street",
+    "Racegreen Avenue",
+    "St Couan's Road",
+    "Station Road",
+    "Victoria Street"
+  ],
+  "routes": [
+    {
+      "routeNumber": 2,
+      "distanceKm": 4.6,
+      "durationMins": 9,
+      "keyRoads": [
+        "Albert Street",
+        "Newton Stewart Bypass",
+        "Princes Street",
+        "Queen Street",
+        "St Couan's Road",
+        "Station Road"
+      ],
+      "roundabouts": 1,
+      "turns": 4
+    },
+    {
+      "routeNumber": 3,
+      "distanceKm": 7.5,
+      "durationMins": 18,
+      "keyRoads": [
+        "Albert Street",
+        "Auchendoon Road",
+        "Corvisel Road",
+        "Dashwood Square",
+        "Mcgregor Drive",
+        "New Galloway Road",
+        "Princes Avenue",
+        "Princes Street",
+        "Princes Terrace",
+        "Queen Street",
+        "Racegreen Avenue",
+        "Station Road",
+        "Victoria Street"
+      ],
+      "roundabouts": 0,
+      "turns": 9
+    }
+  ]
+}
